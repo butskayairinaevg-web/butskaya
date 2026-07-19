@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>5S Guide – Professional Web Page</title>
+  <style>
+    :root {
+      --bg: #0f1220;
+      --panel: #161a2b;
+      --panel-2: #1b2035;
+      --text: #e8ebff;
+      --muted: #b8bfdd;
+      --brand: #7c9cff;
+      --accent: #61d3a3;
+      --border: #273056;
+      --chip: #222844;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: linear-gradient(180deg, #0c1020 0%, #0f1220 40%, #101329 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    aside {
+      position: sticky; top: 16px; align-self: start;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    .brand {
+      font-weight: 800; letter-spacing: .3px; font-size: 20px;
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 8px;
+    }
+    .brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 6px rgba(97,211,163,.12);} 
+    nav a {
+      display: block; text-decoration: none; color: var(--muted);
+      padding: 8px 10px; border-radius: 10px; margin: 2px 0; font-size: 14px;
+    }
+    nav a:hover { background: var(--chip); color: var(--text); }
+    nav .section { margin-top: 12px; margin-bottom: 6px; color: var(--brand); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .12em; }
+
+    main {
+      background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+      border: 1px solid var(--border);
+      border-radius: 18px; padding: 28px; box-shadow: 0 18px 50px rgba(0,0,0,.3);
+    }
+    h1 { font-size: 34px; line-height: 1.2; margin: 0 0 8px; letter-spacing: .2px; }
+    .subtitle { color: var(--muted); margin-bottom: 22px; }
+    h2 { font-size: 22px; line-height: 1.3; margin: 28px 0 10px; border-left: 4px solid var(--brand); padding-left: 10px; }
+    h3 { font-size: 18px; margin: 20px 0 6px; color: #dbe3ff; }
+
+    .card {
+      background: rgba(255,255,255,.02);
+      border: 1px solid var(--border);
+      border-radius: 14px; padding: 18px; margin: 14px 0;
+    }
+
+    .kpi {
+      display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; font-size: 12px; margin-right: 8px;
+      background: var(--chip); border: 1px solid var(--border); color: var(--muted);
+    }
+    .grid { display: grid; gap: 16px; }
+    @media (min-width: 900px){ .grid.cols-2 { grid-template-columns: 1fr 1fr; } }
+
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    th, td { text-align: left; padding: 10px 12px; vertical-align: top; }
+    thead th { background: #212746; color: #cdd6ff; font-weight: 700; }
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr:nth-child(odd) { background: rgba(124,156,255,.05); }
+
+    .note { font-size: 13px; color: var(--muted); }
+    .chips { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; }
+    .chip { background: var(--chip); border:1px solid var(--border); padding:6px 10px; border-radius:999px; font-size:12px; color: var(--muted); }
+
+    .footer { margin-top: 32px; font-size: 12px; color: var(--muted); text-align: center; }
+
+    /* Smooth scroll */
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <div class="brand"><span class="dot"></span>5S Guide</div>
+      <nav>
+        <div class="section">Overview</div>
+        <a href="#what-is-5s">What is 5S?</a>
+        <a href="#purpose">📌 Purpose of 5S</a>
+        <a href="#origins">📌 Origins of 5S and Lean Manufacturing</a>
+        <a href="#benefits">📌 Benefits of 5S + Example</a>
+        <a href="#five-s">What Are the 5 S's?</a>
+        <div class="section">5S Steps</div>
+        <a href="#sort">📌 1st S – Sort (Seiri)</a>
+        <a href="#set-in-order">Set in Order (Seiton)</a>
+        <a href="#shine">Shine (Seiso)</a>
+        <a href="#standardize">Standardize (Seiketsu)</a>
+        <a href="#sustain">Sustain (Shitsuke)</a>
+        <a href="#safety">Safety – The 6th S</a>
+        <div class="section">Implementation</div>
+        <a href="#getting-started">Getting Started with 5S</a>
+        <a href="#participation">Who Should Participate in 5S?</a>
+        <a href="#training">5S Training</a>
+        <a href="#visual">5S & Visual Communication</a>
+        <a href="#outside">5S outside Manufacturing</a>
+      </nav>
+    </aside>
+
+    <main>
+      <header>
+        <h1>What is 5S?</h1>
+        <p class="subtitle">A professional, clean layout that preserves every word exactly as provided. — Prepared by Rakesh Verma</p>
+      </header>
+
+      <!-- BEGIN: EXACT USER CONTENT (as-is) -->
+      <section id="what-is-5s" class="card">
+        <h2>What is 5S?</h2>
+        <p>5S is a system for organizing spaces so work can be performed efficiently, effectively, and safely. This system focuses on putting everything where it belongs and keeping the workplace clean, which makes it easier for people to do their jobs without wasting time or risking injury.</p>
+      </section>
+
+      <section id="images" class="card">
+        <h2>5S Images</h2>
+        <div class="grid cols-2">
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <img src="/mnt/data/A_2D_digital_graphic_design_infographic_illustrate.png" alt="5S Diagram" style="max-width:100%;border-radius:8px;">
+            <figcaption style="font-size:13px;color:var(--muted);">5S Circular Diagram</figcaption>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <img src="/mnt/data/A_2D_digital_infographic_on_a_light_beige_backgrou.png" alt="Participation Infographic" style="max-width:100%;border-radius:8px;">
+            <figcaption style="font-size:13px;color:var(--muted);">Who Should Participate in 5S (Infographic)</figcaption>
+          </div>
+          <div style="grid-column:1 / -1; display:flex;flex-direction:column;gap:12px; margin-top:12px;">
+            <img src="/mnt/data/A_comparison_of_two_digital_photographs_labeled_%E2%80%9CB.png" alt="Before After 5S" style="width:100%;border-radius:8px;">
+            <figcaption style="font-size:13px;color:var(--muted);">Before & After 5S (Workshop)</figcaption>
+          </div>
+        </div>
+      </section>
+
+      <section id="purpose" class="card">
+        <h2>📌 Purpose of 5S</h2>
+        <p>The main purpose of 5S is to create a clean, safe, and organised workplace where work can be done quickly and correctly.</p>
+        <h3>🎯 Key Points:</h3>
+        <ul>
+          <li>Efficiency – Work becomes faster and smoother.</li>
+          <li> Waste Reduction – No extra items or time is wasted</li>
+          <li>Safety – A clean workplace reduces accidents.</li>
+          <li>Quality – Work quality improves.</li>
+          <li>Employee Morale – Workers feel motivated and responsible </li>
+        </ul>
+      </section>
+
+      <section id="origins" class="card">
+        <h2>📌 Origins of 5S and Lean Manufacturing </h2>
+        <p>5S started in Toyota as part of the Toyota Production System (TPS).</p>
+        <p>In the West, TPS is called Lean Manufacturing, which means improving customer value by removing waste.</p>
+        <p>Lean uses many tools like 5S, Kaizen, Kanban, Jidoka, Heijunka, and Poka-yoke.</p>
+        <p>5S is the foundation because a clean and organized workplace is necessary for good results.</p>
+        <p>A messy workplace causes mistakes, delays, and accidents.</p>
+        <p>When the workplace is organized, production runs smoothly and correctly.</p>
+      </section>
+
+      <section id="benefits" class="card">
+        <h2>📌 Benefits of 5S</h2>
+        <p>The 5S method helps companies in many ways:</p>
+        <ul>
+          <li>It saves money by cutting down waste.</li>
+          <li>It improves product quality with fewer errors.</li>
+          <li>It increases work speed and efficiency.</li>
+          <li>It keeps employees happy by giving them a clean, organized space.</li>
+          <li>It makes the workplace safer and reduces accidents.</li>
+        </ul>
+        <div class="card">
+          <h3>🏭 Example: Manufacturing Workshop</h3>
+          <p>A company makes machine parts. Before 5S, tools were scattered, floors were messy, and workers wasted time searching for equipment.</p>
+          <p><strong>After applying 5S:</strong></p>
+          <ul>
+            <li><strong>Reduced costs</strong> → Old, unused tools were removed, so the company didn’t waste money on extra storage.</li>
+            <li><strong>Higher quality</strong> → Clean and organized machines produced parts with fewer defects.</li>
+            <li><strong>Increased productivity</strong> → Workers quickly found the right tools, saving 15 minutes per task.</li>
+            <li><strong>Greater employee satisfaction</strong> → Employees felt proud of their clean, safe workplace.</li>
+            <li><strong>Safer work environment</strong> → Marked floors and organized tools reduced accidents like slips and trips.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="five-s" class="card">
+        <h2>What Are the 5 S's?</h2>
+        <p>The 5S concept may sound difficult, but it’s actually a practical and easy method that everyone can follow. It means checking what is in the workplace, removing unnecessary items, arranging things properly, cleaning the area, and repeating this process regularly.</p>
+        <p><strong>In short: Organize → clean → Repeat.</strong></p>
+        <div class="card">
+          <table>
+            <thead><tr><th>Japanese Word</th><th>English Meaning</th><th>Simple Example</th></tr></thead>
+            <tbody>
+              <tr><td>Seiri</td><td>Sort</td><td>Remove old or unused tools from the workplace.</td></tr>
+              <tr><td>Seiton</td><td>Set in Order</td><td>Keep tools in proper racks with labels.</td></tr>
+              <tr><td>Seiso</td><td>Shine</td><td>Clean machines and floors daily.</td></tr>
+              <tr><td>Seiketsu</td><td>Standardize</td><td>Make cleaning checklists and schedules.</td></tr>
+              <tr><td>Shitsuke</td><td>Sustain</td><td>Follow 5S rules every day with discipline.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="sort" class="card">
+        <h2>📌 1st S – Sort (Seiri)</h2>
+        <h3>🔹 Meaning</h3>
+        <p>Remove unnecessary items and keep only useful things in the workplace.</p>
+        <h3>🔹 Key Questions to Ask</h3>
+        <ul>
+          <li>What is the purpose of this item?</li>
+          <li>When was it last used?</li>
+          <li>How often is it used?</li>
+          <li>Who uses it?</li>
+          <li>Does it need to be here?</li>
+        </ul>
+        <h3>🔹 Actions</h3>
+        <ul>
+          <li>Give extra items to another department.</li>
+          <li>Recycle, sell, or throw away useless items.</li>
+          <li>Store items that are rarely needed.</li>
+        </ul>
+        <h3>🔹 Red Tag Method</h3>
+        <p>If unsure about an item’s use:</p>
+        <ul>
+          <li>Attach a red tag (with location, description, name, date).</li>
+          <li>Keep it in a Red Tag Area.</li>
+          <li>If not used within 1–2 months → remove it.</li>
+        </ul>
+        <p><strong>🔹 Tip</strong><br/>Set a reminder to regularly check the Red Tag Area.</p>
+      </section>
+
+      <section id="set-in-order" class="card">
+        <h2>Set in Order (Seiton)</h2>
+        <p>After removing unnecessary things, the next step is to arrange the remaining items properly. The goal is to make the workplace organized and easy to use.</p>
+        <p><strong>Things to consider:</strong></p>
+        <ul>
+          <li>Who uses the items and where?</li>
+          <li>When and how often are they used?</li>
+          <li>Which items are used the most?</li>
+          <li>Should similar items be kept together?</li>
+          <li>What is the best place for each item?</li>
+          <li>Can the placement save time and effort?</li>
+          <li>Can it reduce unnecessary movement?</li>
+          <li>Do we need shelves, racks, or storage boxes?</li>
+        </ul>
+        <p>This step is about creating a logical arrangement by thinking about daily work, task frequency, and people’s movement in the area.</p>
+        <p>If arrangement is poor, it can create waste like:</p>
+        <ul>
+          <li>Defects</li>
+          <li>Waiting time</li>
+          <li>Extra motion</li>
+          <li>Excess inventory</li>
+          <li>Overproduction</li>
+          <li>Extra processing</li>
+          <li>Unnecessary transportation</li>
+          <li>Not using workers’ skills</li>
+        </ul>
+      </section>
+
+      <section id="shine" class="card">
+        <h2>Shine (Seiso)</h2>
+        <p>This step is about keeping the workplace clean and well-maintained.</p>
+        <h3>Main points:</h3>
+        <ul>
+          <li>Clean the area daily (sweeping, mopping, dusting, wiping surfaces, putting tools back).</li>
+          <li>Take care of machines and equipment with regular maintenance to avoid breakdowns.</li>
+          <li>Cleaning is not only the job of janitors—everyone is responsible for their own workspace.</li>
+          <li>A clean workplace prevents problems, saves time, and improves safety.</li>
+          <li>Daily cleaning builds a sense of ownership and pride in the workplace.</li>
+        </ul>
+        <p><strong>Tip:</strong> Train employees on how to clean properly, what cleaners to use, and where materials are kept. This avoids mistakes or damage to equipment.</p>
+      </section>
+
+      <section id="standardize" class="card">
+        <h2>Standardize (Seiketsu)</h2>
+        <p>This step is about making 5S a regular habit, not a one-time activity.</p>
+        <h3>Main points:</h3>
+        <ul>
+          <li>After sorting, organizing, and cleaning, the challenge is to maintain it.</li>
+          <li>Standardize means creating routines and rules so things don’t go back to the old messy state.</li>
+          <li>Assign tasks, make schedules, and post instructions to keep 5S going.</li>
+          <li>Use tools like:</li>
+          <ul>
+            <li>Daily 5S checklist</li>
+            <li>Cleaning schedules with names of responsible people</li>
+            <li>Charts or reminders</li>
+          </ul>
+          <li>At first, employees may need reminders or extra time, but later it becomes part of normal work.</li>
+          <li>Visual cues (signs, labels, posters, floor tape, tool boards) help keep order without needing words.</li>
+        </ul>
+        <p><strong>Tip:</strong> Standardize makes 5S a system instead of just cleaning once in a while.</p>
+      </section>
+
+      <section id="sustain" class="card">
+        <h2>Sustain (Shitsuke)</h2>
+        <p>This step is about keeping 5S alive in the long run.</p>
+        <h3>Main points:</h3>
+        <ul>
+          <li>Follow the standard procedures regularly and update them when needed.</li>
+          <li>Everyone must take part—managers, workers, office staff, warehouse staff.</li>
+          <li>Make 5S a long-term culture, not just a short-term project.</li>
+          <li>When 5S is sustained, businesses see continuous positive results.</li>
+        </ul>
+        <h3>Tips:</h3>
+        <ul>
+          <li>Train all new employees (or employees moving to a new area) about 5S procedures.</li>
+          <li>Keep things interesting—bring in new ideas, learn from other companies, and keep improving.</li>
+        </ul>
+      </section>
+
+      <section id="safety" class="card">
+        <h2>Safety – The 6th S</h2>
+        <p>Some companies add Safety to 5S, making it 6S. This step focuses on removing risks and preventing accidents.</p>
+        <h3>Main points:</h3>
+        <ul>
+          <li>Arrange workstations to be safe and ergonomic.</li>
+          <li>Mark areas where people and machines (like forklifts) cross paths.</li>
+          <li>Label storage areas for hazardous items (e.g., chemicals).</li>
+          <li>Reduce dangers in workplace layout and daily tasks.</li>
+        </ul>
+        <h3>Different views:</h3>
+        <ul>
+          <li>Some say Safety is part of the other 5S steps (because a clean, organized workplace is safer).</li>
+          <li>Others prefer to add it as a separate step for extra focus.</li>
+          <li>Both approaches are acceptable, but safety must always be considered.</li>
+        </ul>
+        <p><strong>Tip:</strong> After any accident or mishap, ask:</p>
+        <p>Could better 5S practices (less clutter, cleaner floors, and clearer labels) have prevented it?</p>
+      </section>
+
+      <section id="getting-started" class="card">
+        <h2>Getting Started with 5S</h2>
+        <p>Starting 5S may feel like a big challenge, but it becomes easier with small, clear steps.</p>
+        <h3>How to start:</h3>
+        <ul>
+          <li>Decide which departments and people will be part of 5S.</li>
+          <li>Arrange training so everyone understands the process.</li>
+          <li>Choose the tools needed for sorting, labeling, cleaning, and organizing.</li>
+          <li>Begin step by step, just like cleaning a garage or storeroom—focus on one area at a time.</li>
+        </ul>
+        <p><strong>Tip:</strong> Clear planning and involving everyone makes 5S implementation smoother.</p>
+      </section>
+
+      <section id="participation" class="card">
+        <h2>Who Should Participate in 5S?</h2>
+        <p>The short answer: Everyone.</p>
+        <h3>Main points:</h3>
+        <ul>
+          <li>All employees, including managers and workers, should take part.</li>
+          <li>If some people are left out, it can cause confusion and mess that no one takes responsibility for.</li>
+          <li>Some people may have bigger roles (e.g., 5S coordinators).</li>
+          <li>Coordinators handle labeling, track tasks, and train new employees.</li>
+          <li>Everyone should think about 5S daily, not just during special events.</li>
+          <li>Leaders must also participate—when employees see managers involved, they take 5S more seriously.</li>
+        </ul>
+        <div class="card">
+          <h3>Here’s a flowchart showing who should participate in 5S:</h3>
+          <ul>
+            <li>Company Leaders / Managers guide and support the system.</li>
+            <li>5S Coordinators manage tasks, labeling, and training.</li>
+            <li>All Employees follow and maintain 5S daily.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="training" class="card">
+        <h2>5S Training</h2>
+        <h3>Who needs training?</h3>
+        <p>Everyone who will take part in 5S.</p>
+        <h3>How can training be given?</h3>
+        <ul>
+          <li>Classroom teaching</li>
+          <li>Training DVD or video</li>
+          <li>Hands-on practice</li>
+          <li>Live demonstration at a workstation</li>
+        </ul>
+        <h3>What should be taught?</h3>
+        <ul>
+          <li>Brief history of 5S</li>
+          <li>The 5 steps of 5S</li>
+          <li>Benefits of 5S</li>
+        </ul>
+        <h3>Important Point:</h3>
+        <p>5S may look different in each company or department. Teams should find the best way for their own workplace.</p>
+        <h3>Ongoing Training:</h3>
+        <ul>
+          <li>All employees must be trained when 5S starts.</li>
+          <li>New employees should also get 5S training when they join.</li>
+        </ul>
+      </section>
+
+      <section id="visual" class="card">
+        <h2>5S & Visual Communication</h2>
+        <div class="grid cols-2">
+          <div>
+            <table>
+              <thead>
+                <tr><th>Tool / Concept</th><th>Description / Use</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Floor Marking Tape</td>
+                  <td>- Outlines work areas<br>- Shows equipment/material locations<br>- Highlights hazards<br>- Can be used on shelves, benches, cabinets</td>
+                </tr>
+                <tr>
+                  <td>Labels &amp; Signs</td>
+                  <td>- Show contents of drawers<br>- Indicate hazards<br>- Tell where to store parts<br>- Use text, symbols, and colors</td>
+                </tr>
+                <tr>
+                  <td>Shadow Boards</td>
+                  <td>- Pegboards with tool cutouts<br>- Show tool location<br>- Highlight missing tools</td>
+                </tr>
+                <tr>
+                  <td>Toolbox Foam</td>
+                  <td>- Foam cutouts in drawers<br>- Bright bottom layer shows missing tool<br>- Keeps toolbox organized</td>
+                </tr>
+                <tr>
+                  <td>Main Idea</td>
+                  <td>“A place for everything, and everything in its place.”</td>
+                </tr>
+                <tr>
+                  <td>Tip</td>
+                  <td>If using color codes (tape, signs, labels), post a color chart so everyone understands.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="outside" class="card">
+        <h2>5S outside Manufacturing – In Healthcare, the Office, or Government</h2>
+        <table>
+          <thead><tr><th>Heading</th><th>Content</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Introduction</td>
+              <td>5S originated in the manufacturing industry at Toyota. It has proven useful for many industries, not just automotive. In recent decades, 5S has moved beyond manufacturing into healthcare, offices, schools, and even government organizations.</td>
+            </tr>
+            <tr>
+              <td>Application in Areas</td>
+              <td>The basic steps of 5S can be applied anywhere. Offices can use 5S to keep supplies organized. Hospitals and clinics use 5S for medical tools and equipment. Even kitchens can use 5S to keep food storage clean and safe.</td>
+            </tr>
+            <tr>
+              <td>Example</td>
+              <td>Before 5S: workspaces are cluttered and confusing. After 5S: everything has an assigned place, marked with labels, floor tape, or shadow boards. This makes processes smoother and problems easier to detect.</td>
+            </tr>
+            <tr>
+              <td>Benefits</td>
+              <td>5S helps organizations improve workplace organization, reduce clutter, and spot potential issues before they grow into bigger problems.</td>
+            </tr>
+            <tr>
+              <td>Costs vs. Savings</td>
+              <td>Implementing 5S is usually inexpensive. Some upfront investment may be needed for tools (labels, floor tape, and training). But in the long run, 5S saves money by preventing delays, reducing waste, and improving efficiency.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <!-- END: EXACT USER CONTENT -->
+
+      <div class="footer">© 2025 5S Guide. Prepared by Rakesh Verma.</div>
+    </main>
+  </div>
+
+  <script>
+    // Tiny helper to highlight active nav link on scroll
+    const links = [...document.querySelectorAll('aside nav a')];
+    const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        const id = '#' + entry.target.id;
+        const link = links.find(l => l.getAttribute('href') === id);
+        if (entry.isIntersecting) {
+          links.forEach(l => l.style.background = '');
+          if (link) link.style.background = 'var(--chip)';
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px', threshold: 0.01 });
+
+    sections.forEach(s => s && obs.observe(s));
+  </script>
+</body>
+</html>

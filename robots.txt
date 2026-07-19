@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://butskayairinaevg-web.github.io/butskaya/sitemap.xml

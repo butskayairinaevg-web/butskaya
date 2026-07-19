@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Process Flow Chart in Manufacturing</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg1:#0f2027;
+  --bg2:#203a43;
+  --bg3:#2c5364;
+  --glass:rgba(255,255,255,0.12);
+  --border:rgba(255,255,255,0.25);
+  --text:#f5f7fa;
+  --accent1:#00f2fe;
+  --accent2:#f093fb;
+  --accent3:#4facfe;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Segoe UI",sans-serif;
+}
+
+body{
+  background:linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));
+  color:var(--text);
+  line-height:1.7;
+}
+
+#progress{
+  position:fixed;
+  top:0;left:0;
+  height:6px;
+  background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));
+  width:0%;
+  z-index:1000;
+}
+
+header{
+  text-align:center;
+  padding:60px 20px 30px;
+}
+
+header h1{
+  font-size:2.6rem;
+  background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.container{
+  width:95%;
+  max-width:1200px;
+  margin:auto;
+  padding-bottom:60px;
+}
+
+.card{
+  background:var(--glass);
+  backdrop-filter:blur(14px);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:30px;
+  margin:30px 0;
+  box-shadow:0 15px 40px rgba(0,0,0,0.35);
+  transform:translateY(40px);
+  opacity:0;
+  transition:0.8s ease;
+}
+
+.card.show{
+  transform:translateY(0);
+  opacity:1;
+}
+
+.card h2{
+  color:var(--accent1);
+  margin-bottom:12px;
+}
+
+.card h3{
+  color:var(--accent2);
+  margin-top:15px;
+}
+
+.card ul{
+  margin-left:22px;
+  margin-top:8px;
+}
+
+.card li{
+  margin:6px 0;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+}
+
+th,td{
+  border:1px solid var(--border);
+  padding:10px;
+}
+
+th{
+  background:rgba(255,255,255,0.15);
+  color:var(--accent3);
+}
+
+.flow{
+  background:rgba(0,0,0,0.25);
+  padding:15px;
+  border-radius:12px;
+  margin-top:10px;
+  font-family:monospace;
+  white-space:pre-wrap;
+}
+
+footer{
+  text-align:center;
+  padding:25px;
+  opacity:0.85;
+}
+</style>
+</head>
+
+<body>
+
+<div id="progress"></div>
+
+<header>
+<h1>Process Flow Chart in Manufacturing</h1>
+<p>(Symbols, Types, Applications, and Best Practices)</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h2>1. Meaning and Definition</h2>
+<p>
+A Process Flow Chart (PFC) is a graphical representation of the sequence of operations, inspections, decisions, and movements involved in a manufacturing or service process.
+It presents each step in logical and chronological order, showing how inputs are transformed into outputs.
+</p>
+<p>A Process Flow Chart is also commonly known as:</p>
+<ul>
+<li>Process Flow Diagram (PFD)</li>
+<li>Process Map</li>
+<li>Workflow Diagram</li>
+</ul>
+<p>
+In manufacturing and quality management, the PFC serves as a foundational analysis tool that enables teams to understand the actual process, not just the documented one.
+</p>
+</div>
+
+<div class="card">
+<h2>2. Role of Process Flow Chart in Quality and Manufacturing</h2>
+<p>In manufacturing and quality improvement, clarity is critical.</p>
+<p>Before solving any problem or improving a process, the team must first see and agree on how the process truly works.</p>
+<p>A Process Flow Chart:</p>
+<ul>
+<li>Visually represents how work flows</li>
+<li>Makes complex processes easy to understand</li>
+<li>Acts as a common language between operators, engineers, managers, and auditors</li>
+</ul>
+<p>For quality professionals, a flow chart is often the starting point before applying:</p>
+<ul>
+<li>Cause & Effect (Fishbone) Diagram</li>
+<li>Check Sheet</li>
+<li>Pareto Chart</li>
+<li>Control Chart</li>
+</ul>
+<p>Without a clear flow chart, problem-solving efforts are often based on assumptions rather than facts.</p>
+</div>
+
+<div class="card">
+<h2>3. Where and Why Process Flow Charts Are Used</h2>
+<ul>
+<li>Manufacturing processes</li>
+<li>Project planning</li>
+<li>Service industries</li>
+<li>Supply chain and logistics</li>
+<li>Quality problem-solving methodologies</li>
+</ul>
+<p>They are mandatory supporting documents during:</p>
+<ul>
+<li>New product development</li>
+<li>Process validation</li>
+<li>Quality audits</li>
+<li>APQP and PPAP submissions</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>4. When to Use a Process Flow Chart</h2>
+<ul>
+<li>Defining or analysing a new process</li>
+<li>Standardising an existing process</li>
+<li>Redesigning or improving a process</li>
+<li>Identifying bottlenecks, rework loops, delays, or gaps</li>
+<li>Preparing documentation for quality systems and audits</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>5. Types of Process Flow Charts</h2>
+<p>There are two main types of Process Flow Charts used in manufacturing.</p>
+
+<h3>5.1 High-Level Process Flow Chart</h3>
+<ul>
+<li>Typically 6–10 major steps</li>
+<li>Shows only main phases or blocks</li>
+<li>Does not go into operational details</li>
+</ul>
+<p>Used when:</p>
+<ul>
+<li>Starting a new project</li>
+<li>Explaining the process to management</li>
+<li>Identifying overall improvement priorities</li>
+</ul>
+
+<h3>5.2 Detailed Process Flow Chart</h3>
+<ul>
+<li>Usually 15 or more steps</li>
+<li>Includes operations, inspections, decisions, delays, rework, and storage</li>
+<li>Shows actual shop-floor reality</li>
+</ul>
+<p>Used when:</p>
+<ul>
+<li>Standardising work</li>
+<li>Performing process improvement</li>
+<li>Conducting PFMEA or root-cause analysis</li>
+<li>Preparing audit-ready documentation</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>6. Symbols Used in Process Flow Charts</h2>
+<p>Standard symbols ensure universal understanding and consistency.</p>
+
+<table>
+<tr><th>Flow chart Symbols</th><th>Meaning and use cases</th></tr>
+<tr><td>Oval / Rounded Rectangle</td><td>Start or end point</td></tr>
+<tr><td>Rectangle</td><td>Operation</td></tr>
+<tr><td>Arrow / Flow Line</td><td>Flow of the process</td></tr>
+<tr><td>Diamond</td><td>Decision</td></tr>
+<tr><td>Parallelogram</td><td>Input or output</td></tr>
+<tr><td>Half-Circle</td><td>Delay or wait</td></tr>
+<tr><td>Document Symbol</td><td>Documents used or updated</td></tr>
+<tr><td>Inverted Triangle</td><td>Storage</td></tr>
+<tr><td>Arrow with Box</td><td>Transportation</td></tr>
+<tr><td>Connector</td><td>Link to another page or flow</td></tr>
+</table>
+
+<p>Using standard symbols avoids confusion during cross-functional reviews and audits.</p>
+</div>
+
+<div class="card">
+<h2>7. Key Elements of a Process Flow Chart</h2>
+<ul>
+<li>Start or End</li>
+<li>Arrows / Flow-lines</li>
+<li>Process / Operation</li>
+<li>Decision</li>
+<li>Storage</li>
+<li>Delay / Wait</li>
+<li>Document</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>8. Purpose of a Process Flow Chart in Manufacturing</h2>
+<ul>
+<li>Visualise the workflow from raw material to finished product</li>
+<li>Identify bottlenecks, waste, and inefficiencies</li>
+<li>Standardise quality procedures and work instructions</li>
+<li>Improve communication across departments</li>
+<li>Support training of new employees</li>
+<li>Form the basis for process risk analysis</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>9. Process Flow Diagram – Key Quality Requirements</h2>
+<ul>
+<li>Reflect complete process from receiving to shipping</li>
+<li>Identify outsourced operations</li>
+<li>Identify stations where special characteristics are verified</li>
+<li>Include sequence numbers and inspection stations</li>
+<li>Include unique process equipment</li>
+<li>Include rework and reinspection</li>
+<li>Include packaging, labeling and storage</li>
+</ul>
+<p>These points are critical for PPAP approval and audit compliance.</p>
+</div>
+
+<div class="card">
+<h2>10. Importance of Flow Charts in Quality Improvement</h2>
+<ul>
+<li>Identify redundant steps</li>
+<li>Detect inefficient sequences</li>
+<li>Understand sources of variation and defects</li>
+<li>Provide foundation for other QC tools</li>
+</ul>
+</div>
+
+<div class="card step-section" id="step11">
+  <h2>11. Step-by-Step: How to Create a Process Flow Chart</h2>
+
+  <div class="step">
+    <h3>Step 1: Define the Process</h3>
+    <p>Clearly define:</p>
+    <ul>
+      <li>Process name</li>
+      <li>Start point</li>
+      <li>End point</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <h3>Step 2: Identify All Steps</h3>
+    <p>List every:</p>
+    <ul>
+      <li>Operation</li>
+      <li>Inspection</li>
+      <li>Decision</li>
+      <li>Delay or storage</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <h3>Step 3: Arrange Steps Sequentially</h3>
+    <p>
+      Place the steps in the correct order from start to finish.
+      Make sure arrows show the logical flow of the process
+    </p>
+  </div>
+
+  <div class="step">
+    <h3>Step 4: Select Standard Symbols</h3>
+    <p>
+      Use standard shapes (rectangles, diamonds, ovals, etc.)
+      so that everyone understands the chart easily
+    </p>
+  </div>
+
+  <div class="step">
+    <h3>Step 5: Connect with Arrows</h3>
+    <p>Ensure arrows clearly show:</p>
+    <ul>
+      <li>Forward flow</li>
+      <li>Rework loops</li>
+      <li>Alternate paths</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <h3>Step 6: Review with the Team</h3>
+    <p>
+      Validate the chart with the process owner or cross-functional team
+      to confirm accuracy and completeness
+    </p>
+  </div>
+
+  <div class="step">
+    <h3>Step 7: Use it for Analysis</h3>
+    <p>
+      Now that you have a clear visual, analyze it to find
+      non-value-added steps, duplication, or possible failure points.
+    </p>
+  </div>
+</div>
+<div class="card">
+<h2>12. Real-World Practical Example</h2>
+<h3>Automotive Door Welding Process</h3>
+<div class="flow">
+Start → Load Door Panel → Welding → Visual Inspection → Leak Test →
+Decision (OK?) →
+Yes → Store for Next Process → End
+No → Rework → Welding
+</div>
+</div>
+
+<div class="card">
+<h2>13. Advantages and Limitations</h2>
+<h3>Advantages</h3>
+<ul>
+<li>Clear visual communication</li>
+<li>Identifies waste and bottlenecks</li>
+<li>Improves cross-functional understanding</li>
+<li>Supports standardisation and audits</li>
+</ul>
+
+<h3>Limitations</h3>
+<ul>
+<li>Can become complex for large systems</li>
+<li>Requires regular updates</li>
+<li>Does not measure performance numerically</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>14. Best Practices</h2>
+<ul>
+<li>Create the chart with the process team</li>
+<li>Keep flow left-to-right or top-to-bottom</li>
+<li>Use consistent symbols</li>
+<li>Clearly define start and end points</li>
+<li>Update whenever the process changes</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>15. Common Mistakes and Prevention</h2>
+<ul>
+<li>Skipping steps – Observe the process physically</li>
+<li>Inconsistent symbols – Follow standard symbols</li>
+<li>Ignoring operators – Always involve shop-floor staff</li>
+<li>Missing arrows – Clearly show direction</li>
+<li>Overcomplication – Keep it simple and readable</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>16. Flow Chart Checklist</h2>
+<ul>
+<li>✔ Process boundaries defined</li>
+<li>✔ All steps listed sequentially</li>
+<li>✔ Correct symbols used</li>
+<li>✔ Flow arrows connected</li>
+<li>✔ Reviewed and approved</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>17. Summary / Key Takeaways</h2>
+<p>
+A Process Flow Chart is one of the most powerful and fundamental quality tools.
+It transforms complex manufacturing processes into clear, visual, and actionable information.
+Before performing any problem-solving, improvement, or risk analysis activity, start with a flow chart — it is your roadmap to process clarity.
+</p>
+</div>
+
+</div>
+
+<footer>
+© Quality Learning – Process Flow Chart
+</footer>
+
+<script>
+const cards=document.querySelectorAll(".card");
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting)e.target.classList.add("show");
+  });
+},{threshold:0.15});
+cards.forEach(c=>observer.observe(c));
+
+window.addEventListener("scroll",()=>{
+ let h=document.documentElement;
+ let sc=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;
+ document.getElementById("progress").style.width=sc+"%";
+});
+</script>
+
+</body>
+</html>

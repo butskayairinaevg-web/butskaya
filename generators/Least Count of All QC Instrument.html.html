@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Least Count of Measuring Instruments — Quality Learning</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #ffffff;
+      --card: #fbfbfb;
+      --text: #222428;
+      --muted: #6b7280;
+      --accent: #ff7a00; /* orange headings */
+      --radius: 12px;
+      --gap: 18px;
+      --glass: rgba(255,255,255,0.6);
+    }
+
+    [data-theme="dark"]{
+      --bg: #0b0f13;
+      --card: #0f1619;
+      --text: #e6eef8;
+      --muted: #9aa6b2;
+      --glass: rgba(255,255,255,0.03);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:'Poppins',system-ui,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;transition:background 0.35s ease,color 0.35s ease}
+
+    /* layout */
+    .wrap{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+
+    /* Sidebar */
+    .sidebar{position:sticky;top:0;height:100vh;padding:22px;background:linear-gradient(180deg,var(--glass),transparent);backdrop-filter: blur(6px);border-right:1px solid rgba(0,0,0,0.06)}
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+    .logo{width:46px;height:46px;border-radius:10px;background:var(--accent);display:grid;place-items:center;color:#fff;font-weight:700}
+    .site{font-weight:700}
+
+    .left-controls{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+
+    /* Left theme toggle (stylish) */
+    .left-toggle{display:flex;align-items:center;gap:8px;background:var(--card);padding:6px;border-radius:999px;cursor:pointer;border:1px solid rgba(0,0,0,0.04)}
+    [data-theme="dark"] .left-toggle{border-color:rgba(255,255,255,0.06)}
+    .switch{width:44px;height:24px;background:linear-gradient(90deg,#ddd,#eee);border-radius:999px;position:relative;padding:3px}
+    .knob{width:18px;height:18px;background:white;border-radius:50%;position:absolute;left:3px;top:3px;transition:transform 0.35s ease,background 0.35s ease}
+    [data-theme="dark"] .switch{background:linear-gradient(90deg,#444,#222)}
+    [data-theme="dark"] .knob{transform:translateX(20px);background:#ffd44d}
+
+    .toc{margin-top:12px}
+    .toc a{display:block;padding:8px 10px;border-radius:8px;color:var(--muted);text-decoration:none;margin-bottom:6px}
+    .toc a.active{background:var(--card);color:var(--text);font-weight:600}
+
+    /* content */
+    main{padding:34px 48px;max-width:980px}
+    header{position:fixed;left:280px;right:0;top:0;height:6px;background:transparent;z-index:50}
+    .progress{height:6px;width:0;background:linear-gradient(90deg,var(--accent),#ffb374);border-radius:6px}
+
+    h1{font-size:28px;margin:4px 0 12px 0;color:var(--accent)}
+    h2{font-size:20px;margin:18px 0 8px 0;color:var(--accent)}
+    p,li{font-size:15px;color:var(--text);line-height:1.6}
+    .muted{color:var(--muted)}
+
+    .card{background:var(--card);padding:16px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.04);margin-bottom:18px}
+
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:10px;border:1px solid rgba(0,0,0,0.06);text-align:left}
+    th{background:linear-gradient(90deg, rgba(255,255,255,0.6), transparent);font-weight:600}
+
+    img.figure{width:100%;border-radius:10px;margin-top:12px}
+
+    footer{padding:20px 0;text-align:center;color:var(--muted);border-top:1px dashed rgba(0,0,0,0.06);margin-top:26px}
+    footer a{color:var(--accent);text-decoration:none}
+
+    /* Responsive */
+    @media (max-width:900px){
+      .wrap{grid-template-columns:1fr}
+      .sidebar{position:relative;height:auto;border-right:none;display:flex;gap:12px;overflow:auto}
+      header{left:0}
+      main{padding:120px 18px 36px}
+    }
+
+    /* small helpers */
+    .note{background:rgba(255,122,0,0.06);padding:10px;border-radius:8px}
+  </style>
+</head>
+<body data-theme="light">
+  <div class="wrap">
+
+    <aside class="sidebar" aria-label="Table of contents">
+      <div class="brand">
+        <div class="logo">QL</div>
+        <div>
+          <div class="site">Quality Learning</div>
+          <div class="muted" style="font-size:13px">Least Count — Instruments</div>
+        </div>
+      </div>
+
+      <div class="left-controls">
+        <div class="left-toggle" id="leftToggle" role="button" tabindex="0" aria-pressed="false" title="Toggle theme">
+          <div style="font-size:13px;color:var(--muted)">Theme</div>
+          <div class="switch" aria-hidden="true"><div class="knob"></div></div>
+        </div>
+        <div style="font-size:13px;color:var(--muted)">Tip</div>
+      </div>
+
+      <nav class="toc" id="toc">
+        <a href="#definition">Definition</a>
+        <a href="#examples">Examples</a>
+        <a href="#cases">Cases (Ruler Example)</a>
+        <a href="#examples-action">Examples in Action</a>
+        <a href="#importance">Importance</a>
+        <a href="#factors">Factors Affecting LC</a>
+        <a href="#table">Instruments Table</a>
+      </nav>
+
+    </aside>
+
+    <main>
+      <header><div class="progress" id="progressBar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div></header>
+
+      <article>
+        <h1>What is the Least Count of Measuring Instruments?</h1>
+
+        <section id="definition" class="card">
+          <h2>Definition</h2>
+          <p>“The least count of measuring instruments is the smallest value that can be measured or displayed by the instrument.” It represents the precision and accuracy of the instrument and determines the level of detail in measurements.</p>
+        </section>
+
+        <section id="examples" class="card">
+          <h2>Example of Least Count</h2>
+          <ul>
+            <li>A normal scale (ruler) marked in millimeters has a least count of <strong>1 mm</strong>.</li>
+            <li>A vernier caliper can measure as small as <strong>0.02 mm</strong>, so it is more precise.</li>
+          </ul>
+        </section>
+
+        <section id="cases" class="card">
+          <h2>Case Examples</h2>
+          <h3>Case 1: Ruler with LC = 1 mm</h3>
+          <p>It means the smallest length you can read is 1 mm. If an object is <strong>15.4 mm</strong> long, you cannot measure the “.4 mm” part — you will only read <strong>15 mm</strong> (±1 mm error).</p>
+
+          <h3>Case 2: Ruler with LC = 0.1 mm</h3>
+          <p>It means the smallest length you can read is 0.1 mm. If the same object is <strong>15.4 mm</strong> long, you can read it exactly as <strong>15.4 mm</strong> (±0.1 mm error).</p>
+        </section>
+
+        <section id="examples-action" class="card">
+          <h2>Examples of Least Count in Action</h2>
+          <h3>Steel Scale</h3>
+          <p>Smallest division = <strong>1 mm</strong> → LC = 1 mm. If you measure an object 3.6 cm, you can only say 3.6 ± 0.1 cm.</p>
+
+          <h3>Vernier Caliper</h3>
+          <p>Main scale = 1 mm. 50 divisions on vernier = 49 mm. Difference = <strong>0.02 mm</strong> → LC = 0.02 mm. Used in engineering workshops for shafts, bolts, nuts.</p>
+
+          <h3>Micrometer Screw Gauge</h3>
+          <p>Pitch = 0.5 mm. Thimble has 50 divisions. LC = 0.5 ÷ 50 = <strong>0.01 mm</strong>. Used for measuring thin sheets, wire diameters.</p>
+
+          <img class="figure" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Vernier_Caliper.jpg/640px-Vernier_Caliper.jpg" alt="Vernier Caliper">
+        </section>
+
+        <section id="importance" class="card">
+          <h2>Importance of Least Count</h2>
+          <p>Accurate and precise measurements are crucial in various fields, including engineering, science, manufacturing, and research. The least count of a measuring instrument directly impacts the accuracy of the measurements obtained.</p>
+          <p>Instruments with a smaller least count offer higher precision, allowing for more detailed and reliable measurements. Conversely, instruments with a larger least count may introduce more significant measurement uncertainties.</p>
+        </section>
+
+        <section id="factors" class="card">
+          <h2>Factors affecting the least count</h2>
+          <ol>
+            <li><strong>Instrument Design:</strong> Design and construction influence LC; finer divisions or digital displays reduce LC.</li>
+            <li><strong>Sensitivity:</strong> Higher sensitivity detects smaller changes → smaller LC.</li>
+            <li><strong>Resolution:</strong> Higher resolution instruments can discern smaller increments.</li>
+            <li><strong>Calibration:</strong> Regular calibration ensures accuracy and identifies deviations.</li>
+          </ol>
+        </section>
+
+        <section id="table" class="card">
+          <h2>Measuring Instruments and Their Least Counts</h2>
+          <table>
+            <thead>
+              <tr><th>Instrument</th><th>Least Count</th><th>Notes / Use Example</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Steel Scale</td><td>1 mm</td><td>Simple linear measurements</td></tr>
+              <tr><td>Glass Scale</td><td>0.1 mm</td><td>More precise than steel scale</td></tr>
+              <tr><td>Measuring Tape</td><td>1 mm</td><td>Length measurement over distance</td></tr>
+              <tr><td>Vernier Caliper</td><td>0.02 mm</td><td>Shafts, bolts, workshop measurements</td></tr>
+              <tr><td>Digital Caliper</td><td>0.01 mm</td><td>More precise than vernier caliper</td></tr>
+              <tr><td>Outside Micrometer</td><td>0.01 mm</td><td>Measuring small external diameters</td></tr>
+              <tr><td>Depth Micrometer</td><td>0.01 mm</td><td>Measuring hole depths accurately</td></tr>
+              <tr><td>Dial Gauge / Dial Indicator</td><td>0.01 mm</td><td>Checking small displacements, alignment</td></tr>
+              <tr><td>Vernier Depth Gauge</td><td>0.02 mm</td><td>Measure depth of holes or slots</td></tr>
+              <tr><td>Vernier Height Gauge</td><td>0.02 mm</td><td>Measuring height of components</td></tr>
+              <tr><td>Vernier Micrometer</td><td>0.001 mm</td><td>Very fine precision for lab use</td></tr>
+              <tr><td>Digital Micrometer</td><td>0.001 mm</td><td>High-precision measurement in labs/industry</td></tr>
+              <tr><td>Electronic Height Gauge</td><td>0.001 or 0.0001 mm</td><td>Very precise height measurement</td></tr>
+              <tr><td>Bevel Protractor</td><td>5′ (5 minutes of arc)</td><td>Measuring angles</td></tr>
+              <tr><td>Digital Protractor</td><td>0.1°</td><td>Quick and accurate angle measurement</td></tr>
+              <tr><td>Pressure Gauge</td><td>1 bar</td><td>Industrial pressure measurement</td></tr>
+              <tr><td>Digital Pressure Gauge</td><td>0.01 bar</td><td>More precise pressure reading</td></tr>
+              <tr><td>Pressure Calibrator</td><td>0.001 or 0.0001 bar</td><td>Calibration and high-precision pressure tests</td></tr>
+              <tr><td>Laser Interferometer</td><td>0.1 nm</td><td>Ultra-precise linear measurements (nanometer scale)</td></tr>
+              <tr><td>CMM (Coordinate Measuring Machine)</td><td>0.001 mm</td><td>Measures 3D coordinates, used in precision manufacturing</td></tr>
+              <tr><td>Profile Projector / Optical Comparator</td><td>0.01 mm</td><td>Checks shape, dimensions, and angles of small parts</td></tr>
+              <tr><td>Keyence Digital Measuring Systems</td><td>0.001 mm</td><td>High-precision digital measurement and inspection</td></tr>
+            </tbody>
+          </table>
+
+          <div class="note" style="margin-top:12px">
+            <strong>Notes:</strong>
+            <ol>
+              <li>Least counts depend on model and manufacturer — values above are typical.</li>
+              <li>CMM, Profile Projector, and Keyence are advanced inspection tools used in quality labs and precision engineering.</li>
+              <li>Digital/electronic systems provide automated, highly accurate measurements with low uncertainty.</li>
+            </ol>
+          </div>
+
+        </section>
+
+        <footer>
+          © 2025 Quality Learning
+        </footer>
+
+      </article>
+    </main>
+  </div>
+
+  <script>
+    // persistent theme
+    const root = document.documentElement;
+    const body = document.body;
+    const saved = localStorage.getItem('ql-theme');
+    if(saved === 'dark') body.setAttribute('data-theme','dark');
+
+    // left toggle
+    const leftToggle = document.getElementById('leftToggle');
+    leftToggle.addEventListener('click', toggleTheme);
+    leftToggle.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' ') toggleTheme(); });
+
+    function toggleTheme(){
+      const isDark = body.getAttribute('data-theme') === 'dark';
+      if(isDark){ body.removeAttribute('data-theme'); localStorage.setItem('ql-theme','light'); }
+      else{ body.setAttribute('data-theme','dark'); localStorage.setItem('ql-theme','dark'); }
+      leftToggle.setAttribute('aria-pressed', String(!isDark));
+    }
+
+    // smooth scroll and active toc
+    const tocLinks = Array.from(document.querySelectorAll('#toc a'));
+    const sections = tocLinks.map(a => document.querySelector(a.getAttribute('href')));
+
+    tocLinks.forEach(link=>{
+      link.addEventListener('click', e=>{
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        target.scrollIntoView({behavior:'smooth',block:'start'});
+        history.replaceState(null,'',link.getAttribute('href'));
+      });
+    });
+
+    function onScroll(){
+      const fromTop = window.scrollY + 120; // offset for top
+      sections.forEach((sec,i)=>{
+        const link = tocLinks[i];
+        if(sec.offsetTop <= fromTop && sec.offsetTop + sec.offsetHeight > fromTop){
+          link.classList.add('active');
+        } else link.classList.remove('active');
+      });
+
+      // progress bar
+      const progress = document.getElementById('progressBar');
+      const scrolled = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? (scrolled / docHeight) * 100 : 0;
+      progress.style.width = pct + '%';
+      progress.setAttribute('aria-valuenow', Math.round(pct));
+    }
+
+    window.addEventListener('scroll', onScroll);
+    window.addEventListener('resize', onScroll);
+    onScroll();
+  </script>
+</body>
+</html>

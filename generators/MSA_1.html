@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>MSA — Gold Premium (Interactive)</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --gold: #ffd37a;
+    --gold-soft: #f4c56a55;
+    --gold-glow: #ffdf91cc;
+    --bg-dark: #0c0c0c;
+    --glass: rgba(255,255,255,0.07);
+    --text: #e8e8e8;
+    --text-light: #b9b9b9;
+    --card-gap: 22px;
+    --max-width: 1150px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    background: var(--bg-dark);
+    color:var(--text);
+    font-family: "Poppins", sans-serif;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:28px;
+    display:flex;
+    justify-content:center;
+  }
+
+  .wrap{
+    width:100%;
+    max-width:var(--max-width);
+  }
+
+  /* Header */
+  .topbar{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+  }
+
+  .titlebox{
+    flex:1 1 auto;
+  }
+  h1.site-title{
+    margin:0 0 6px 0;
+    font-size:28px;
+    letter-spacing:2px;
+    font-weight:700;
+    background: linear-gradient(90deg,#5c4a1f,#d7b469,#5c4a1f);
+    -webkit-background-clip:text;
+    color:transparent;
+    text-transform:uppercase;
+  }
+  p.lead{
+    margin:0;
+    color:var(--text-light);
+    font-size:13.5px;
+  }
+
+  .controls{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    margin-left:16px;
+  }
+
+  .controls input[type="search"]{
+    padding:10px 12px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+    color:var(--text);
+    outline:none;
+    width:220px;
+  }
+  .controls button{
+    padding:10px 14px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.18));
+    color:var(--text);
+    cursor:pointer;
+    font-weight:600;
+  }
+  .controls button.secondary{
+    background: transparent;
+    border:1px solid rgba(255,255,255,0.04);
+  }
+
+  /* Header card */
+  .header{
+    text-align:center;
+    padding:36px 18px;
+    border-radius:18px;
+    background: linear-gradient(135deg, #151515, #1b1b1b);
+    border: 1px solid #333;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    margin-bottom:22px;
+    position:relative;
+    overflow:hidden;
+  }
+  .header::after{
+    content:"";
+    position:absolute;
+    width:300px;height:300px;
+    background: radial-gradient(circle, var(--gold-soft), transparent);
+    top:-80px; right:-80px;
+    filter: blur(55px);
+    opacity:.8;
+    animation: pulse 6s ease-in-out infinite;
+  }
+  .header p{color:var(--text-light); margin-top:8px; line-height:1.6; max-width:900px; margin-left:auto; margin-right:auto}
+
+  /* Grid */
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap: var(--card-gap);
+  }
+  @media(max-width:920px){
+    .grid{grid-template-columns:1fr}
+    .controls input[type="search"]{width:140px}
+  }
+
+  /* Card */
+  .card{
+    background: var(--glass);
+    border-radius:16px;
+    padding:20px;
+    border:1px solid #333;
+    backdrop-filter: blur(12px);
+    position:relative;
+    overflow:hidden;
+    transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease, max-height .3s ease;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    width:220px;height:220px;
+    background: radial-gradient(circle, var(--gold-soft), transparent);
+    top:-110px; left:-80px; filter: blur(60px); opacity:.5;
+    transition: all .35s ease;
+  }
+  .card:hover{transform: translateY(-8px); box-shadow: 0 18px 40px rgba(0,0,0,0.6); border-color: rgba(255,210,120,0.25)}
+  .card:hover::before{opacity:.95; filter:blur(80px)}
+
+  .card h2{
+    margin:0 0 10px 0;
+    font-size:18px;
+    letter-spacing:0.6px;
+    font-weight:700;
+    background: linear-gradient(90deg,#5c4a1f,#d7b469,#5c4a1f);
+    -webkit-background-clip:text;color:transparent;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    cursor:pointer;
+  }
+
+  .card h2 .caret{
+    font-size:12px;
+    opacity:.9;
+    padding:6px;
+    border-radius:6px;
+    background:rgba(255,255,255,0.02);
+    color:var(--text-light);
+    border:1px solid rgba(255,255,255,0.03);
+  }
+
+  .card .body{
+    color:var(--text-light);
+    line-height:1.55;
+    margin-top:8px;
+    max-height:2000px;
+    overflow:hidden;
+    transition:max-height .35s ease, opacity .25s ease;
+  }
+  .card.collapsed .body{
+    max-height:0;
+    opacity:0;
+    margin-top:0;
+  }
+
+  ul{margin-left:18px; margin-top:8px}
+  table{width:100%; border-collapse:collapse; margin-top:10px; font-size:14px}
+  th,td{padding:9px; border:1px solid rgba(255,255,255,0.06)}
+  th{
+    background: #141414;
+    color: var(--gold);
+  }
+
+  .summary{
+    margin-top:10px;
+    padding:10px 12px;
+    background:#131313;
+    border-left:4px solid var(--gold);
+    border-radius:6px;
+    font-weight:600;
+    color:var(--text);
+  }
+
+  /* small helpers */
+  .muted{color:var(--text-light); font-size:13px}
+  .small{font-size:13px}
+
+  /* animations */
+  @keyframes pulse{
+    0%,100%{opacity:.7; transform:scale(1)}
+    50%{opacity:1; transform:scale(1.12)}
+  }
+
+  /* search no results */
+  .no-results{
+    text-align:center;
+    color:var(--text-light);
+    margin:16px 0;
+    font-size:15px;
+  }
+
+  /* footer / print hint */
+  .footer{
+    margin-top:18px;
+    color:var(--text-light);
+    font-size:13px;
+    text-align:center;
+    opacity:.9;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap" id="app">
+    <div class="topbar">
+      <div class="titlebox">
+        <h1 class="site-title">Measurement System Analysis (MSA)</h1>
+        <p class="lead">Gold Premium UI — Full content. Click any heading to collapse/expand. Use search to filter cards. Theme preserved.</p>
+      </div>
+
+      <div class="controls" role="region" aria-label="controls">
+        <input id="search" type="search" placeholder="Search content..." aria-label="Search content">
+        <button id="expandAll" title="Expand all">Expand all</button>
+        <button id="collapseAll" class="secondary" title="Collapse all">Collapse all</button>
+        <button id="printBtn" title="Print page">Print</button>
+      </div>
+    </div>
+
+    <div class="header" role="banner">
+      <h2 style="margin:0">MSA — Measurement System Analysis</h2>
+      <p>Gold Premium Ultra-Luxury Theme | Elite UI | Smooth Animations | Royal Appearance — full notes below (no content omitted).</p>
+    </div>
+
+    <main>
+      <div class="grid" id="grid">
+
+        <!-- Card 1 -->
+        <article class="card" data-search="msA measurement system analysis definition accuracy precision reliability variation">
+          <h2 class="card-title">MSA | Measurement System Analysis
+            <span class="caret">▾</span>
+          </h2>
+          <div class="body">
+            <p><strong>Definition:</strong> Measurement System Analysis (MSA) is a statistical method used to evaluate the accuracy, precision, and reliability of a measurement system. It determines how much variation in measurement data comes from the measurement process itself, not from the product.</p>
+
+            <p><strong>Purpose:</strong> The main goal of MSA is to check whether the measurement system is capable of producing <strong>accurate</strong>, <strong>consistent</strong>, and <strong>reliable</strong> results.</p>
+
+            <p><strong>Key Focus Areas:</strong></p>
+            <ul>
+              <li><strong>Equipment Variation (EV):</strong> Variation caused by the measuring instrument itself.</li>
+              <li><strong>Appraiser/Personnel Variation (AV):</strong> Variation caused by the person who takes measurement.</li>
+            </ul>
+
+            <p><strong>How it works:</strong></p>
+            <ul>
+              <li>The measurement system is tested to calculate statistical properties such as bias, repeatability, and reproducibility.</li>
+              <li>These results are compared with accepted standards to check suitability for use.</li>
+            </ul>
+
+            <p><strong>Importance in Quality:</strong> MSA is one of the 5 Core Tools of Quality required by IATF 16949:2016:</p>
+            <ul>
+              <li>APQP – Advanced Product Quality Planning</li>
+              <li>PPAP – Production Part Approval Process</li>
+              <li>FMEA – Failure Mode and Effects Analysis</li>
+              <li>MSA – Measurement System Analysis</li>
+              <li>SPC – Statistical Process Control</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="card" data-search="components measurement system operations procedures personnel environment equipment software assumptions">
+          <h2 class="card-title">MSA – Definition & Components
+            <span class="caret">▾</span>
+          </h2>
+          <div class="body">
+            <p>Measurement System Analysis (MSA) evaluates accuracy, precision, and reliability of measurement systems.</p>
+            <p><strong>Components of a Measurement System:</strong></p>
+            <ul>
+              <li><strong>Operations:</strong> Steps followed during measurement.</li>
+              <li><strong>Procedures and Methods:</strong> Standard techniques and instructions used.</li>
+              <li><strong>Personnel:</strong> The people (appraisers/inspectors) performing measurement.</li>
+              <li><strong>Environment:</strong> Surroundings that may affect measurement (temperature, humidity, noise).</li>
+              <li><strong>Equipment / Gage / Instrument:</strong> The physical tool or device used.</li>
+              <li><strong>Software:</strong> Any program or digital tool used to record, calculate, or analyse data.</li>
+              <li><strong>Assumptions:</strong> Conditions or expectations considered during the measurement process.</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="card" data-search="types of msa variable attribute gage rr aaa repeatability reproducibility">
+          <h2 class="card-title">Types of MSA
+            <span class="caret">▾</span>
+          </h2>
+          <div class="body">
+            <h3 class="small muted" style="margin-top:0">1. Variable MSA Study</h3>
+            <p><strong>Definition:</strong> Variable MSA is used when the measurement data is quantitative (numerical/continuous values). Examples: length, width, diameter, weight, thickness, pressure, temperature.</p>
+            <p><strong>Key Tool:</strong> Gage R&amp;R (Repeatability &amp; Reproducibility)</p>
+            <ul>
+              <li><strong>Repeatability:</strong> Variation when the same operator measures the same part using the same instrument multiple times.</li>
+              <li><strong>Reproducibility:</strong> Variation when different operators measure the same part using the same instrument.</li>
+            </ul>
+            <p><strong>Example:</strong> Measuring the diameter of a shaft with a Vernier Caliper (values like 20.01 mm).</p>
+
+            <hr style="border:none;border-top:1px solid rgba(255,255,255,0.04);margin:12px 0">
+
+            <h3 class="small muted">2. Attribute MSA Study</h3>
+            <p><strong>Definition:</strong> Attribute MSA is used when the measurement data is qualitative (categorical/discrete values). Examples: Go/No-Go, Pass/Fail, OK/Not OK.</p>
+            <p><strong>Key Tool:</strong> Attribute Agreement Analysis (AAA)</p>
+            <ul>
+              <li>Checks the consistency of decision-making between operators.</li>
+              <li>Looks at agreement within the same inspector (repeatability) and between different inspectors (reproducibility).</li>
+            </ul>
+            <p><strong>Example:</strong> Checking whether a painted part is OK or NOT OK by visual inspection.</p>
+
+            <div class="summary">Variable MSA → deals with numbers; Attribute MSA → deals with categories.</div>
+          </div>
+        </article>
+
+        <!-- Card 4 -->
+        <article class="card" data-search="variable vs attribute comparison table numerical categorical gage r&r aaa">
+          <h2 class="card-title">Variable vs Attribute MSA
+            <span class="caret">▾</span>
+          </h2>
+          <div class="body">
+            <table>
+              <tr><th>Point</th><th>Variable MSA 🧮</th><th>Attribute MSA ✔️❌</th></tr>
+              <tr><td>Type of Data</td><td>Numerical / Continuous</td><td>Categorical / Discrete</td></tr>
+              <tr><td>Main Method</td><td>Gage R&amp;R</td><td>Attribute Agreement Analysis (AAA)</td></tr>
+              <tr><td>Measurement Output</td><td>Exact values (e.g., 20.01 mm)</td><td>Judgment/decision (OK or NOT OK)</td></tr>
+              <tr><td>Example</td><td>Measuring shaft diameter with Vernier Caliper</td><td>Visual inspection of paint quality</td></tr>
+            </table>
+          </div>
+        </article>
+
+        <!-- Card 5 -->
+        <article class="card" data-search="msa applications assess new equipment compare devices before after repair">
+          <h2 class="card-title">MSA Applications
+            <span class="caret">▾</span>
+          </h2>
+          <div class="body">
+            <ul>
+              <li>To assess new measuring equipment/process for acceptance or improvement.</li>
+              <li>Compare one measuring device with another to see which is more accurate/reliable.</li>
+              <li>Before &amp; after repair check to confirm improvement.</li>
+              <li>Verify measuring instruments after calibration.</li>
+              <li>Validate measurement systems for PPAP submissions.</li>
+            </ul>
+            <div class="summary">In short: MSA is used to check, compare, and improve measurement systems.</div>
+          </div>
+        </article>
+
+        <!-- Card 6 -->
+        <article class="card" data-search="why msa required correct decisions reduce errors prevent wrong judgments assure customer quality">
+          <h2 class="card-title">Why MSA is Required?
+            <span class="caret">▾</span>
+          </h2>
+          <div class="body">
+            <ul>
+              <li><strong>For Correct Decisions:</strong> Decisions in manufacturing depend on measurement data quality. Wrong data → wrong decisions.</li>
+              <li><strong>To Reduce Measurement Errors:</strong> MSA helps find and reduce errors in the measurement system.</li>
+              <li><strong>To Prevent Wrong Judgments:</strong> Without MSA operators may accept bad parts or reject good parts.</li>
+              <li><strong>To Assure Customer Quality:</strong> MSA ensures accurate inspection and prevents defective parts reaching customers.</li>
+            </ul>
+            <div class="summary">Reliable data → correct decisions, fewer mistakes, improved customer satisfaction.</div>
+          </div>
+        </article>
+
+        <!-- Card 7 -->
+        <article class="card" data-search="measurement issues discrimination stability range consistency">
+          <h2 class="card-title">Measurement Issues
+            <span class="caret">▾</span>
+          </h2>
+          <div class="body">
+            <p>Three fundamental issues must be addressed:</p>
+            <ol>
+              <li><strong>Adequate discrimination:</strong> The system should detect small differences (e.g., 10.01 mm vs 10.05 mm).</li>
+              <li><strong>Statistical stability over time:</strong> Same part measured over time should show stable results.</li>
+              <li><strong>Consistency across range:</strong> Accuracy must hold across the full measurement range.</li>
+            </ol>
+          </div>
+        </article>
+
+        <!-- Card 8 -->
+        <article class="card" data-search="measurement errors bias stability linearity repeatability reproducibility">
+          <h2 class="card-title">Measurement System Errors
+            <span class="caret">▾</span>
+          </h2>
+          <div class="body">
+            <p>Five main types of errors:</p>
+            <ul>
+              <li><strong>Bias:</strong> Average measurement differs from true value (e.g., 1.05 kg vs 1.00 kg).</li>
+              <li><strong>Stability:</strong> Measurement changes over time.</li>
+              <li><strong>Linearity:</strong> Error varies across measurement range.</li>
+              <li><strong>Repeatability:</strong> Same operator gives different results on repeated measures.</li>
+              <li><strong>Reproducibility:</strong> Different operators get different results.</li>
+            </ul>
+            <div class="summary">Location errors: Bias, Stability, Linearity. Width errors: Repeatability, Reproducibility.</div>
+          </div>
+        </article>
+
+        <!-- Card 9 -->
+        <article class="card" data-search="measurement system variation sources instrument operator method environment part">
+          <h2 class="card-title">Measurement System Variation
+            <span class="caret">▾</span>
+          </h2>
+          <div class="body">
+            <p>Sources of variation:</p>
+            <ul>
+              <li>Instrument defects or calibration issues</li>
+              <li>Operator differences in usage</li>
+              <li>Method/procedure inconsistencies</li>
+              <li>Environmental factors (temperature, humidity, vibration)</li>
+              <li>Part characteristics (surface, shape, dirt)</li>
+            </ul>
+            <div class="summary">Variation arises from people, instruments, methods, environment, and parts.</div>
+          </div>
+        </article>
+
+        <!-- Card 10 -->
+        <article class="card" data-search="grr acceptance criteria gage r&r percent grr interpretation action">
+          <h2 class="card-title">GRR Acceptance Criteria
+            <span class="caret">▾</span>
+          </h2>
+          <div class="body">
+            <p>Gage R&amp;R indicates % variation from measurement system. Acceptance levels:</p>
+            <table>
+              <tr><th>%GRR</th><th>Interpretation</th><th>Action</th></tr>
+              <tr><td>≤ 10%</td><td>Acceptable — Very good system</td><td>Use without concern</td></tr>
+              <tr><td>10% – 30%</td><td>Marginal — Use with caution</td><td>Improvement recommended</td></tr>
+              <tr><td>≥ 30%</td><td>Not acceptable</td><td>Must improve/change system</td></tr>
+            </table>
+
+            <div class="summary">Good ≤ 10% • Okay but needs improvement 10–30% • Bad ≥ 30%</div>
+          </div>
+        </article>
+
+        <!-- Card 11 -->
+        <article class="card" data-search="ndc number distinct categories discrimination ndc interpretation">
+          <h2 class="card-title">NDC — Number of Distinct Categories
+            <span class="caret">▾</span>
+          </h2>
+          <div class="body">
+            <p>NDC shows how many unique groups the measurement system can differentiate.</p>
+            <ul>
+              <li><strong>NDC &lt; 5:</strong> Poor system</li>
+              <li><strong>NDC 5–10:</strong> Moderate system</li>
+              <li><strong>NDC &gt; 10:</strong> Excellent system</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- Card 12 -->
+        <article class="card" data-search="attribute msa metrics overall accuracy repeatability reproducibility bias risk">
+          <h2 class="card-title">Attribute MSA Metrics
+            <span class="caret">▾</span>
+          </h2>
+          <div class="body">
+            <ul>
+              <li><strong>Overall Accuracy:</strong> % of correct decisions.</li>
+              <li><strong>Repeatability:</strong> Operator consistent with self.</li>
+              <li><strong>Reproducibility:</strong> Different operators agree.</li>
+              <li><strong>Bias (Consumer vs Producer risk):</strong> Consumer’s Risk: Accepting defective parts. Producer’s Risk: Rejecting good parts.</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- Card 13 -->
+        <article class="card" data-search="typical msa study requirements 3 operators 10 parts 2 3 trials stable environment">
+          <h2 class="card-title">Typical MSA Study Requirements
+            <span class="caret">▾</span>
+          </h2>
+          <div class="body">
+            <ul>
+              <li>3 Operators</li>
+              <li>10 Parts</li>
+              <li>2–3 Trials</li>
+              <li>Parts covering full tolerance range</li>
+              <li>Stable environment</li>
+              <li>No communication between appraisers during study</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- Card 14 -->
+        <article class="card" data-search="common causes poor msa worn instruments poor calibration operator training method unclear criteria environment part prep">
+          <h2 class="card-title">Common Causes of Poor MSA
+            <span class="caret">▾</span>
+          </h2>
+          <div class="body">
+            <ul>
+              <li>Worn-out instruments</li>
+              <li>Poor calibration</li>
+              <li>Operator lacks training</li>
+              <li>Bad measurement method</li>
+              <li>Unclear inspection criteria</li>
+              <li>Temperature/humidity variation</li>
+              <li>Poor part preparation</li>
+              <li>Human judgment errors (esp. for Attribute MSA)</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- Card 15 -->
+        <article class="card" data-search="how to improve poor msa calibration fixtures training instructions environment digital instruments error proofing">
+          <h2 class="card-title">How to Improve a Poor Measurement System
+            <span class="caret">▾</span>
+          </h2>
+          <div class="body">
+            <ul>
+              <li>Improve calibration</li>
+              <li>Use fixtures to reduce operator error</li>
+              <li>Provide training</li>
+              <li>Improve work instructions</li>
+              <li>Reduce environment influence</li>
+              <li>Use digital instruments</li>
+              <li>Simplify method</li>
+              <li>Use error-proofing (poka-yoke)</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- Card 16 -->
+        <article class="card" data-search="complete summary ensure measurement reliability variable attribute gage r&r errors">
+          <h2 class="card-title">Complete Summary
+            <span class="caret">▾</span>
+          </h2>
+          <div class="body">
+            <p>MSA ensures measurement reliability. It includes both variable &amp; attribute studies. Gage R&amp;R measures repeatability &amp; reproducibility. Good system: %GRR ≤ 10%, NDC &gt; 10. Attribute MSA checks decision consistency. Errors: Bias, stability, linearity, repeatability, reproducibility. Accurate measurement = correct decision, less rejection, high customer satisfaction.</p>
+          </div>
+        </article>
+
+      </div>
+
+      <div id="noResults" class="no-results" style="display:none">No matching cards found.</div>
+
+      <div class="footer">
+        Tip: Use search to quickly find a topic. Click a card heading to collapse/expand it. Use print to export this page.
+      </div>
+    </main>
+
+  </div>
+
+<script>
+  // Basic UI interactions: collapse/expand, search filter, expand/collapse all, print
+  (function(){
+    const grid = document.getElementById('grid');
+    const cards = Array.from(grid.querySelectorAll('.card'));
+    const searchInput = document.getElementById('search');
+    const expandAllBtn = document.getElementById('expandAll');
+    const collapseAllBtn = document.getElementById('collapseAll');
+    const printBtn = document.getElementById('printBtn');
+    const noResults = document.getElementById('noResults');
+
+    // initialize: ensure all expanded
+    cards.forEach(c => c.classList.remove('collapsed'));
+
+    // toggle on header click
+    grid.addEventListener('click', function(e){
+      const title = e.target.closest('.card h2');
+      if(!title) return;
+      const card = title.closest('.card');
+      card.classList.toggle('collapsed');
+      // update caret char
+      const caret = title.querySelector('.caret');
+      caret.textContent = card.classList.contains('collapsed') ? '▸' : '▾';
+    });
+
+    // search filter
+    function normalize(str){
+      return (str || '').toString().toLowerCase();
+    }
+
+    function applyFilter(){
+      const q = normalize(searchInput.value).trim();
+      let anyVisible = false;
+      if(q === ''){
+        cards.forEach(c => { c.style.display = ''; anyVisible = true; });
+      } else {
+        cards.forEach(c => {
+          const data = normalize(c.getAttribute('data-search')) + ' ' + normalize(c.innerText);
+          if(data.indexOf(q) !== -1){
+            c.style.display = '';
+            anyVisible = true;
+          } else {
+            c.style.display = 'none';
+          }
+        });
+      }
+      noResults.style.display = anyVisible ? 'none' : '';
+    }
+
+    searchInput.addEventListener('input', applyFilter);
+    // keyboard: Esc clears search
+    searchInput.addEventListener('keydown', function(e){
+      if(e.key === 'Escape'){ searchInput.value=''; applyFilter(); searchInput.blur(); }
+    });
+
+    expandAllBtn.addEventListener('click', function(){
+      cards.forEach(c => {
+        c.classList.remove('collapsed');
+        const caret = c.querySelector('.caret');
+        if(caret) caret.textContent = '▾';
+      });
+    });
+
+    collapseAllBtn.addEventListener('click', function(){
+      cards.forEach(c => {
+        c.classList.add('collapsed');
+        const caret = c.querySelector('.caret');
+        if(caret) caret.textContent = '▸';
+      });
+    });
+
+    printBtn.addEventListener('click', function(){
+      // Expand all before printing to include content
+      cards.forEach(c => c.classList.remove('collapsed'));
+      setTimeout(() => window.print(), 150);
+    });
+
+    // Accessibility: allow Enter key on focused header to toggle
+    document.querySelectorAll('.card h2').forEach(h => {
+      h.tabIndex = 0;
+      h.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          h.click();
+        }
+      });
+    });
+
+    // initial filter (none)
+    applyFilter();
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Check Sheet (Tally Sheet) – 7 QC Tools</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --gold:#d4af37;
+  --gold-soft:rgba(212,175,55,0.35);
+  --black:#070707;
+  --glass:rgba(255,255,255,0.08);
+  --blur:blur(16px);
+  --text:#eaeaea;
+}
+
+/* ===== BASE ===== */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{
+  background:radial-gradient(circle at top,#1a1a1a,#000);
+  color:var(--text);
+  line-height:1.85;
+  overflow-x:hidden;
+}
+
+/* ===== PROGRESS BAR ===== */
+.progress-wrap{
+  position:fixed;top:0;left:0;width:100%;height:5px;
+  background:#111;z-index:99;
+}
+.progress-bar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--gold),#fff1b8);
+}
+
+/* ===== PARTICLES ===== */
+canvas{position:fixed;inset:0;z-index:-1}
+
+/* ===== LAYOUT ===== */
+.container{
+  max-width:1150px;
+  margin:auto;
+  padding:70px 20px;
+}
+
+.title{
+  text-align:center;
+  font-size:2.6rem;
+  color:var(--gold);
+  text-shadow:0 0 25px var(--gold-soft);
+  margin-bottom:50px;
+}
+
+/* ===== GLASS CARD ===== */
+.card{
+  background:var(--glass);
+  backdrop-filter:var(--blur);
+  border:1px solid var(--gold-soft);
+  border-radius:22px;
+  padding:32px;
+  margin-bottom:42px;
+  box-shadow:0 15px 45px rgba(0,0,0,0.7);
+  opacity:0;
+  transform:translateY(45px);
+  transition:all 0.9s ease;
+}
+.card.show{opacity:1;transform:translateY(0)}
+.card.active{
+  border-color:var(--gold);
+  box-shadow:0 0 40px rgba(212,175,55,0.35);
+}
+
+.card h2{
+  color:var(--gold);
+  margin-bottom:14px;
+  cursor:pointer;
+}
+.card h3{color:var(--gold);margin:20px 0 10px}
+
+ul,ol{margin-left:22px}
+li{margin-bottom:8px}
+
+/* ===== FLOWCHART ===== */
+.flow{
+  font-family:monospace;
+  white-space:pre-wrap;
+  background:rgba(0,0,0,0.45);
+  padding:22px;
+  border-radius:16px;
+  border:1px dashed var(--gold-soft);
+  color:#f1e6b2;
+}
+
+/* ===== COLLAPSIBLE ===== */
+.card.collapsed p,
+.card.collapsed ul,
+.card.collapsed ol,
+.card.collapsed .flow{
+  display:none;
+}
+
+/* ===== FOOTER ===== */
+.footer{
+  text-align:center;
+  margin-top:60px;
+  color:#aaa;
+  font-size:0.9rem;
+}
+</style>
+</head>
+
+<body>
+
+<div class="progress-wrap"><div class="progress-bar" id="progress"></div></div>
+<canvas id="particles"></canvas>
+
+<div class="container">
+<div class="title">CHECK SHEET (TALLY SHEET)</div>
+
+<!-- 1 -->
+<div class="card">
+<h2>1. Meaning and Definition</h2>
+<p>
+A Check Sheet (also called a Tally Sheet) is a simple, pre-designed form used to collect and organize data in real time, usually at the place where the work is done. It typically lists the items, defect types, events, or categories of interest, and the user records each occurrence with a quick mark (✔, X, or tally), so frequencies can be counted easily.
+</p>
+</div>
+
+<!-- 2 -->
+<div class="card">
+<h2>2. Purpose of a Check Sheet</h2>
+<ul>
+<li>Easy and accurate data collection</li>
+<li>Real-time documentation of events or defects</li>
+<li>Standardised recording across shifts, operators, or inspectors</li>
+<li>Quick identification of patterns, trends, or repeated issues</li>
+<li>To gather factual data about problems without complex instruments or software</li>
+<li>To provide structured input for Pareto charts, histograms, and control charts in 7 QC Tools and Six Sigma</li>
+</ul>
+
+<p>This helps in making data-driven decisions rather than relying on assumptions.</p>
+
+<h3>Why it is also called Tally Sheet</h3>
+<ul>
+<li>•	When the data are recorded as repeated marks (tallies) for each category, the same form is often referred to as a Tally Sheet.</li>
+<li>•	At the end of the observation period, the tallies are summed to see which categories occur most frequently, helping to prioritize improvement actions.</li>
+</ul>
+</div>
+
+<!-- 3 -->
+<div class="card">
+<h2>3. Importance in Quality Management</h2>
+<p>Check Sheets are one of the most powerful tools of the 7 QC Tools and are widely used in:</p>
+<ul>
+<li>8D Problem Solving</li>
+<li>PDCA (Plan–Do–Check–Act)</li>
+<li>Six Sigma – Measure Phase</li>
+</ul>
+<p>
+They provide a factual basis for analysing defects, understanding frequency, and validating improvements.
+</p>
+</div>
+
+<!-- 4 -->
+<div class="card">
+<h2>4. Why Check Sheets Are Valuable</h2>
+<ul>
+<li>Same method of data collection every time</li>
+<li>Precise tracking of defects or events</li>
+<li>Data is ready for further analysis using tools like Pareto Chart, Histogram, and Control Charts</li>
+<li>•	Improvement teams have a reliable data source for identifying root causes</li>
+</ul>
+
+<p>
+Because of their simplicity, Check Sheets are widely used in manufacturing, inspection, service processes, maintenance, customer complaints, and audits.
+</p>
+</div>
+
+<!-- WHEN TO USE -->
+<div class="card">
+<h2>WHEN TO USE CHECK SHEET</h2>
+<p>
+A check sheet (tally sheet) is used whenever simple, structured data collection is needed directly at the workplace, especially in production or service processes. It helps record how often events, defects, or conditions occur so later analysis is based on facts, not opinions.
+</p>
+
+<h3>Typical situations</h3>
+<ul>
+<li>When collecting real-time data from machines, lines, operators, models, or shifts (e.g., part wise, model wise, machine wise production or defect data).</li>
+<li>When distinguishing fact from opinion by capturing actual counts of problems, delays, downtime, or rejections instead of relying on memory or guesses
+</li>
+</ul>
+
+<h3>Quality and problem data</h3>
+<ul>
+<li>When recording types of defects, rejections, nonconformities, or complaints so they can later feed into Pareto charts, histograms, or other QC tools.</li>
+<li>When data must be gathered from multiple locations, people, or time periods in a common format, such as different machines, cells, plants, or shifts.</li>
+</ul>
+
+<h3>Against standards and parameters</h3>
+<ul>
+<li>Tracking parameters vs control plans</li>
+<li>Supporting Six Sigma Define & Measure phases</li>
+</ul>
+</div>
+
+<!-- BENEFITS -->
+<div class="card">
+<h2>BENEFITS OF CHECK SHEET</h2>
+<ol>
+<li><b>1.Supports Corrective and Preventive Actions (CAPA)</b> – A Check Sheet helps analyse collected data, allowing teams to identify patterns, root causes, and trends. This enables effective implementation of corrective and preventive actions.</li>
+<li><b>Enables creation of other QC tools</b> Data collected through a Check Sheet becomes the foundation for preparing:– Bar graph, Histogram, Pareto.  
+These tools require accurate frequency data, which the Check Sheet provides.These tools require accurate frequency data, which the Check Sheet provides.</li>
+<li><b>Improves decision-making</b> – Since data is recorded in a structured and visual manner, inspectors and quality engineers can make quick decisions to control product quality and process-related nonconformities</li>
+<li><b>Shows frequency of problems</b> – Tally marks or frequency counts help detect the frequency of defects or failures. This is essential for prioritising issues and focusing on high-impact problems.</li>
+<li><b>Facilitates systematic record keeping</b> – A Check Sheet promotes consistent, organised, and real-time data collection. This helps maintain reliable historical records for audits, analysis, and process improvement.</li>
+</ol>
+</div>
+
+<!-- EXAMPLES -->
+<div class="card">
+<h2>EXAMPLES</h2>
+<p>
+Date-wise and defect-wise rejection monitoring forms are common examples. Defects such as Blow hole and Crack may show the highest tallies, indicating major contributors.
+</p>
+
+<p>
+Totals by date may reveal higher rejection on specific days, helping investigation of process, material, or manpower changes.
+</p>
+
+<p>
+A computer-related problem check sheet can show weekly status, where Email and Server Access problems dominate, and a specific week shows maximum issues.
+</p>
+</div>
+
+<!-- PROCEDURE -->
+<div class="card">
+<h2>PROCEDURE TO USE A CHECK SHEET</h2>
+
+<h3>1. Bring clarity to the event</h3>
+<p>Clearly define what needs to be measured or observed.
+Ensure that all team members understand the defect category, process parameter, or event being monitored before data collection begins.
+</p>
+
+<h3>2. Decide responsibility, duration, and data sources</h3>
+<ul>
+<li>Assign who will record the data.</li>
+<li>Define the duration of data collection (shift, hour, day, week).</li>
+<li>Identify the exact data source, such as:</li>
+<li>Machine</li>
+<li>Production line</li>
+<li>Lot or batch</li>
+<li>Shift</li>
+<li>Operator</li>
+<li>Supplier</li>
+This ensures consistency and accuracy
+
+</ul>
+
+<h3>3. Ensure format is simple and complete</h3>
+<ul>
+<li>Easy to use</li>
+<li>Clearly labelled</li>
+<li>•	Complete in all respects</li>
+</ul>
+
+<div class="flow">
+              START
+                ↓
+│ IDENTIFY EVENT / CONDITION TO BE STUDIED      
+(Define defect, parameter, process, activity) 
+ 		↓
+DEFINE OBJECTIVE OF DATA COLLECTION         
+│ (What information is required and why?)        
+ 		↓
+ASSIGN RESPONSIBILITY
+(Who will record the data?)  
+ 		↓
+DECIDE DURATION & DATA SOURCE
+(Shift, machine, lot, time period, supplier)  
+		 ↓
+DESIGN CHECK SHEET
+│ (Clear headings, defect types, tally boxes) 
+		 ↓
+TRAIN USERS ON HOW TO FILL THE CHECK SHEET 
+(Common understanding ensures uniform data)   
+		 ↓
+│ COLLECT DATA IN REAL-TIME
+│ (Record observations as they occur)           
+
+ 		↓
+│ VERIFY DATA COMPLETENESS & ACCURACY 
+(Cross-check entries, validate totals)              
+ 		↓
+ANALYSE DATA
+(Use Pareto, Histogram, Bar Graph, etc.)      
+ 		↓
+TAKE CAPA
+│ (CAPA based on identified patterns)           
+ 		↓
+	       END
+</div>
+</div>
+
+<!-- KEY ELEMENTS -->
+<div class="card">
+<h2>CHECK SHEET – KEY ELEMENTS</h2>
+A well-designed Check Sheet must include the following essential elements:
+<ol>
+<li><b>Title of Check Sheet</b></li>
+-Clearly indicates the purpose or subject of the data being collected.
+<li><b>Observation Date / Time / Shift</b></li>
+-Identifies when the data was recorded for traceability and analysis.
+
+<li>Part or Event Name</li>
+-Specifies what item, process, or condition is being observed.
+<li>Tally Marks / Checkmarks for Frequency</li>
+-Tally Marks / Checkmarks for Frequency
+<li>Total Counts or Summation at the End</li>
+-Shows the final accumulated frequency for analysis.
+<li>Name of the Person Responsible for Data Collection</li>
+-Ensures accountability, traceability, and verification</ol>
+</div>
+
+<!-- TYPES -->
+<div class="card">
+<h2>CHECK SHEET – TYPES</h2>
+<ol>
+<li>Quality Defect Inspection Check Sheet</li>
+-Used to record defective parts along with defect names and quantities.
+Helpful in identifying defect trends for Pareto analysis
+
+<li>Frequency Check Sheet</li>
+-Used to record how often an event, defect, or problem occurs within a defined period.
+Ideal for tally-based data collection
+<li>Checklist</li>
+-Used to verify whether tasks, activities, or actions are completed as per a predefined sequence.
+Commonly used in audits, maintenance, and process verification.
+
+<li>Measurement Check Sheet</li>
+-Used to record measured or observed values over time, such as dimensions, temperature, pressure, or test results.</ol>
+</div>
+
+<div class="footer">
+
+</div>
+
+</div>
+
+<script>
+/* PARTICLES */
+const c=document.getElementById("particles"),x=c.getContext("2d");
+c.width=innerWidth;c.height=innerHeight;
+let p=[...Array(130)].map(()=>({
+x:Math.random()*c.width,y:Math.random()*c.height,
+r:Math.random()*2+0.6,
+dx:(Math.random()-.5)*.4,dy:(Math.random()-.5)*.4
+}));
+(function a(){
+x.clearRect(0,0,c.width,c.height);
+p.forEach(o=>{
+x.beginPath();x.arc(o.x,o.y,o.r,0,Math.PI*2);
+x.fillStyle="rgba(212,175,55,0.6)";x.fill();
+o.x+=o.dx;o.y+=o.dy;
+if(o.x<0||o.x>c.width)o.dx*=-1;
+if(o.y<0||o.y>c.height)o.dy*=-1;
+});
+requestAnimationFrame(a);
+})();
+
+/* SCROLL ANIMATION */
+const cards=document.querySelectorAll(".card");
+const io=new IntersectionObserver(e=>{
+e.forEach(i=>{
+if(i.isIntersecting){i.target.classList.add("show","active")}
+else{i.target.classList.remove("active")}
+});
+},{threshold:.18});
+cards.forEach(c=>io.observe(c));
+
+/* PROGRESS BAR */
+addEventListener("scroll",()=>{
+const h=document.body.scrollHeight-innerHeight;
+progress.style.width=(scrollY/h)*100+"%";
+});
+
+/* COLLAPSE */
+cards.forEach(c=>{
+c.querySelector("h2").onclick=()=>c.classList.toggle("collapsed");
+});
+</script>
+
+</body>
+</html>

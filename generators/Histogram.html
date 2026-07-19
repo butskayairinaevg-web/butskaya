@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Histogram – Complete QC Notes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+    --bg:#0f172a;
+    --panel:#111827;
+    --card:#f9fafb;
+    --text:#111827;
+    --primary:#1f4e5f;
+    --secondary:#3a7f8f;
+    --muted:#9ca3af;
+}
+
+body.light{
+    --bg:#f3f4f6;
+    --panel:#ffffff;
+    --card:#ffffff;
+    --text:#111827;
+}
+
+*{scroll-behavior:smooth;}
+
+body{
+    margin:0;
+    font-family:Segoe UI, Arial, sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.75;
+}
+
+header{
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    color:#fff;
+    padding:26px;
+    text-align:center;
+    font-size:26px;
+    font-weight:600;
+    position:relative;
+}
+
+.toggle{
+    position:absolute;
+    right:20px;
+    top:20px;
+    background:#ffffff22;
+    color:#fff;
+    border:1px solid #ffffff55;
+    padding:6px 12px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:13px;
+}
+
+.layout{
+    display:grid;
+    grid-template-columns:300px 1fr;
+    max-width:1600px;
+    margin:auto;
+}
+
+aside{
+    background:var(--panel);
+    padding:24px;
+    position:sticky;
+    top:0;
+    height:100vh;
+    border-right:3px solid var(--secondary);
+}
+
+aside h3{
+    color:#e5e7eb;
+    margin-top:0;
+}
+
+aside a{
+    display:block;
+    text-decoration:none;
+    color:#cbd5e1;
+    padding:9px 12px;
+    border-radius:6px;
+    font-size:14px;
+    margin-bottom:6px;
+    transition:.25s;
+}
+
+aside a:hover,
+aside a.active{
+    background:var(--primary);
+    color:#fff;
+}
+
+main{padding:34px;}
+
+.card{
+    background:var(--card);
+    border-radius:14px;
+    padding:32px;
+    margin-bottom:34px;
+    box-shadow:0 12px 34px rgba(0,0,0,.35);
+    animation:fadeUp .5s ease both;
+}
+
+@keyframes fadeUp{
+    from{opacity:0; transform:translateY(25px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+h2{
+    color:var(--primary);
+    border-left:6px solid var(--secondary);
+    padding-left:14px;
+}
+
+h3{margin-top:22px;}
+
+ul,ol{margin-left:24px;}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:16px;
+    background:#fff;
+}
+
+th{
+    background:var(--primary);
+    color:#fff;
+    padding:12px;
+}
+
+td{
+    border:1px solid #d1d5db;
+    padding:10px;
+}
+
+.note{
+    background:#e5f0f3;
+    border-left:6px solid var(--primary);
+    padding:14px;
+    margin-top:16px;
+    border-radius:6px;
+}
+
+footer{
+    text-align:center;
+    padding:22px;
+    font-size:13px;
+    color:var(--muted);
+    background:#020617;
+}
+
+@media print{
+    header,aside,.toggle,footer{display:none;}
+    body{background:#fff;}
+    .card{box-shadow:none;}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+Histogram – 7 QC Tools (Complete Content)
+<button class="toggle" onclick="toggleTheme()">Light / Dark</button>
+</header>
+
+<div class="layout">
+
+<aside id="toc">
+<h3>Index</h3>
+<a href="#s1">1. What is a Histogram</a>
+<a href="#s2">2. Purpose & Importance</a>
+<a href="#s3">3. Components</a>
+<a href="#s4">4. Steps to Construct</a>
+<a href="#s5">5. Histogram Shapes</a>
+<a href="#s6">6. Applications</a>
+<a href="#s7">7. Example Histogram</a>
+<a href="#s8">8. Histogram vs Bar vs Pareto</a>
+<a href="#s9">9. Common Mistakes</a>
+<a href="#s10">10. Summary</a>
+<a href="#s11">Histogram in Excel</a>
+<a href="#s12">Method 2 – ToolPak</a>
+<a href="#s13">Data Sheet</a>
+<a href="#s14">Class Width</a>
+<a href="#s15">Final Graph</a>
+</aside>
+
+<main>
+
+<!-- ================= FULL CONTENT START ================= -->
+
+<div class="card" id="s1">
+<h2>1. What is a Histogram?</h2>
+<p>A histogram is a graphical representation of data that shows how frequently values occur within defined ranges (called bins or intervals).</p>
+<p>It is one of the 7 QC Tools and is widely used in manufacturing to understand variation and distribution.</p>
+<p><strong>In simple terms:</strong><br>
+A histogram shows the shape of data and helps determine whether the process behaves normally or abnormally.</p>
+</div>
+
+<div class="card" id="s2">
+<h2>2. Purpose and Importance of a Histogram</h2>
+<p>A histogram helps you answer important questions such as:</p>
+<ul>
+<li>Is the process centered or shifted?</li>
+<li>Is the variation normal or excessive?</li>
+<li>Does the data follow a known distribution?</li>
+<li>Are special causes affecting the process?</li>
+<li>Is the process stable and capable?</li>
+</ul>
+
+<p><strong>Key uses:</strong></p>
+<ul>
+<li>Identifying patterns of variation</li>
+<li>Understanding spread and central tendency</li>
+<li>Supporting process improvements</li>
+<li>Root-cause analysis of defects</li>
+<li>Monitoring product dimensions, weights, etc.</li>
+</ul>
+</div>
+
+<div class="card" id="s3">
+<h2>3. Components of a Histogram</h2>
+<ol>
+<li>Bins / Class Intervals – Data ranges (e.g., 9.80–9.85 mm)</li>
+<li>Frequency – Number of data points in each bin</li>
+<li>Bars – Height represents frequency</li>
+<li>X-axis – Measurement values</li>
+<li>Y-axis – Frequency count</li>
+</ol>
+
+<div class="note">
+<strong>Important:</strong> Bars in a histogram touch each other, because the data is continuous.
+</div>
+</div>
+
+<div class="card" id="s4">
+<h2>4. Steps to Construct a Histogram (Step-by-Step)</h2>
+
+<p><strong>Step 1:</strong> Collect Data<br>
+Example: 50 readings of part diameter.</p>
+
+<p><strong>Step 2:</strong> Find Minimum and Maximum Values<br>
+Minimum = 9.85 mm<br>
+Maximum = 10.25 mm</p>
+
+<p><strong>Step 3:</strong> Calculate Range<br>
+Range = Maximum − Minimum = 10.25 − 9.85 = 0.40 mm</p>
+
+<p><strong>Step 4:</strong> Decide the Number of Bins<br>
+Typical: 5–12 bins<br>
+Bins = 1 + 3.3 log(n)</p>
+
+<p><strong>Step 5:</strong> Calculate Bin Width<br>
+Bin Width = Range / Number of bins</p>
+
+<p><strong>Step 6:</strong> Create Class Intervals</p>
+<ul>
+<li>9.85–9.90</li>
+<li>9.90–9.95</li>
+<li>9.95–10.00</li>
+<li>10.00–10.05</li>
+<li>10.05–10.10</li>
+<li>10.10–10.15</li>
+<li>10.15–10.20</li>
+<li>10.20–10.25</li>
+</ul>
+
+<p><strong>Step 7:</strong> Count Frequencies for Each Interval</p>
+<ul>
+<li>9.85–9.90 → 3</li>
+<li>9.90–9.95 → 6</li>
+<li>9.95–10.00 → 10</li>
+<li>10.00–10.05 → 12</li>
+<li>10.05–10.10 → 9</li>
+<li>10.10–10.15 → 6</li>
+<li>10.15–10.20 → 3</li>
+<li>10.20–10.25 → 1</li>
+</ul>
+
+<p><strong>Step 8:</strong> Draw the Histogram – Plot bars with heights equal to the frequencies.</p>
+</div>
+
+<div class="card" id="s5">
+<h2>5. Types of Histogram Shapes and Interpretation</h2>
+
+<h3>5.1 Normal Distribution (Bell-Shaped)</h3>
+<ul>
+<li>Symmetrical around the mean</li>
+<li>Variation due to common causes</li>
+<li>Indicates a stable and predictable process</li>
+</ul>
+
+<h3>5.2 Skewed Distribution</h3>
+<ul>
+<li>Data leans to one side</li>
+<li>Process may be shifting</li>
+<li>Possible reasons: tool wear, incorrect setup, measurement bias</li>
+</ul>
+
+<h3>5.3 Bimodal Distribution</h3>
+<ul>
+<li>Indicates two different data sources</li>
+<li>Two machines / operators / mixed batches</li>
+</ul>
+
+<h3>5.4 Wide or Flat Distribution</h3>
+<ul>
+<li>High variation</li>
+<li>Process not under control</li>
+</ul>
+
+<h3>5.5 Truncated or Cut-Off Distribution</h3>
+<ul>
+<li>Missing data at one end</li>
+<li>Gauge filtering or inspection bias</li>
+</ul>
+</div>
+
+<div class="card" id="s6">
+<h2>6. Applications of Histograms in Quality Control</h2>
+<ul>
+<li>Process performance analysis</li>
+<li>Capability studies (Cp, Cpk)</li>
+<li>Machine stability and wear detection</li>
+<li>Incoming and final inspection</li>
+<li>Supplier quality monitoring</li>
+<li>Rejection and defect pattern analysis</li>
+<li>SPC (Statistical Process Control)</li>
+</ul>
+</div>
+
+<div class="card" id="s7">
+<h2>7. Example Histogram (Manufacturing Scenario)</h2>
+<p><strong>Measurement:</strong> Shaft length (mm)</p>
+<table>
+<tr><th>Length Range</th><th>Frequency</th></tr>
+<tr><td>29.80–29.85</td><td>2</td></tr>
+<tr><td>29.85–29.90</td><td>5</td></tr>
+<tr><td>29.90–29.95</td><td>8</td></tr>
+<tr><td>29.95–30.00</td><td>14</td></tr>
+<tr><td>30.00–30.05</td><td>12</td></tr>
+<tr><td>30.05–30.10</td><td>7</td></tr>
+<tr><td>30.10–30.15</td><td>2</td></tr>
+</table>
+</div>
+
+<div class="card" id="s8">
+<h2>8. Difference between Histogram, Bar Chart, and Pareto Chart</h2>
+<table>
+<tr><th>Feature</th><th>Histogram</th><th>Bar Chart</th><th>Pareto Chart</th></tr>
+<tr><td>Data Type</td><td>Continuous</td><td>Categorical</td><td>Categorical</td></tr>
+<tr><td>Order</td><td>Low → High</td><td>Any</td><td>Descending</td></tr>
+<tr><td>Bars Touch?</td><td>Yes</td><td>No</td><td>Yes</td></tr>
+<tr><td>Purpose</td><td>Distribution</td><td>Comparison</td><td>Prioritization</td></tr>
+</table>
+</div>
+
+<div class="card" id="s9">
+<h2>9. Common Mistakes</h2>
+<ol>
+<li>Too many or too few bins</li>
+<li>Incorrect bin width</li>
+<li>Small dataset usage</li>
+<li>Mixing data types</li>
+<li>Misinterpretation</li>
+</ol>
+</div>
+
+<div class="card" id="s10">
+<h2>10. Summary</h2>
+<p>Histogram is an essential QC tool used to understand data distribution, process variation, and improvement decisions.</p>
+</div>
+
+<div class="card" id="s15">
+
+</div>
+
+<!-- ================= FULL CONTENT END ================= -->
+
+</main>
+</div>
+
+<footer>
+
+</footer>
+
+<script>
+function toggleTheme(){
+    document.body.classList.toggle("light");
+}
+
+const sections=document.querySelectorAll(".card");
+const links=document.querySelectorAll("#toc a");
+
+window.addEventListener("scroll",()=>{
+    let current="";
+    sections.forEach(sec=>{
+        if(window.scrollY>=sec.offsetTop-120){
+            current=sec.id;
+        }
+    });
+    links.forEach(a=>{
+        a.classList.remove("active");
+        if(a.getAttribute("href")==="#"+current){
+            a.classList.add("active");
+        }
+    });
+});
+</script>
+
+</body>
+</html>

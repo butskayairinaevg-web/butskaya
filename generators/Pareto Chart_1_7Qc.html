@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pareto Chart – Leaf Theme</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Poppins font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* leaf palette */
+      --leaf-blue:  #2b6f7d;
+      --leaf-gold:  #d6b25a;
+      --leaf-green: #4f9b3d;
+      --leaf-red:   #b3212e;
+
+      --bg: #051018;
+      --bg-soft: #081821;
+      --bg-panel: rgba(8,24,33,0.96);
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+
+      --accent-primary: var(--leaf-green);
+      --accent-secondary: var(--leaf-gold);
+      --accent-danger: var(--leaf-red);
+
+      --border-soft: rgba(148,163,184,0.45);
+      --shadow-soft: 0 24px 50px rgba(0,0,0,0.75);
+
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --blur: 18px;
+
+      --mark-bg: rgba(214,178,90,0.35);
+      --mark-text: #3b2f09;
+
+      --transition-fast: 0.18s ease-out;
+      --transition-med: 0.3s ease;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(
+        180deg,
+        #173843 0%,
+        #2b6f7d 20%,
+        #d6b25a 40%,
+        #4f9b3d 70%,
+        #b3212e 100%
+      );
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 28px 10px 40px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 880px;
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.12), transparent 55%),
+        var(--bg-panel);
+      border-radius: 26px;
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(var(--blur));
+      padding: 26px 20px 26px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .app-shell { padding: 32px 32px 30px; }
+    }
+
+    .app-shell::before,
+    .app-shell::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(30px);
+      opacity: 0.6;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .app-shell::before {
+      width: 260px; height: 260px;
+      background: radial-gradient(circle, rgba(43,111,125,0.7), transparent 55%);
+      top: -80px; right: -70px;
+    }
+    .app-shell::after {
+      width: 260px; height: 260px;
+      background: radial-gradient(circle, rgba(179,33,46,0.7), transparent 55%);
+      bottom: -90px; left: -70px;
+    }
+
+    /* ---------- Header ---------- */
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .title-block {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .title-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 22px;
+      background: radial-gradient(circle at 30% 0, #ffffff, #d6b25a 40%, #4f9b3d 70%, #b3212e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #061013;
+      font-weight: 800;
+      font-size: 26px;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.7);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .title-icon::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.8), transparent 55%);
+      mix-blend-mode: screen;
+      opacity: 0.7;
+      animation: shine 3s ease-in-out infinite;
+    }
+
+    @keyframes shine {
+      0%,100% { transform: translateX(-40%); opacity: 0; }
+      40% { opacity: 0; }
+      55% { transform: translateX(40%); opacity: 1; }
+      70% { opacity: 0; }
+    }
+
+    .title-text h1 {
+      font-size: clamp(1.9rem, 3vw, 2.3rem);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .title-text p {
+      margin-top: 4px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .theme-toggle-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .theme-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .theme-switch {
+      width: 58px;
+      height: 28px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.8);
+      padding: 2px;
+      background: radial-gradient(circle at 0 0, rgba(43,111,125,0.5), rgba(8,24,33,0.95));
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.6), 0 0 18px rgba(43,111,125,0.55);
+      transition: background var(--transition-med), box-shadow var(--transition-med), border-color var(--transition-med);
+    }
+
+    .theme-knob {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #ffffff, #d6b25a);
+      box-shadow: 0 0 18px rgba(214,178,90,0.7);
+      transform: translateX(0);
+      transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
+    .theme-icon-moon,
+    .theme-icon-sun {
+      position: absolute;
+      font-size: 0.9rem;
+      color: rgba(226,232,240,0.9);
+      pointer-events: none;
+    }
+
+    .theme-icon-moon { left: 8px; }
+    .theme-icon-sun  { right: 8px; opacity: 0; transform: scale(0.8); }
+
+    body.light .theme-switch {
+      background: radial-gradient(circle at 100% 0, rgba(214,178,90,0.55), #fef3c7);
+      box-shadow: 0 0 0 1px rgba(148,163,184,0.7), 0 0 18px rgba(214,178,90,0.6);
+    }
+    body.light .theme-knob {
+      transform: translateX(28px);
+      background: radial-gradient(circle at 30% 0, #fff7d6, #facc15);
+    }
+    body.light .theme-icon-moon { opacity: 0; transform: scale(0.8); }
+    body.light .theme-icon-sun  { opacity: 1; transform: scale(1); }
+
+    /* ---------- Toolbar ---------- */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .pill-badge {
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(214,178,90,0.75);
+      background: rgba(12,30,26,0.9);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .leaf-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--leaf-blue), var(--leaf-gold), var(--leaf-green), var(--leaf-red));
+      box-shadow: 0 0 12px rgba(214,178,90,0.7);
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 210px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(5,16,24,0.9);
+      border-radius: 999px;
+      padding: 7px 12px;
+      border: 1px solid rgba(148,163,184,0.55);
+      backdrop-filter: blur(14px);
+      transition: box-shadow var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .search-box:focus-within {
+      border-color: rgba(214,178,90,0.85);
+      box-shadow: 0 0 0 1px rgba(214,178,90,0.7), 0 0 22px rgba(214,178,90,0.5);
+      transform: translateY(-1px);
+    }
+
+    .search-box input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-main);
+      font-size: 0.82rem;
+    }
+
+    .search-box span {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    /* ---------- Sections (more spacing) ---------- */
+    main.note-panel {
+      margin-top: 4px;
+    }
+
+    .section {
+      margin-bottom: 22px;        /* extra space between sections */
+      padding: 14px 14px 14px 16px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, rgba(6,16,24,0.95), rgba(12,30,38,0.92));
+      border: 1px solid rgba(55,65,81,0.95);
+      position: relative;
+      overflow: hidden;
+      transition: background var(--transition-med), border-color var(--transition-med), transform var(--transition-med), box-shadow var(--transition-med), opacity 0.35s ease;
+    }
+
+    .section::before {
+      content: "";
+      position: absolute;
+      width: 3px;
+      top: 14px;
+      bottom: 14px;
+      left: 0;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--leaf-blue), var(--leaf-gold), var(--leaf-green), var(--leaf-red));
+      opacity: 0.95;
+    }
+
+    .section:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 32px rgba(0,0,0,0.85);
+      border-color: rgba(214,178,90,0.9);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    .section-number {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--leaf-gold);
+      min-width: 26px;
+    }
+
+    .section-title {
+      font-size: 1.05rem;   /* bigger heading */
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .collapse-icon {
+      margin-left: auto;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      transition: transform var(--transition-fast);
+    }
+
+    .section.collapsed .collapse-icon {
+      transform: rotate(-90deg);
+    }
+
+    .section-body {
+      font-size: 0.9rem;
+      color: var(--text-main);
+      line-height: 1.8;
+      padding-top: 4px;
+    }
+
+    .section.collapsed .section-body { display: none; }
+
+    p { margin-bottom: 7px; }
+
+    ul {
+      margin-left: 20px;
+      margin-bottom: 7px;
+    }
+    ul li { margin-bottom: 3px; }
+
+    ol {
+      margin-left: 22px;
+      margin-bottom: 7px;
+    }
+
+    .subheading {
+      font-weight: 600;
+      margin-top: 6px;
+      margin-bottom: 3px;
+      color: var(--leaf-gold);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0 10px;
+      font-size: 0.86rem;
+      background: rgba(7,20,27,0.96);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 7px 9px;
+      border: 1px solid rgba(55,65,81,0.95);
+      text-align: left;
+    }
+
+    th {
+      background: linear-gradient(135deg, #0b222b, #2b6f7d);
+      color: #f9fafb;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) td { background: rgba(5,16,24,0.95); }
+    tr:nth-child(odd) td  { background: rgba(9,24,33,0.95); }
+
+    .highlight {
+      color: var(--leaf-gold);
+      font-weight: 600;
+    }
+
+    mark {
+      background: var(--mark-bg);
+      color: var(--mark-text);
+      padding: 0 1px;
+      border-radius: 3px;
+    }
+
+    .section.inactive { opacity: 0.55; }
+    .section.active   {
+      border-color: rgba(214,178,90,1);
+      box-shadow: 0 18px 36px rgba(0,0,0,0.9);
+    }
+
+    @media (max-width: 600px) {
+      .app-shell { padding: 24px 15px 24px; }
+      header { align-items: flex-start; }
+      .section { padding: 12px 11px 12px 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header>
+      <div class="title-block">
+        <div class="title-icon">P</div>
+        <div class="title-text">
+          <h1>PARETO CHART</h1>
+          <p>Complete consolidated note for manufacturing & quality teams.</p>
+        </div>
+      </div>
+
+      <div class="theme-toggle-wrapper">
+        <span class="theme-label">Leaf theme</span>
+        <div class="theme-switch" id="themeSwitch">
+          <span class="theme-icon-moon">🌙</span>
+          <span class="theme-icon-sun">☀️</span>
+          <div class="theme-knob"></div>
+        </div>
+      </div>
+    </header>
+
+    <div class="toolbar">
+      <div class="pill-badge">
+        <span class="leaf-dot"></span>
+        Scroll down to read all 8 sections
+      </div>
+      <div class="search-box">
+        <span>🔍</span>
+        <input id="searchInput" type="text" placeholder="Search inside this Pareto Chart note..." />
+      </div>
+    </div>
+
+    <main class="note-panel" id="noteContent">
+      <!-- 1 -->
+      <article class="section" data-section="1">
+        <div class="section-header">
+          <span class="section-number">1.</span>
+          <span class="section-title">Introduction</span>
+          <span class="collapse-icon">▼</span>
+        </div>
+        <div class="section-body">
+          <p>
+            Pareto Charts are widely used in manufacturing and quality management to analyze defect data and identify which issues occur most frequently. They provide a simple visual representation of problem categories, their frequency, and their cumulative contribution to the total. This helps teams on the shop floor quickly understand which issues should be addressed first for maximum impact.
+          </p>
+          <p>
+            A Pareto Chart combines a bar graph and a line graph to display both the magnitude of defects and their cumulative effect.
+          </p>
+          <p>
+            It is based on the Pareto Principle (80/20 Rule), which suggests that 80% of problems arise from 20% of causes.
+          </p>
+          <p>
+            By using Pareto Charts, teams can prioritise improvement activities, allocate resources effectively, and drive significant improvements in quality and performance.
+          </p>
+        </div>
+      </article>
+
+      <!-- 2 -->
+      <article class="section" data-section="2">
+        <div class="section-header">
+          <span class="section-number">2.</span>
+          <span class="section-title">What a Pareto Chart Shows</span>
+          <span class="collapse-icon">▼</span>
+        </div>
+        <div class="section-body">
+          <p>A Pareto Chart includes two key components:</p>
+
+          <p class="subheading">2.1 Bars (Vertical Bar Graph)</p>
+          <p>Bars represent defect categories arranged from highest to lowest frequency.</p>
+          <p>They show:</p>
+          <ul>
+            <li>The count/frequency/cost of each problem</li>
+            <li>Which defect is the largest contributor</li>
+            <li>Comparison between various defect categories</li>
+            <li>The "vital few" issues that need immediate attention</li>
+          </ul>
+
+          <p class="subheading">Example:</p>
+          <table>
+            <thead>
+              <tr><th>Defect</th><th>Count</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Scratches</td><td>45</td></tr>
+              <tr><td>Colour Variation</td><td>25</td></tr>
+              <tr><td>Wrong Dimensions</td><td>15</td></tr>
+            </tbody>
+          </table>
+          <p>Bars will appear with heights 45 → 25 → 15.</p>
+
+          <p class="subheading">2.2 Line (Cumulative Percentage Line)</p>
+          <p>The line overlays the bars and shows how each category accumulates toward 100% of total defects.</p>
+          <p>It helps teams understand:</p>
+          <ul>
+            <li>How quickly problems accumulate</li>
+            <li>Where the 80% impact zone lies</li>
+            <li>Which defects have minimal impact</li>
+          </ul>
+
+          <p class="subheading">Example:</p>
+          <p>Total defects = 85</p>
+          <table>
+            <thead>
+              <tr><th>Defect</th><th>Count</th><th>Cumulative %</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Scratches</td><td>45</td><td>53%</td></tr>
+              <tr><td>Colour Variation</td><td>25</td><td>82%</td></tr>
+              <tr><td>Wrong Dimensions</td><td>15</td><td>100%</td></tr>
+            </tbody>
+          </table>
+          <p>The line rises steeply at first, then flattens.</p>
+        </div>
+      </article>
+
+      <!-- 3 -->
+      <article class="section" data-section="3">
+        <div class="section-header">
+          <span class="section-number">3.</span>
+          <span class="section-title">Understanding Percentages and Cumulative Percentages</span>
+          <span class="collapse-icon">▼</span>
+        </div>
+        <div class="section-body">
+          <p>The line in a Pareto Chart represents the cumulative percentage of defects.</p>
+          <p>To understand this clearly, look at the data table below:</p>
+
+          <p class="subheading">Example Data Table</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Type of Defect</th>
+                <th>Frequency</th>
+                <th>% of Total</th>
+                <th>Cumulative %</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Button</td><td>23</td><td>39.0</td><td>39.0</td></tr>
+              <tr><td>Pocket</td><td>16</td><td>27.1</td><td>66.1</td></tr>
+              <tr><td>Collar</td><td>10</td><td>16.9</td><td>83.1</td></tr>
+              <tr><td>Cuff</td><td>7</td><td>11.9</td><td>95.0</td></tr>
+              <tr><td>Sleeve</td><td>3</td><td>5.1</td><td>100.1</td></tr>
+              <tr><td><strong>Total</strong></td><td>59</td><td>–</td><td>–</td></tr>
+            </tbody>
+          </table>
+
+          <p class="subheading">How % of Total Is Calculated</p>
+          <p>For Collar Defects:</p>
+          <p>(10 / 59) × 100 = 16.9%</p>
+
+          <p class="subheading">How Cumulative % Works</p>
+          <p>Cumulative percentage is the running total of all percentage values from top to bottom.</p>
+          <p>For Collar Defects:</p>
+          <p>39.0% (Button) + 27.1% (Pocket) + 16.9% (Collar) = 83.1%</p>
+
+          <p class="subheading">Important Points</p>
+          <ul>
+            <li>The final cumulative percentage will always be 100%.</li>
+            <li>Cumulative percentages help you understand what proportion of all defects can be eliminated if you solve the top issues.</li>
+          </ul>
+
+          <p class="subheading">Example Interpretation</p>
+          <p>In this example:</p>
+          <ul>
+            <li>The top two defects (Button + Pocket) = 66.1% of all defects.</li>
+            <li>This means solving just these two problems will eliminate 66% of total defects, giving a major improvement with minimal effort.</li>
+            <li>Solving two issues leads to major improvement.</li>
+            <li>Cumulative % always ends near 100%.</li>
+          </ul>
+
+          <p class="subheading">Reading the Cumulative Line</p>
+          <ul>
+            <li>It is the running total of percentages.</li>
+            <li>When the line is steep, the defects have a strong impact. These should be prioritized. (Steep rise = high-impact defects.)</li>
+            <li>When the line flattens, the remaining defects have less effect. Solving them will not produce major improvement. (Flat region = small contributors.)</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 4 -->
+      <article class="section" data-section="4">
+        <div class="section-header">
+          <span class="section-number">4.</span>
+          <span class="section-title">How Bars and Line Work Together</span>
+          <span class="collapse-icon">▼</span>
+        </div>
+        <div class="section-body">
+          <p>Bars provide absolute values, while the cumulative line provides relative importance.</p>
+          <p>Together, they answer critical questions:</p>
+          <ul>
+            <li>Which defect should be addressed first?</li>
+            <li>Which few issues create most of the defects?</li>
+            <li>How much improvement can be achieved by fixing top issues?</li>
+            <li>When does solving more issues stop yielding significant returns?</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 5 -->
+      <article class="section" data-section="5">
+        <div class="section-header">
+          <span class="section-number">5.</span>
+          <span class="section-title">The Pareto Principle (80/20 Rule)</span>
+          <span class="collapse-icon">▼</span>
+        </div>
+        <div class="section-body">
+          <p>The rule states:</p>
+          <p>80% of problems come from 20% of causes.</p>
+          <p>In practice:</p>
+          <ul>
+            <li>A few defect types cause most of the defects.</li>
+            <li>Addressing them generates the greatest improvement.</li>
+            <li>Even if the ratio isn't exact, the principle holds: Focus on the vital few, not the trivial many.</li>
+          </ul>
+          <p>It helps with:</p>
+          <ul>
+            <li>Prioritization</li>
+            <li>Resource allocation</li>
+            <li>Continuous improvement</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 6 -->
+      <article class="section" data-section="6">
+        <div class="section-header">
+          <span class="section-number">6.</span>
+          <span class="section-title">Why Use a Pareto Chart?</span>
+          <span class="collapse-icon">▼</span>
+        </div>
+        <div class="section-body">
+          <p>It helps teams answer:</p>
+          <ul>
+            <li>What should we fix first?</li>
+            <li>Which defects are most costly or frequent?</li>
+            <li>Where should we focus improvement efforts?</li>
+            <li>What is driving customer complaints or rework?</li>
+          </ul>
+          <p>This is why Pareto Charts are one of the 7 QC Tools.</p>
+        </div>
+      </article>
+
+      <!-- 7 -->
+      <article class="section" data-section="7">
+        <div class="section-header">
+          <span class="section-number">7.</span>
+          <span class="section-title">Common Uses of Pareto Charts</span>
+          <span class="collapse-icon">▼</span>
+        </div>
+        <div class="section-body">
+          <p>Pareto Charts are widely used for:</p>
+          <ul>
+            <li>Quality defect analysis</li>
+            <li>Customer complaint analysis</li>
+            <li>Machine breakdown causes</li>
+            <li>Supplier defect tracking</li>
+            <li>Safety incident analysis</li>
+            <li>Process waste or scrap analysis</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 8 -->
+      <article class="section" data-section="8">
+        <div class="section-header">
+          <span class="section-number">8.</span>
+          <span class="section-title">How to Read a Pareto Chart</span>
+          <span class="collapse-icon">▼</span>
+        </div>
+        <div class="section-body">
+          <ol>
+            <li>Look at the tallest bars → biggest contributors.</li>
+            <li>Follow the cumulative line → shows impact accumulation.</li>
+            <li>Identify the 70–80% zone → these issues drive the majority of problems.</li>
+            <li>Observe where the line flattens → low-impact issues.</li>
+          </ol>
+        </div>
+      </article>
+    </main>
+  </div>
+
+  <script>
+    // theme toggle
+    const themeSwitch = document.getElementById('themeSwitch');
+    const storedTheme = localStorage.getItem('pareto-theme');
+    if (storedTheme === 'light') document.body.classList.add('light');
+
+    themeSwitch.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      const mode = document.body.classList.contains('light') ? 'light' : 'dark';
+      localStorage.setItem('pareto-theme', mode);
+    });
+
+    // collapse
+    document.querySelectorAll('.section').forEach(sec => {
+      sec.querySelector('.section-header').addEventListener('click', e => {
+        if (window.getSelection && window.getSelection().toString()) return;
+        sec.classList.toggle('collapsed');
+      });
+    });
+
+    // search highlight
+    const searchInput = document.getElementById('searchInput');
+    const noteContent = document.getElementById('noteContent');
+    let prevHighlights = [];
+
+    function clearHighlights() {
+      prevHighlights.forEach(node => {
+        const parent = node.parentNode;
+        if (!parent) return;
+        parent.replaceChild(document.createTextNode(node.textContent), node);
+        parent.normalize();
+      });
+      prevHighlights = [];
+    }
+
+    function highlightTerm(term) {
+      const regex = new RegExp(term, 'gi');
+      function walk(node) {
+        if (node.nodeType === 3) {
+          const text = node.textContent;
+          if (!regex.test(text)) return;
+          const frag = document.createDocumentFragment();
+          let last = 0;
+          text.replace(regex, (m, i) => {
+            const before = text.slice(last, i);
+            if (before) frag.appendChild(document.createTextNode(before));
+            const mark = document.createElement('mark');
+            mark.textContent = m;
+            frag.appendChild(mark);
+            prevHighlights.push(mark);
+            last = i + m.length;
+          });
+          const after = text.slice(last);
+          if (after) frag.appendChild(document.createTextNode(after));
+          node.parentNode.replaceChild(frag, node);
+        } else if (node.nodeType === 1 && node.childNodes && !['MARK','SCRIPT','STYLE'].includes(node.tagName)) {
+          Array.from(node.childNodes).forEach(walk);
+        }
+      }
+      walk(noteContent);
+    }
+
+    searchInput.addEventListener('input', () => {
+      clearHighlights();
+      const term = searchInput.value.trim();
+      if (term.length >= 2) {
+        highlightTerm(term);
+        const first = noteContent.querySelector('mark');
+        if (first) {
+          const rect = first.getBoundingClientRect();
+          window.scrollBy({ top: rect.top - 140, behavior: 'smooth' });
+        }
+      }
+    });
+
+    // active section on scroll
+    const sections = document.querySelectorAll('.section');
+    function updateActive() {
+      const fromTop = window.scrollY + 150;
+      let current = null;
+      sections.forEach(sec => {
+        const top = sec.offsetTop;
+        if (top <= fromTop) current = sec;
+      });
+      sections.forEach(sec => sec.classList.remove('active','inactive'));
+      if (current) {
+        current.classList.add('active');
+        sections.forEach(sec => { if (sec !== current) sec.classList.add('inactive'); });
+      }
+    }
+    window.addEventListener('scroll', updateActive);
+    updateActive();
+  </script>
+</body>
+</html>

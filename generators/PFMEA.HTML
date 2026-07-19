@@ -1,0 +1,288 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PFMEA — Генератор</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root{ --accent:#66c5ff; --accent-dark:#3ea7e6; --bg:#f0f8ff; --muted:#1a4c63; }
+        body{
+            font-family: Arial, sans-serif;
+            background:linear-gradient(180deg,#f0f8ff 0%, #dff3ff 100%);
+            margin:0; padding:18px;
+            color:var(--muted);
+        }
+        .wrap{ max-width:1360px; margin:0 auto; }
+        h1{ text-align:center; color:var(--accent); margin:6px 0 14px; }
+        .card{ background:#fff; border-radius:8px; padding:12px; box-shadow:0 8px 24px rgba(0,80,120,0.06); border:2px solid rgba(100,200,255,0.18); }
+        .topbar{ display:flex; justify-content:space-between; gap:12px; align-items:center; margin-bottom:12px; flex-wrap:wrap; }
+        .btn{ background:var(--accent); border:none; color:#fff; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.95rem; }
+        .btn:hover{ background:var(--accent-dark); }
+        .btn-export{ background:#2e7d32; }
+        .btn-export:hover{ background:#1b5e20; }
+        .btn-excel{ background:#1565c0; }
+        .btn-excel:hover{ background:#0d47a1; }
+        table{ width:100%; border-collapse:collapse; min-width:1200px; }
+        th, td{ border:2px solid var(--accent); padding:8px; vertical-align:top; }
+        thead th{ background:linear-gradient(180deg,#d0eeff,#a7ddff); color:#003f5c; font-weight:400; font-size:13px; }
+        td input, td textarea{
+            width:100%; box-sizing:border-box; padding:6px;
+            border-radius:6px; border:1px solid rgba(0,120,160,0.2);
+            font-family:inherit;
+            min-height:30px;
+        }
+        td textarea { height: 100px; }
+        .rpn-result {
+            display: block;
+            min-height: 30px;
+            padding: 6px;
+            font-weight: bold;
+            text-align: center;
+            background-color: #f7fcff;
+        }
+        .back-link { display:inline-flex; align-items:center; gap:4px; color:#3ea7e6; font-size:0.85rem; text-decoration:none; margin-bottom:8px; opacity:0.7; transition:opacity 0.2s; }
+        .back-link:hover { opacity:1; }
+        /* Paywall modal */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; }
+        .modal-overlay.open { display: flex; }
+        .modal-box { background: #fff; border-radius: 16px; padding: 32px; max-width: 460px; width: 90%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .modal-box h2 { font-size: 1.3rem; color: #811844; margin-bottom: 8px; font-family: 'Segoe UI', sans-serif; }
+        .modal-box p { font-size: 0.9rem; color: #555; margin-bottom: 20px; line-height: 1.5; }
+        .modal-plans { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+        .modal-plan { border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s; text-align: left; }
+        .modal-plan:hover { border-color: #C9A84C; }
+        .modal-plan.selected { border-color: #C9A84C; background: #fefcf5; }
+        .modal-plan .plan-name { font-weight: 700; font-size: 1.05rem; color: #1a1a1a; }
+        .modal-plan .plan-price { font-weight: 700; font-size: 1.4rem; color: #811844; }
+        .modal-plan .plan-price small { font-size: 0.8rem; font-weight: 400; color: #888; }
+        .modal-plan .plan-desc { font-size: 0.82rem; color: #666; margin-top: 2px; }
+        .modal-plan .plan-badge { display: inline-block; background: #C9A84C; color: #1a1a1a; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; margin-left: 8px; vertical-align: middle; }
+        .modal-box .modal-btn { display: block; width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-bottom: 10px; transition: background 0.2s; }
+        .modal-box .modal-btn.primary { background: #C9A84C; color: #1a1a1a; }
+        .modal-box .modal-btn.primary:hover { background: #b8973a; }
+        .modal-box .modal-btn.green { background: #16a34a; color: #fff; }
+        .modal-box .modal-btn.green:hover { background: #15803d; }
+        .modal-box .modal-btn.secondary { background: transparent; color: #888; border: 1px solid #ddd; }
+        .modal-box .modal-btn.secondary:hover { background: #f5f5f5; }
+        .modal-box .modal-note { font-size: 0.78rem; color: #aaa; margin-top: 12px; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <a href="../../../../Documents/%D0%BB%D0%B5%D0%BD%D0%B4%D0%B8%D0%BD%D0%B3_%D0%98%D1%80%D0%B8%D0%BD%D0%B0_%D0%91%D1%83%D1%86%D0%BA%D0%B0%D1%8F.html" class="back-link">← Назад к Ирине Буцкой</a>
+    <h1>POTENTIAL FAILURE MODE & EFFECT ANALYSIS<br>(PROCESS FMEA)</h1>
+    <div class="card">
+        <div style="margin-bottom:10px; font-weight:normal; color:var(--accent-dark);">
+            <table style="width:100%; border-collapse:collapse;">
+                <tr>
+                    <td style="font-weight:bold; width:20%;">ITEM</td>
+                    <td><input type="text" placeholder="Enter Item Name" style="width:100%;height:32px;"></td>
+                    <td style="font-weight:bold; width:20%;">KEY DATE</td>
+                    <td><input type="date" style="width:100%;height:32px;"></td>
+                    <td style="font-weight:bold; width:20%;">Date (orig.)</td>
+                    <td><input type="date" style="width:100%;height:32px;"></td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">POST CULTURE</td>
+                    <td><input type="text" placeholder="Enter Post Culture" style="width:100%;height:32px;"></td>
+                    <td style="font-weight:bold;">PROCESS RESPONSIBILITY</td>
+                    <td><input type="text" placeholder="Enter Responsibility" style="width:100%;height:32px;"></td>
+                    <td style="font-weight:bold;">GM PRODUCTION Date(Rev.0)</td>
+                    <td><input type="date" style="width:100%;height:32px;"></td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">PART NO.</td>
+                    <td><input type="text" placeholder="Enter Part No." style="width:100%;height:32px;"></td>
+                    <td style="font-weight:bold;">CORE TEAM</td>
+                    <td><input type="text" placeholder="Enter Core Team" style="width:100%;height:32px;"></td>
+                    <td style="font-weight:bold;">FMEA NO.</td>
+                    <td><input type="text" placeholder="FMEA GN/02" style="width:100%;height:32px;"></td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">MODEL YEAR(S) PROGRAMME(S)</td>
+                    <td><input type="text" placeholder="Enter Model Year / Programme" style="width:100%;height:32px;"></td>
+                    <td style="font-weight:bold;">MANAGER PRODUCTION, MANAGER QC</td>
+                    <td><input type="text" placeholder="Enter Names" style="width:100%;height:32px;"></td>
+                    <td style="font-weight:bold;">PREPARED BY</td>
+                    <td><input type="text" placeholder="Manager Technical" style="width:100%;height:32px;"></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="topbar">
+            <button class="btn" onclick="addRow()">+ Добавить строку</button>
+            <span style="flex:1;"></span>
+            <button class="btn btn-export" onclick="exportPDF()">⬇ Скачать PDF</button>
+            <button class="btn btn-excel" onclick="exportCSV()">⬇ Скачать Excel</button>
+        </div>
+
+        <table id="pfmea-table">
+            <thead>
+                <tr>
+                    <th>Process Number</th>
+                    <th>Process Function</th>
+                    <th>Requirement</th>
+                    <th>Potential Failure Mode</th>
+                    <th>Effect</th>
+                    <th>Severity (S)</th>
+                    <th>Cause</th>
+                    <th>Occurrence (O)</th>
+                    <th>Prevention Controls</th>
+                    <th>Detection Controls</th>
+                    <th>Detection (D)</th>
+                    <th>RPN</th>
+                    <th>Recommended Action</th>
+                    <th>Resp & Date</th>
+                    <th>Action Taken</th>
+                    <th>New Sev (NS)</th>
+                    <th>New Occ (NO)</th>
+                    <th>New Det (ND)</th>
+                    <th>New RPN</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Paywall Modal -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal-box">
+    <h2>🔒 Выберите тариф</h2>
+    <p>Скачивайте PDF с вашими данными без ограничений</p>
+
+    <div class="modal-plans">
+      <div class="modal-plan" data-plan="once" onclick="selectPlan(this)">
+        <div>
+          <span class="plan-price">350 ₽</span>
+          <span class="plan-name"> — один документ</span>
+        </div>
+        <div class="plan-desc">Оплатили — скачали. Проще некуда.</div>
+      </div>
+      <div class="modal-plan" data-plan="ten" onclick="selectPlan(this)">
+        <div>
+          <span class="plan-price">1 000 ₽</span>
+          <span class="plan-name">10 PDF</span>
+          <span class="plan-badge">🔥 выгодно</span>
+        </div>
+        <div class="plan-desc">10 любых документов. Экономия 2 500 ₽ против поштучных.</div>
+      </div>
+      <div class="modal-plan" data-plan="month" onclick="selectPlan(this)">
+        <div>
+          <span class="plan-price">2 000 ₽ <small>/ мес</small></span>
+          <span class="plan-name">Безлимит на месяц</span>
+        </div>
+        <div class="plan-desc">Сколько угодно PDF. Для регулярной работы с документацией.</div>
+      </div>
+    </div>
+
+    <button class="modal-btn green" id="payBtn" onclick="paySelected()">Оплатить 350 ₽ →</button>
+    <button class="modal-btn secondary" onclick="closePayModal()">Закрыть</button>
+    <div class="modal-note">После оплаты напишите @Irina_Butskaya — пришлю PDF в течение часа</div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+/**
+ * RPN (Risk Priority Number) = Severity * Occurrence * Detection
+ */
+function calcRPN(){
+  document.querySelectorAll('#pfmea-table tbody tr').forEach(tr=>{
+    const s = tr.children[5].querySelector('input').value || 0;
+    const o = tr.children[7].querySelector('input').value || 0;
+    const d = tr.children[10].querySelector('input').value || 0;
+    tr.children[11].querySelector('.rpn-result').innerText = (s * o * d).toFixed(0);
+
+    const ns = tr.children[15].querySelector('input').value || 0;
+    const no = tr.children[16].querySelector('input').value || 0;
+    const nd = tr.children[17].querySelector('input').value || 0;
+    tr.children[18].querySelector('.rpn-result').innerText = (ns * no * nd).toFixed(0);
+  });
+}
+
+function addRow(){
+  const tb=document.querySelector('#pfmea-table tbody');
+  const tr=document.createElement('tr');
+  const cols=19;
+
+  for(let i=0; i < cols; i++){
+    const td=document.createElement('td');
+
+    if(i === 11 || i === 18) {
+       const span = document.createElement('span');
+       span.className = 'rpn-result';
+       span.innerText = '0';
+       td.appendChild(span);
+
+    } else if([5, 7, 10, 15, 16, 17].includes(i)){
+       const inp=document.createElement('input');
+       inp.type='number';
+       inp.min='1';
+       inp.max='10';
+       inp.oninput=calcRPN;
+       td.appendChild(inp);
+
+    } else {
+       const inp=document.createElement('textarea');
+       inp.style.height = i < 5 ? '50px' : '100px';
+       inp.type='text';
+       td.appendChild(inp);
+    }
+    tr.appendChild(td);
+  }
+  tb.appendChild(tr);
+  calcRPN();
+}
+
+function exportCSV(){
+  showPayModal('PFMEA (Excel)');
+}
+
+function exportPDF(){
+  showPayModal('PFMEA');
+}
+
+let _selectedPlan = 'once';
+
+function selectPlan(el) {
+  document.querySelectorAll('.modal-plan').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  _selectedPlan = el.dataset.plan;
+  const labels = { once: 'Оплатить 350 ₽ →', ten: 'Оплатить 1 000 ₽ →', month: 'Оформить на 2 000 ₽ →' };
+  document.getElementById('payBtn').textContent = labels[_selectedPlan];
+}
+
+function paySelected() {
+  const links = {
+    once: 'https://yoomoney.ru/to/4100119578034128?label=pfmea_once&sum=350',
+    ten: 'https://yoomoney.ru/to/4100119578034128?label=pfmea_ten&sum=1000',
+    month: 'https://yoomoney.ru/to/4100119578034128?label=pfmea_month&sum=2000'
+  };
+  window.open(links[_selectedPlan], '_blank');
+}
+
+/* Paywall modal functions */
+function showPayModal(docName) {
+  _selectedPlan = 'once';
+  document.querySelectorAll('.modal-plan').forEach(p => p.classList.remove('selected'));
+  document.getElementById('payBtn').textContent = 'Оплатить 350 ₽ →';
+  document.getElementById('payModal').classList.add('open');
+}
+function closePayModal() {
+  document.getElementById('payModal').classList.remove('open');
+}
+document.getElementById('payModal').addEventListener('click', function(e) {
+  if (e.target === this) closePayModal();
+});
+
+// Initial row load
+window.onload = function() {
+    addRow();
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QDoc — Все документы по качеству</title>
+  <meta name="description" content="Полный каталог документов по управлению качеством: FMEA, Control Plan, PSW, SPC, MSA, APQP, PPAP, 7 QC Tools и другие. Бесплатные генераторы и премиум-материалы.">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="QDoc — Все документы по качеству">
+  <meta property="og:description" content="FMEA, Control Plan, PSW, SPC, MSA, APQP, PPAP, 7 QC Tools, Kaizen, 5S — генераторы, статьи, премиум материалы.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+
+  <!-- Yandex.Metrika -->
+  <script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=109820311', 'ym');
+    ym(109820311, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/109820311" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 400;
+      color: #1e293b;
+      background: #f5f7fa;
+      line-height: 1.7;
+    }
+    h1, h2, h3, .heading-font {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 600;
+      color: #1A1A1A;
+    }
+    h1 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); line-height: 1.2; font-weight: 700; }
+    h2 { font-size: clamp(1.4rem, 2.5vw, 2rem); line-height: 1.25; margin-bottom: 1.25rem; }
+    h3 { font-size: clamp(1.1rem, 1.5vw, 1.35rem); }
+    .accent { color: #C9A84C; }
+    .text-muted { color: #64748b; }
+    .text-small { font-size: 0.9rem; }
+
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 1.5rem; }
+    .section { padding: 4rem 0; }
+
+    /* Header */
+    .header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid #e2e8f0;
+      padding: 0.75rem 0;
+    }
+    .header .container { display: flex; align-items: center; justify-content: space-between; }
+    .header-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.1rem; font-weight: 600; color: #1A1A1A;
+    }
+    .header-name a { color: inherit; text-decoration: none; }
+    .header-back {
+      font-size: 0.85rem; color: #64748b; text-decoration: none; transition: color 0.2s;
+    }
+    .header-back:hover { color: #C9A84C; }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #0e4e7c 0%, #1a6da8 50%, #2d8ccf 100%);
+      color: #fff; padding: 7rem 0 3.5rem; text-align: center;
+    }
+    .hero h1 { color: #fff; margin-bottom: 0.75rem; }
+    .hero p { font-size: 1.1rem; opacity: 0.9; max-width: 650px; margin: 0 auto; }
+    .hero .badge {
+      display: inline-block; background: rgba(255,255,255,0.15);
+      padding: 4px 14px; border-radius: 20px; font-size: 0.85rem; margin-bottom: 1rem;
+    }
+
+    /* Trust strip */
+    .trust-strip {
+      display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center;
+      padding: 1.5rem 0; background: #fff;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .trust-strip-item {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.9rem; color: #64748b;
+    }
+    .trust-strip-item .check { color: #16a34a; font-weight: 700; }
+
+    /* Filter tabs */
+    .filters {
+      display: flex; gap: 0.5rem; justify-content: center;
+      flex-wrap: wrap; margin-bottom: 2rem;
+    }
+    .filter-btn {
+      padding: 0.5rem 1.2rem;
+      font-family: 'Manrope', sans-serif; font-size: 0.85rem; font-weight: 500;
+      border: 1px solid #e2e8f0; border-radius: 20px;
+      background: #fff; color: #64748b; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: #0e4e7c; color: #0e4e7c; }
+    .filter-btn.active { background: #0e4e7c; color: #fff; border-color: #0e4e7c; }
+
+    /* Document grid */
+    .docs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 3rem;
+    }
+    .doc-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.25s, transform 0.2s;
+    }
+    .doc-card:hover {
+      box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+      transform: translateY(-2px);
+    }
+    .doc-card .type-label {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.05em; margin-bottom: 0.4rem;
+    }
+    .doc-card .type-free { color: #16a34a; }
+    .doc-card .type-premium { color: #92400e; }
+    .doc-card .type-pay { color: #9a2525; }
+    .doc-card h3 {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 600; font-size: 1rem; color: #0e4e7c;
+      margin-bottom: 0.5rem;
+    }
+    .doc-card p { font-size: 0.85rem; color: #64748b; margin-bottom: 1rem; flex: 1; }
+    .doc-card .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+    .doc-card .tag {
+      font-size: 0.72rem;
+      background: #eef2ff; color: #0e4e7c;
+      padding: 2px 8px; border-radius: 4px;
+    }
+    .doc-card .btn {
+      display: inline-block; align-self: flex-start;
+      font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 0.85rem;
+      padding: 0.5rem 1.2rem; border-radius: 8px;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .doc-card .btn-primary {
+      background: #0e4e7c; color: #fff;
+    }
+    .doc-card .btn-primary:hover { background: #1a6da8; }
+    .doc-card .btn-outline {
+      background: transparent; border: 1px solid #0e4e7c; color: #0e4e7c;
+    }
+    .doc-card .btn-outline:hover { background: #eef2ff; }
+
+    /* Pricing section */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.5rem;
+      max-width: 900px;
+      margin: 2rem auto 0;
+    }
+    .price-card {
+      background: #fff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      transition: box-shadow 0.25s, transform 0.2s;
+    }
+    .price-card:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+      transform: translateY(-3px);
+    }
+    .price-card.featured {
+      border-color: #C9A84C;
+      background: #FFFAF0;
+      position: relative;
+    }
+    .price-card.featured::before {
+      content: "Рекомендую";
+      position: absolute; top: -0.7rem; left: 50%;
+      transform: translateX(-50%);
+      background: #C9A84C; color: #1A1A1A;
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; padding: 0.25rem 1rem; border-radius: 12px;
+    }
+    .price-card h3 { font-size: 1.3rem; margin-bottom: 0.25rem; }
+    .price-card .price {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 2rem; font-weight: 700; color: #1A1A1A;
+      margin: 0.75rem 0;
+    }
+    .price-card .price span { font-size: 0.9rem; font-weight: 400; color: #64748b; font-family: 'Manrope', sans-serif; }
+    .price-card .desc { font-size: 0.88rem; color: #64748b; margin-bottom: 1rem; }
+    .price-card ul { list-style: none; text-align: left; margin-bottom: 1.5rem; flex: 1; }
+    .price-card ul li {
+      padding: 0.35rem 0; padding-left: 1.4rem; position: relative;
+      font-size: 0.85rem;
+    }
+    .price-card ul li::before { content: "✓"; position: absolute; left: 0; color: #C9A84C; font-weight: 700; }
+    .price-card ul li.muted { color: #cbd5e1; }
+    .price-card ul li.muted::before { content: "—"; color: #cbd5e1; }
+    .btn-buy {
+      display: block; width: 100%; text-align: center;
+      padding: 0.8rem 1.5rem;
+      font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 0.9rem;
+      color: #fff; background: #0e4e7c;
+      border: none; border-radius: 8px; cursor: pointer;
+      transition: background 0.25s; text-decoration: none;
+    }
+    .btn-buy:hover { background: #1a6da8; }
+
+    /* FAQ */
+    .faq-list { max-width: 650px; margin: 2rem auto 0; }
+    .faq-item { border-bottom: 1px solid #e2e8f0; padding: 1.25rem 0; }
+    .faq-item:first-child { border-top: 1px solid #e2e8f0; }
+    .faq-q { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.4rem; }
+    .faq-a { font-size: 0.9rem; color: #64748b; }
+
+    /* Guarantee */
+    .guarantee { text-align: center; padding: 2rem 0; font-size: 0.9rem; color: #64748b; }
+    .guarantee strong { color: #1e293b; }
+
+    /* Footer */
+    .footer {
+      background: #1A1A1A; color: #d5d2cc;
+      padding: 3rem 0 2rem; margin-top: 2rem;
+    }
+    .footer-inner {
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 1rem;
+    }
+    .footer a { color: #C9A84C; text-decoration: none; }
+    .footer a:hover { opacity: 0.8; }
+    .footer-links { display: flex; gap: 1.5rem; font-size: 0.85rem; }
+    .footer-links a { color: #aaa8a3; }
+    .footer-links a:hover { color: #C9A84C; opacity: 1; }
+    .footer-bottom {
+      margin-top: 1.5rem; padding-top: 1.5rem;
+      border-top: 1px solid #333;
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;
+      font-size: 0.8rem; color: #6b6b6b;
+    }
+
+    .hidden { display: none; }
+
+    @media (max-width: 768px) {
+      .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+      .section { padding: 3rem 0; }
+      .hero { padding: 6rem 0 2.5rem; }
+      .docs-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .trust-strip { flex-direction: column; align-items: center; gap: 0.75rem; }
+      .footer-inner { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container">
+    <span class="header-name"><a href="лендинг_Ирина_Буцкая.html">QDoc — Ирина Буцкая</a></span>
+    <a href="лендинг_Ирина_Буцкая.html" class="header-back">← На главную</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <div class="badge">📄 Полный каталог</div>
+    <h1>Все документы по управлению качеством</h1>
+    <p>Бесплатные генераторы PDF-документов и премиум-материалы по Core Tools, SPC, MSA, APQP, PPAP, 7 QC Tools и другим инструментам качества. Разработано на основе 22-летнего опыта (Samsung, LG).</p>
+  </div>
+</section>
+
+<div class="trust-strip">
+  <span class="trust-strip-item"><span class="check">✓</span> 22 года практики</span>
+  <span class="trust-strip-item"><span class="check">✓</span> ISO 9001 / IATF 16949</span>
+  <span class="trust-strip-item"><span class="check">✓</span> AIAG & VDA Core Tools</span>
+  <span class="trust-strip-item"><span class="check">✓</span> 14 дней на возврат</span>
+</div>
+
+<!-- Filters -->
+<div class="container" style="padding-top:2rem;">
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterDocs('all', this)">Все документы</button>
+    <button class="filter-btn" onclick="filterDocs('free', this)">🆓 Бесплатные генераторы</button>
+    <button class="filter-btn" onclick="filterDocs('article', this)">📖 Бесплатные статьи</button>
+    <button class="filter-btn" onclick="filterDocs('premium', this)">⭐ Премиум</button>
+
+  </div>
+</div>
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+
+    <!-- ===== БЕСПЛАТНЫЕ ГЕНЕРАТОРЫ ===== -->
+    <h2 id="free">🆓 Бесплатные генераторы PDF</h2>
+    <p class="text-muted" style="margin-bottom:1.25rem;">Вы можете бесплатно заполнить любую форму. Увидите результат с вашими данными. Бесплатно, без регистрации.</p>
+    <div class="docs-grid">
+
+      <div class="doc-card" data-type="free">
+        <div class="type-label type-free">🆓 Бесплатно</div>
+        <h3>Company Info</h3>
+        <p>Информация о компании: реквизиты, контакты, виды деятельности. База для всех документов СМК.</p>
+        <div class="tags"><span class="tag">реквизиты</span><span class="tag">карточка компании</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/companyinfo.html" target="_blank" class="btn btn-primary">Открыть →</a>
+      </div>
+      <div class="doc-card" data-type="free">
+        <div class="type-label type-free">🆓 Бесплатно</div>
+        <h3>Material Test Report</h3>
+        <p>Отчёт о тестировании материалов: протокол испытаний, результаты, соответствие спецификациям.</p>
+        <div class="tags"><span class="tag">MTR</span><span class="tag">испытания</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/material%20test%20report.html" target="_blank" class="btn btn-primary">Открыть →</a>
+      </div>
+    </div>
+
+    <!-- ===== ПРЕМИУМ (ГЕНЕРАТОРЫ) ===== -->
+    <h2 id="premium">⭐ Премиум-материалы</h2>
+    <p class="text-muted" style="margin-bottom:1.25rem;">Инструменты, доступные по подписке. Любой премиум-документ можно купить отдельно. PDF сразу после оплаты.</p>
+    <div class="docs-grid">
+      <!-- ===== ПРЕМИУМ-ГЕНЕРАТОРЫ (оплачиваемые) ===== -->
+      <div class="doc-card" data-type="premium">
+        <div class="type-label type-pay">💎 PDF</div>
+        <h3 style="color:#9a2525;">FMEA Generator</h3>
+        <p>Анализ видов и последствий отказов с автоматическим расчётом RPN. Редактор таблицы, экспорт PDF.</p>
+        <div class="tags"><span class="tag">FMEA</span><span class="tag">RPN</span><span class="tag">редактор таблицы</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/fmea-generator.html" target="_blank" class="btn btn-primary">Открыть FMEA →</a>
+      </div>
+      <div class="doc-card" data-type="premium">
+        <div class="type-label type-pay">💎 PDF</div>
+        <h3 style="color:#9a2525;">Control Plan</h3>
+        <p>План контроля процессов: номера процессов, параметры, методы контроля, частота, реакция на отклонение. Экспорт в Excel.</p>
+        <div class="tags"><span class="tag">Control Plan</span><span class="tag">экспорт Excel</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/controlplan.html" target="_blank" class="btn btn-primary">Открыть Control Plan →</a>
+      </div>
+      <div class="doc-card" data-type="premium">
+        <div class="type-label type-pay">💎 PDF</div>
+        <h3 style="color:#9a2525;">PSW — Part Submission Warrant</h3>
+        <p>Форма одобрения первой продукции. Размеры, материалы, тесты — готовые поля для данных и отметок.</p>
+        <div class="tags"><span class="tag">PSW</span><span class="tag">PPAP</span><span class="tag">одобрение</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/psw.html" target="_blank" class="btn btn-primary">Открыть PSW →</a>
+      </div>
+
+      <div class="doc-card" data-type="premium">
+        <div class="type-label type-pay">💎 PDF</div>
+        <h3 style="color:#9a2525;">PFMEA — Процессный FMEA</h3>
+        <p>Анализ видов и последствий отказов процессов с автоматическим расчётом RPN. Редактор таблицы, экспорт PDF.</p>
+        <div class="tags"><span class="tag">PFMEA</span><span class="tag">RPN</span><span class="tag">редактор таблицы</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/PFMEA.HTML" target="_blank" class="btn btn-primary">Открыть PFMEA →</a>
+      </div>
+      <div class="doc-card" data-type="premium">
+        <div class="type-label type-pay">💎 PDF</div>
+        <h3 style="color:#9a2525;">Cp / Cpk — Индекс воспроизводимости</h3>
+        <p>Интерактивный калькулятор Cp/Cpk с графиком распределения, расчётом PPM и оценкой процесса.</p>
+        <div class="tags"><span class="tag">Cp</span><span class="tag">Cpk</span><span class="tag">калькулятор</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/Capability%20(Cp_Cpk)_7QC.html" target="_blank" class="btn btn-primary">Открыть калькулятор →</a>
+      </div>
+      <div class="doc-card" data-type="premium">
+        <div class="type-label type-pay" style="background:#f39c12; color:#fff;">🚧 Разработка</div>
+        <h3>Kaizen — непрерывное улучшение</h3>
+        <p>PDCA, стандартизация, гемба, 5S. Практическая методология непрерывных улучшений. В процессе разработки.</p>
+        <div class="tags"><span class="tag">Kaizen</span><span class="tag">PDCA</span><span class="tag">гемба</span></div>
+        <button class="btn btn-outline" style="opacity:0.6; cursor:default;" disabled>В процессе разработки</button>
+      </div>
+    </div>
+
+    <!-- ===== ПРЕМИУМ (РАЗБОРЫ) ===== -->
+    <h2 style="margin-top:2.5rem;">📚 Глубокие разборы</h2>
+    <p class="text-muted" style="margin-bottom:1.25rem;">Глубокие разборы методологий, инструментов и стандартов.</p>
+    <div class="docs-grid">
+      <div class="doc-card" data-type="premium">
+        <div class="type-label type-premium">⭐ Премиум</div>
+        <h3>APQP — Планирование качества</h3>
+        <p>Advanced Product Quality Planning: этапы, выходы, контрольные точки. Полный разбор методологии.</p>
+        <div class="tags"><span class="tag">APQP</span><span class="tag">планирование</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/APQP.html" target="_blank" class="btn btn-outline">Читать →</a>
+      </div>
+      <div class="doc-card" data-type="premium">
+        <div class="type-label type-premium">⭐ Премиум</div>
+        <h3>PPAP — Одобрение производства</h3>
+        <p>Production Part Approval Process: 18 требований, уровни PPAP, документация. Полный гайд.</p>
+        <div class="tags"><span class="tag">PPAP</span><span class="tag">одобрение</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/PPAP.html" target="_blank" class="btn btn-outline">Читать →</a>
+      </div>
+      <div class="doc-card" data-type="premium">
+        <div class="type-label type-premium">⭐ Премиум</div>
+        <h3>FMEA Premium (English)</h3>
+        <p>Полный разбор FMEA на английском: AIAG & VDA подход, изменения, примеры заполнения.</p>
+        <div class="tags"><span class="tag">FMEA</span><span class="tag">English</span><span class="tag">VDA</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/FMEA_Premium_English.html" target="_blank" class="btn btn-outline">Читать →</a>
+      </div>
+      <div class="doc-card" data-type="premium">
+        <div class="type-label type-premium">⭐ Премиум</div>
+        <h3>SPC — Статистическое управление</h3>
+        <p>Контрольные карты: X-bar-R, p, np, c, u. Cp/Cpk с интерактивными калькуляторами и интерпретацией.</p>
+        <div class="tags"><span class="tag">SPC</span><span class="tag">Cp/Cpk</span><span class="tag">карты</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/SPC_1.html" target="_blank" class="btn btn-outline">Читать →</a>
+      </div>
+
+      <div class="doc-card" data-type="premium">
+        <div class="type-label type-premium">⭐ Премиум</div>
+        <h3>MSA — Анализ измерительных систем</h3>
+        <p>Gage R&R, смещение, линейность, стабильность. Полный разбор методов MSA.</p>
+        <div class="tags"><span class="tag">MSA</span><span class="tag">Gage R&R</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/MSA_1.html" target="_blank" class="btn btn-outline">Читать →</a>
+      </div>
+      <div class="doc-card" data-type="premium">
+        <div class="type-label type-premium">⭐ Премиум</div>
+        <h3>Gage R&R — Калькулятор</h3>
+        <p>Интерактивный расчёт повторяемости и воспроизводимости измерительной системы. Анализ ANOVA.</p>
+        <div class="tags"><span class="tag">Gage R&R</span><span class="tag">ANOVA</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/MSA2_Gage%20R&R.html" target="_blank" class="btn btn-outline">Читать →</a>
+      </div>
+      <div class="doc-card" data-type="premium">
+        <div class="type-label type-premium">⭐ Премиум</div>
+        <h3>7 QC Tools — 7 инструментов</h3>
+        <p>Парето, Исикава, гистограмма, контрольные карты, диаграмма рассеяния, чек-лист.</p>
+        <div class="tags"><span class="tag">7 инструментов</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/7QC%20Tools.....html" target="_blank" class="btn btn-outline">Читать →</a>
+      </div>
+      <div class="doc-card" data-type="premium">
+        <div class="type-label type-premium">⭐ Премиум</div>
+        <h3>5S — Система организации</h3>
+        <p>Сортировка, соблюдение порядка, содержание, стандартизация, совершенствование. Полная методология.</p>
+        <div class="tags"><span class="tag">5S</span><span class="tag">гемба</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/5s_NotePad_JS.html" target="_blank" class="btn btn-outline">Читать →</a>
+      </div>
+      <div class="doc-card" data-type="premium">
+        <div class="type-label type-premium">⭐ Премиум</div>
+        <h3>Process Flow Chart</h3>
+        <p>Диаграмма потока процессов в производстве: условные обозначения, построение, анализ.</p>
+        <div class="tags"><span class="tag">PFD</span><span class="tag">схема</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/Process%20Flow%20Chart%20Diagramme.html" target="_blank" class="btn btn-outline">Читать →</a>
+      </div>
+      <div class="doc-card" data-type="premium">
+        <div class="type-label type-premium">⭐ Премиум</div>
+        <h3>Fishbone (Исикава)</h3>
+        <p>Диаграмма причинно-следственных связей. Метод 5 Why, категории 6M, примеры построения.</p>
+        <div class="tags"><span class="tag">Исикава</span><span class="tag">5 Why</span><span class="tag">6M</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/Fishbone%20(Ishikawa)%20Diagram_7QC.html" target="_blank" class="btn btn-outline">Читать →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+    <!-- ===== БЕСПЛАТНЫЕ СТАТЬИ ===== -->
+    <section class="section" id="articles">
+    <div class="container">
+    <h2>📖 Бесплатные статьи</h2>
+    <p class="text-muted" style="margin-bottom:1.25rem;">Теоретические материалы, определения, разборы — бесплатно.</p>
+    <div class="docs-grid">
+      <div class="doc-card" data-type="article">
+        <div class="type-label type-free">📖 Статья</div>
+        <h3>QA vs QC — определения</h3>
+        <p>Чёткое разграничение Quality Assurance и Quality Control. Примеры и задачи для понимания.</p>
+        <div class="tags"><span class="tag">QA</span><span class="tag">QC</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/QA%20vs%20QC%20Defination.html" target="_blank" class="btn btn-outline">Читать →</a>
+      </div>
+      <div class="doc-card" data-type="article">
+        <div class="type-label type-free">📖 Статья</div>
+        <h3>Least Count приборов</h3>
+        <p>Минимальная цена деления измерительных инструментов. Таблица для всех типов приборов.</p>
+        <div class="tags"><span class="tag">измерения</span><span class="tag">цена деления</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/Least%20Count%20of%20All%20QC%20Instrument.html.html" target="_blank" class="btn btn-outline">Читать →</a>
+      </div>
+      <div class="doc-card" data-type="article">
+        <div class="type-label type-free">📖 Статья</div>
+        <h3>18 документов PPAP</h3>
+        <p>Полный список 18 обязательных документов для PPAP. Требования AIAG и IATF 16949.</p>
+        <div class="tags"><span class="tag">PPAP</span><span class="tag">18 требований</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/18%20Documents%20lists%20of%20PPAP.html" target="_blank" class="btn btn-outline">Читать →</a>
+      </div>
+      <div class="doc-card" data-type="article">
+        <div class="type-label type-free">📖 Статья</div>
+        <h3>5 Core Tool Introduction</h3>
+        <p>Введение в пять основных инструментов качества: APQP, PFMEA, PPAP, MSA, SPC. Краткий обзор.</p>
+        <div class="tags"><span class="tag">Core Tools</span><span class="tag">AIAG</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/5%20Core%20Tool%20Introduction.html.html" target="_blank" class="btn btn-outline">Читать →</a>
+      </div>
+      <div class="doc-card" data-type="article">
+        <div class="type-label type-free">📖 Статья</div>
+        <h3>Importance of QA & QC</h3>
+        <p>Почему управление качеством критично для бизнеса. Роль QA и QC в производстве.</p>
+        <div class="tags"><span class="tag">QA</span><span class="tag">QC</span><span class="tag">бизнес</span></div>
+        <a href="../OneDrive/Desktop/Сайт/сайт%20по%20качеству/Importance%20of%20QA%20%26%20QC.html.html" target="_blank" class="btn btn-outline">Читать →</a>
+      </div>
+    </div>
+    </div>
+    </section>
+
+<!-- ===== PRICING ===== -->
+<section class="section" style="background:#fff;">
+  <div class="container">
+    <h2 style="text-align:center;">Выберите доступ</h2>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <h3>📄 Поштучно</h3>
+        <div class="price">250 ₽ <span>за документ</span></div>
+        <p class="desc">Любой премиум-документ отдельно.</p>
+        <ul>
+          <li>Один документ PDF</li>
+          <li>Без подписки</li>
+          <li class="muted">— Все премиум-материалы</li>
+          <li class="muted">— Обновления</li>
+        </ul>
+        <button class="btn-buy" onclick="alert('Демо-версия. Оплата будет подключена')">Выбрать →</button>
+      </div>
+      <div class="price-card featured">
+        <h3>💎 Премиум</h3>
+        <div class="price">3 500 ₽ <span>50 генераций</span></div>
+        <p class="desc">50 заполнений любых форм — FMEA, Control Plan, PSW, Company Info, Material Test Report. На все документы.</p>
+        <ul>
+          <li>50 генераций любых документов</li>
+          <li>FMEA, Control Plan, PSW, и другие</li>
+          <li>Премиум-материалы в подарок</li>
+          <li>Доступ в Telegram-чат</li>
+          <li>14 дней на возврат</li>
+        </ul>
+        <button class="btn-buy" onclick="alert('Демо-версия. Оплата будет подключена')">Купить доступ</button>
+      </div>
+      <div class="price-card">
+        <h3>🆓 Бесплатно</h3>
+        <div class="price">$0</div>
+        <p class="desc">Генераторы PDF: FMEA, Control Plan, PSW, Company Info, Material Test Report.</p>
+        <ul>
+          <li>5 генераторов PDF</li>
+          <li>Статьи и разборы</li>
+          <li>Без регистрации</li>
+          <li class="muted">— Премиум-материалы</li>
+          <li class="muted">— Telegram-чат</li>
+        </ul>
+        <a href="лендинг_Ирина_Буцкая.html" class="btn-buy" style="background:#64748b;">На лендинг →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="section">
+  <div class="container">
+    <h2 style="text-align:center;">Часто задаваемые вопросы</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">Какие документы входят в премиум-доступ?</div>
+        <div class="faq-a">APQP, PPAP, PFMEA, SPC (полный набор карт и Cp/Cpk), MSA / Gage R&R, 7 QC Tools, 5S, Process Flow Chart, Fishbone (Исикава), Kaizen и другие. Полный список — в разделе «Премиум» выше.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">В чём разница между бесплатными генераторами и платными материалами?</div>
+        <div class="faq-a">Бесплатные генераторы (FMEA, Control Plan, PSW и др.) — это интерактивные формы на сайте. Вы заполняете — получаете PDF. Премиум — это готовые PDF-документы для скачивания, разборы методологий и справочные материалы.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Сколько стоит премиум-доступ?</div>
+        <div class="faq-a">3 500 ₽ единоразово. Все обновления и новые материалы — бесплатно. Никаких подписок.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Можно ли купить один документ?</div>
+        <div class="faq-a">Да, по 250 ₽ за документ. Например, Kaizen — 250 ₽. После оплаты приходит PDF на почту.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Документы соответствуют ISO 9001 / IATF 16949?</div>
+        <div class="faq-a">Да. Все документы разработаны на основе AIAG & VDA Core Tools и прошли аудиты UL, TÜV, BSI.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Как я получу доступ после оплаты?</div>
+        <div class="faq-a">Ссылка на скачивание архива и письмо на почту. Для премиум-доступа — дополнительно доступ в Telegram-чат.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GUARANTEE ===== -->
+<div class="guarantee container">
+  <strong>14 дней на возврат</strong> — если не подошло, вернём деньги. Напишите на <a href="mailto:butskaya.irina.evg@gmail.com" style="color:#C9A84C;">butskaya.irina.evg@gmail.com</a>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <a href="лендинг_Ирина_Буцкая.html" style="font-family:'Playfair Display',Georgia,serif; font-weight:600; font-size:1.1rem;">QDoc — Ирина Буцкая</a>
+      <div class="footer-links">
+        <a href="лендинг_Ирина_Буцкая.html">На главную</a>
+        <a href="mailto:butskaya.irina.evg@gmail.com">Связаться</a>
+        <a href="https://t.me/Irina_Butskaya" target="_blank">Telegram</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© Ирина Буцкая, 2026</span>
+      <span>butskaya.irina.evg@gmail.com</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function filterDocs(type, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.doc-card').forEach(card => {
+    if (type === 'all' || card.dataset.type === type) {
+      card.classList.remove('hidden');
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+  document.querySelectorAll('h2').forEach(h => {
+    const id = h.id;
+    if (type === 'all') { h.classList.remove('hidden'); }
+    else if (id === 'free' && type === 'free') { h.classList.remove('hidden'); }
+    else if (id === 'articles' && type === 'article') { h.classList.remove('hidden'); }
+    else if (id === 'premium' && type === 'premium') { h.classList.remove('hidden'); }
+    else if (id === 'pay' && type === 'pay') { h.classList.remove('hidden'); }
+    else { h.classList.add('hidden'); }
+  });
+}
+</script>
+
+</body>
+</html>

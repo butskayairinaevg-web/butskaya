@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PPAP — Production Part Approval Process</title>
+  <style>
+    /* -------------------------
+       Variables & base styles
+       ------------------------- */
+    :root{
+      --bg:#0f1724;
+      --card-bg: rgba(255,255,255,0.04);
+      --glass: rgba(255,255,255,0.045);
+      --muted: rgba(255,255,255,0.75);
+      --accent: #ffffff;
+      --red-heading: #e63946;
+      --max-width: 1100px;
+      --radius: 14px;
+      --glass-border: rgba(255,255,255,0.06);
+      --shadow: 0 8px 30px rgba(2,6,23,0.6);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    html,body{
+      height:100%;
+      margin:0;
+      background: radial-gradient(1200px 400px at 10% 10%, rgba(123,31,162,0.15), transparent 10%),
+                  radial-gradient(1000px 350px at 95% 90%, rgba(2,136,209,0.12), transparent 10%),
+                  linear-gradient(135deg,#060819 0%, #081022 25%, #0b1223 50%, #071233 100%);
+      color: #e6eef8;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      scroll-behavior: smooth;
+    }
+
+    /* Animated multicolor gradient border */
+    .rainbow-border {
+      --g: linear-gradient(90deg,
+        rgba(255,77,77,0.9), rgba(255,147,51,0.9),
+        rgba(255,227,51,0.9), rgba(85,255,127,0.9),
+        rgba(51,184,255,0.9), rgba(147,77,255,0.9));
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));
+      position: relative;
+      border-radius: var(--radius);
+      padding: 1px;
+    }
+    .rainbow-border::before{
+      content:"";
+      position:absolute;
+      inset: -2px;
+      z-index:-1;
+      border-radius: calc(var(--radius) + 2px);
+      background: conic-gradient(from 0deg, rgba(255,77,77,0.9), rgba(255,147,51,0.9), rgba(255,227,51,0.9), rgba(85,255,127,0.9), rgba(51,184,255,0.9), rgba(147,77,255,0.9), rgba(255,77,77,0.9));
+      filter: blur(18px);
+      opacity:0.85;
+      animation: hue 12s linear infinite;
+    }
+    @keyframes hue {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Layout */
+    .container{
+      max-width: var(--max-width);
+      margin: 40px auto;
+      padding: 28px;
+    }
+
+    header{
+      display:flex;
+      gap:20px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:18px;
+    }
+
+    .brand{
+      display:flex;
+      gap:14px;
+      align-items:center;
+    }
+
+    .logo {
+      width:64px;
+      height:64px;
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), var(--shadow);
+      font-weight:700;
+      font-size:16px;
+      letter-spacing:0.6px;
+      color:var(--accent);
+    }
+
+    h1{
+      margin:0;
+      font-size:22px;
+      line-height:1.05;
+    }
+    p.lead{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    /* Sticky nav */
+    nav.toc {
+      position: sticky;
+      top:18px;
+      align-self:start;
+      width:220px;
+      padding:14px;
+      border-radius:12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid var(--glass-border);
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      font-size:14px;
+      box-shadow: var(--shadow);
+      height:fit-content;
+    }
+    nav.toc a{
+      color:var(--muted);
+      text-decoration:none;
+      padding:8px;
+      border-radius:8px;
+      display:block;
+    }
+    nav.toc a.active, nav.toc a:hover{
+      color: white;
+      background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    }
+
+    /* Layout grid */
+    .main-grid{
+      display:grid;
+      grid-template-columns: 1fr 320px;
+      gap:22px;
+      align-items:start;
+    }
+
+    /* Content card */
+    .card{
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding:24px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 20px 50px rgba(2,6,23,0.6);
+    }
+
+    .section{
+      margin-bottom:20px;
+      opacity:0;
+      transform: translateY(18px) scale(0.995);
+      transition: all 700ms cubic-bezier(.2,.9,.25,1);
+      will-change: transform, opacity;
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .section.is-visible{
+      opacity:1;
+      transform: translateY(0) scale(1);
+    }
+
+    h2{
+      margin:4px 0 10px 0;
+      font-size:18px;
+      color:var(--red-heading);
+    }
+
+    p, li{
+      color: #dce9ff;
+      font-size:14px;
+      line-height:1.6;
+      margin:0 0 10px 0;
+    }
+
+    ul, ol{
+      margin:0 0 12px 18px;
+      padding:0;
+    }
+
+    /* Details / toggle */
+    .toggle {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      cursor:pointer;
+      padding:10px;
+      border-radius:10px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+      border:1px dashed rgba(255,255,255,0.02);
+    }
+    .toggle small{ color:var(--muted); font-size:12px; }
+
+    .expand {
+      max-height:0;
+      overflow:hidden;
+      transition: max-height 500ms ease;
+    }
+    .expand.open { max-height: 2000px; }
+
+    /* Fancy cards inside */
+    .mini-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+      gap:12px;
+      margin-top:12px;
+    }
+    .mini{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      padding:12px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.02);
+      font-size:13px;
+    }
+    .mini h4{ margin:4px 0; font-size:13px; color:var(--accent); }
+    .mini p{ margin:0; color:var(--muted); font-size:13px; }
+
+    footer {
+      margin-top:18px;
+      color:var(--muted);
+      font-size:13px;
+      text-align:center;
+    }
+
+    /* Progress indicator */
+    .progress-wrap{
+      position:fixed;
+      left:18px;
+      bottom:18px;
+      background: rgba(0,0,0,0.32);
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.04);
+      font-size:13px;
+      color:var(--muted);
+      display:flex;
+      gap:10px;
+      align-items:center;
+      z-index:9999;
+      backdrop-filter: blur(6px);
+    }
+
+    .progress{
+      width:160px;
+      height:8px;
+      background: rgba(255,255,255,0.04);
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .progress > i{
+      display:block;
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(255,77,77,0.95), rgba(255,147,51,0.95), rgba(51,184,255,0.95));
+      transition: width 300ms linear;
+      border-radius:999px;
+    }
+
+    /* Responsive */
+    @media (max-width:980px){
+      .main-grid{ grid-template-columns: 1fr; }
+      nav.toc{ position:relative; width:100%; display:flex; flex-direction:row; overflow:auto; gap:6px; padding:8px; }
+      nav.toc a{ white-space:nowrap; }
+      .container{ padding:16px; margin:18px auto; }
+      .progress-wrap{ left:50%; transform:translateX(-50%); }
+    }
+
+    /* small interactive touches */
+    a.anchor{
+      text-decoration:none;
+      color:var(--muted);
+      font-weight:600;
+      font-size:13px;
+    }
+    .chip{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03);
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    /* small print look */
+    .code{
+      background: rgba(0,0,0,0.25);
+      padding:8px;
+      border-radius:8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+      font-size:13px;
+      color:#bfe1ff;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container rainbow-border">
+    <header>
+      <div class="brand">
+        <div class="logo">PPAP</div>
+        <div>
+          <h1>Production Part Approval Process (PPAP)</h1>
+          <p class="lead">Comprehensive PPAP content — professionally styled, interactive and animated.</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <span class="chip">Multicolor Gradient • Scroll Page</span>
+        <a class="anchor" href="#overview">Jump to Overview</a>
+      </div>
+    </header>
+
+    <div class="main-grid">
+      <!-- Left: content -->
+      <main class="card" id="content-area" style="min-height:600px">
+        <!-- Section: Overview -->
+        <section id="overview" class="section">
+          <h2>Overview:</h2>
+          <p>PPAP is a key quality core tool in the manufacturing industry, especially automotive, used to establish confidence in suppliers and their manufacturing processes.</p>
+          <p>It is a documentation process to create and submit required documents to the customer during the new product development stage.</p>
+          <p>One important PPAP document is Checking Aids, which provides a list of all measurement equipment used in inspections.</p>
+        </section>
+
+        <section id="relation-apqp" class="section">
+          <h2>Relation to APQP:</h2>
+          <p>PPAP is a critical core tool of IATF 16949:2016 and is triggered in Phase 4 – Product and Process Validation of the APQP process.</p>
+          <p>Other IATF 16949 core tools include:</p>
+          <ul>
+            <li>APQP (Advanced Product Quality Planning)</li>
+            <li>FMEA (Failure Mode and Effects Analysis)</li>
+            <li>MSA (Measurement System Analysis)</li>
+            <li>SPC (Statistical Process Control)</li>
+          </ul>
+        </section>
+
+        <section id="scope" class="section">
+          <h2>Scope:</h2>
+          <p>Originally, PPAP was used primarily in automotive and aerospace industries.</p>
+          <p>Now, it is applied in non-automotive industries as well to improve product and process quality, enhance communication, and increase customer satisfaction.</p>
+          <p>PPAP documentation applies to production and service commodities, including bulk materials. For bulk, raw, or indirect materials, the requirement for PPAP is decided by the customer.</p>
+        </section>
+
+        <section id="when-required" class="section">
+          <h2>When PPAP Submission is Required:</h2>
+          <p>PPAP is generally required before the first production shipment in the following situations:</p>
+          <ul>
+            <li>New product development</li>
+            <li>Changes or corrections to previously submitted products</li>
+            <li>Product modifications due to Engineering Change Notices (ECN)</li>
+            <li>Production using new or modified dies, molds, tools, or patterns</li>
+            <li>Changes in manufacturing methods or processes</li>
+            <li>Changes in machines or raw materials</li>
+            <li>Changes in subcontractor or sub-supplier parts, materials, or services</li>
+            <li>Production tooling or machinery inactive for 12 months or more</li>
+          </ul>
+        </section>
+
+        <section id="elements" class="section">
+          <h2>PPAP Elements / Documents:</h2>
+          <p>Total of 18 documents, including Checking Aids, design records, DFMEA, PFMEA, control plans, process flow charts, and test results.</p>
+        </section>
+
+        <section id="benefits" class="section">
+          <h2>Benefits:</h2>
+          <ul>
+            <li>Confirms that production parts meet customer requirements</li>
+            <li>Reduces risks of non-conformance after product launch</li>
+            <li>Establishes supplier process reliability and capability</li>
+            <li>Supports defect-free product launches</li>
+          </ul>
+        </section>
+
+        <section id="checking-aids" class="section">
+          <h2>Checking Aids in PPAP</h2>
+          <p><strong>Definition:</strong><br>
+          Tools, fixtures, gauges, or equipment used to measure parts, verify tolerances, and ensure products meet customer specifications. They support PPAP submission by confirming part quality.</p>
+
+          <p><strong>Types:</strong></p>
+          <ul>
+            <li>Gauges – Go/No-Go, profile, height, thread gauges</li>
+            <li>Measurement Devices – Micrometer, Vernier Caliper, CMM</li>
+            <li>Fixtures – Hold parts for accurate inspection</li>
+            <li>Visual Aids – Inspection templates, shadow boards</li>
+            <li>Test Equipment – Functional testing of assemblies</li>
+          </ul>
+
+          <p><strong>Importance:</strong></p>
+          <ul>
+            <li>Ensures accuracy and precision</li>
+            <li>Maintains consistent quality</li>
+            <li>Prevents errors in inspection</li>
+            <li>Provides documentation and traceability</li>
+          </ul>
+
+          <p><strong>Steps to Create Checking Aids Document:</strong></p>
+          <p>Understand design record (drawing)</p>
+          <p>List all part dimensions and special characteristic</p>
+          <p>Compile data in a standardized checking aids template</p>
+
+          <div style="margin-top:10px" class="toggle" data-target="checking-example">
+            <div>
+              <strong>Example Format — Checking Aids Document</strong>
+              <div style="font-size:12px;color:var(--muted)">Click to expand the sample table</div>
+            </div>
+            <small>open</small>
+          </div>
+          <div id="checking-example" class="expand">
+            <div class="mini-grid" style="margin-top:12px">
+              <div class="mini">
+                <h4>Title: Checking Aids Document</h4>
+                <p>S. No. / Equipment Name / Equipment ID / Specification / Calibration / Frequency / Remarks</p>
+              </div>
+              <div class="mini">
+                <h4>1</h4>
+                <p>Vernier Caliper — VC-001 — Ø 25 mm (±0.05 mm) — Calibrated on 01/07/25, Valid till 01/07/26 — Daily — OK</p>
+              </div>
+              <div class="mini">
+                <h4>2</h4>
+                <p>Checking Fixture — CF-002 — Hole Pitch 50 mm (±0.1 mm) — Calibrated on 15/06/25, Valid till 15/06/26 — Per Lot — OK</p>
+              </div>
+              <div class="mini">
+                <h4>3</h4>
+                <p>Thread Gauge — TG-005 — M12 x 1.75 — Calibrated on 10/08/25, Valid till 10/08/26 — As Required — OK</p>
+              </div>
+            </div>
+            <p style="margin-top:10px">✅ Steps to Prepare:</p>
+            <ol>
+              <li>List all checking aids used in your inspection process.</li>
+              <li>Assign a unique ID to each aid/tool/fixture.</li>
+              <li>Record the specification or dimension that each checking aid verifies.</li>
+              <li>Add calibration details (date, due date, certificate reference).</li>
+              <li>Mention usage frequency (per lot, daily, weekly, etc.).</li>
+              <li>Keep remarks column for audit or special notes.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="supporting-docs" class="section">
+          <h2>What Other Documents Do Checking Aids Support in PPAP?</h2>
+          <p>Checking aids are not standalone—they are directly linked with several other PPAP documents. Their role ensures that measurements, inspection, and control methods remain consistent across the PPAP submission package.</p>
+
+          <ol>
+            <li><strong>Dimensional Results</strong><br>Checking aids are used to verify and measure all dimensions listed in the Dimensional Results sheet. They ensure that the part dimensions match customer drawings and tolerances.</li>
+            <li><strong>Measurement System Analysis (MSA)</strong><br>All checking aids (gauges, fixtures, measuring instruments) must undergo MSA studies. The same checking aids listed in PPAP should appear in the MSA Plan and Reports.</li>
+            <li><strong>Layout Inspection Report</strong><br>A Layout Inspection verifies all part dimensions as per drawing. The checking aids mentioned in the PPAP document should also be used for layout inspection, ensuring consistency.</li>
+            <li><strong>Control Plan</strong><br>The Control Plan defines how product and process characteristics will be measured. The measurement methods and instruments listed in the Checking Aids Document must match the ones in the Control Plan.</li>
+          </ol>
+
+          <p><strong>✅ Audit Relevance:</strong></p>
+          <p>During Process Audits or Layered Process Audits (LPA), auditors often cross-check the consistency between Checking Aids, Dimensional Results, Layout Inspection, and Control Plan.</p>
+          <p>Any mismatch may lead to audit findings or PPAP rejection.</p>
+        </section>
+
+        <section id="conclusion" class="section">
+          <h2>Conclusion</h2>
+          <p>Checking Aids Document is an important part of the PPAP package.</p>
+          <p>It serves as evidence of which inspection methods and measuring devices are used to qualify the part.</p>
+          <p>This document must be submitted along with other PPAP requirements and approved by the customer.</p>
+        </section>
+
+        <section id="submission-levels" class="section">
+          <h2>PPAP Submission Levels</h2>
+          <p><strong>Level 1 – Basic Submission</strong><br>Part Submission Warrant (PSW) only. Appearance Approval Report (AAR) included if required.</p>
+          <p><strong>Level 2 – Limited Submission</strong><br>PSW with product samples. Limited supporting documents as requested by the customer.</p>
+          <p><strong>Level 3 – Full Submission (Default Level)</strong><br>PSW with product samples. Complete supporting documentation package. ✅ This is the default submission level for PPAP unless the customer specifies otherwise.</p>
+          <p><strong>Level 4 – Customer-Specific Submission</strong><br>PSW along with other specific requirements defined by the customer. Content depends on customer request.</p>
+          <p><strong>Level 5 – On-Site Submission</strong><br>PSW with product samples. Complete supporting documents retained at supplier’s location. Documents must be available for customer review at any time.</p>
+          <p>👉 Note: If the customer does not define a PPAP submission level, Level 3 is followed as the standard/default requirement.</p>
+        </section>
+
+        <section id="ppap-documents" class="section">
+          <h2>PPAP Documents | PPAP Elements</h2>
+          <p>PPAP has 18 documents as per IATF 16949:2016 requirements and all of these are listed below:</p>
+
+          <div class="mini-grid" style="margin-top:8px">
+            <div class="mini">
+              <h4>1 Design Records</h4>
+              <p>Customer’s part drawing or specification.</p>
+            </div>
+            <div class="mini">
+              <h4>2 Engineering Change Note</h4>
+              <p>Any authorized engineering change documents not yet updated in the design record but implemented in the part.</p>
+            </div>
+            <div class="mini">
+              <h4>3 Customer Engineering Approval</h4>
+              <p>Formal approval from customer engineering (if required).</p>
+            </div>
+            <div class="mini">
+              <h4>4 DFMEA</h4>
+              <p>Design Failure Mode and Effects Analysis – identifies design risks.</p>
+            </div>
+            <div class="mini">
+              <h4>5 PFD</h4>
+              <p>Process Flow Diagram – shows the sequence of manufacturing steps.</p>
+            </div>
+            <div class="mini">
+              <h4>6 PFMEA</h4>
+              <p>Process Failure Mode and Effects Analysis – identifies process risks.</p>
+            </div>
+            <div class="mini">
+              <h4>7 Control Plan</h4>
+              <p>Defines control methods for product and process characteristics.</p>
+            </div>
+            <div class="mini">
+              <h4>8 MSA</h4>
+              <p>Measurement System Analysis (e.g., Gage R&R studies).</p>
+            </div>
+            <div class="mini">
+              <h4>9 Dimensional Results</h4>
+              <p>Product Layout Inspection results as per customer-approved drawing.</p>
+            </div>
+            <div class="mini">
+              <h4>10 Performance Test Reports</h4>
+              <p>Test results for parts with color, grain, or surface requirements.</p>
+            </div>
+            <div class="mini">
+              <h4>11 Initial Process Capability Studies</h4>
+              <p>SPC Studies to demonstrate process stability and capability.</p>
+            </div>
+            <div class="mini">
+              <h4>12 Qualified Laboratory Documentation</h4>
+              <p>Evidence that testing is done in a certified/qualified lab.</p>
+            </div>
+            <div class="mini">
+              <h4>13 Appearance Approval Report (AAR)</h4>
+              <p>Required for parts with appearance requirements.</p>
+            </div>
+            <div class="mini">
+              <h4>14 Production Sample Parts</h4>
+              <p>Actual sample parts submitted to customer for validation.</p>
+            </div>
+            <div class="mini">
+              <h4>15 Master Sample</h4>
+              <p>A sample part signed off by customer, retained as reference.</p>
+            </div>
+            <div class="mini">
+              <h4>16 Checking Aids</h4>
+              <p>Gauges, fixtures, and instruments used for inspection/testing.</p>
+            </div>
+            <div class="mini">
+              <h4>17 Customer-Specific Requirements</h4>
+              <p>Any additional documents required by the customer.</p>
+            </div>
+            <div class="mini">
+              <h4>18 Part Submission Warrant (PSW)</h4>
+              <p>Summary document of the entire PPAP submission.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="perfect" class="section">
+          <h2>Perfect</h2>
+          <p>Let me rewrite this into a clear and professional explanation of the PPAP Process Requirements (Significant Production Run) so you can directly use it in your notes, training material, or audit preparation.</p>
+        </section>
+
+        <section id="process-req" class="section">
+          <h2>PPAP Process Requirements</h2>
+          <ol>
+            <li><strong>Significant Production Run</strong><br>Parts submitted for PPAP must be produced during a significant production run.</li>
+          </ol>
+          <p>This run should be:</p>
+          <ul>
+            <li>1 hour to 8 hours, or</li>
+            <li>One full shift of production, and</li>
+            <li>With a minimum of 300 parts (unless otherwise defined by the authorized customer quality representative).</li>
+          </ul>
+
+          <p><strong>Production Conditions</strong></p>
+          <p>Production parts must be manufactured at the actual production site. They must use the same tooling, gauging, process, materials, and operators as in normal mass production.</p>
+
+          <p><strong>Process Control Requirements</strong></p>
+          <p>During the production trial run: The Control Plan and Process Flow Diagram must be available at the production site. These documents must be strictly followed to meet customer requirements.</p>
+
+          <p><strong>Timing in APQP</strong></p>
+          <p>The PPAP production trial run is conducted in the fourth phase of APQP (Process Validation Phase). The purpose is to validate that the process is stable, repeatable, and capable of producing parts consistently.</p>
+
+          <p>👉 Summary: A significant production run is a key requirement in PPAP. It proves that the supplier can consistently manufacture customer-approved parts under actual production conditions, using defined processes and controls.</p>
+        </section>
+
+        <section id="ppap-benefits" class="section">
+          <h2>PPAP – Benefits</h2>
+          <ul>
+            <li>Better Quality of Products and Services — Ensures that products meet customer specifications and performance requirements.</li>
+            <li>Enhanced Customer Satisfaction — Reliable quality builds customer trust and long-term relationships.</li>
+            <li>Cost Reduction — Minimises costs from poor quality, rework, warranty claims, and product returns.</li>
+            <li>Improved Communication — Strengthens collaboration and clarity between internal teams (design, production, quality) and external customers.</li>
+            <li>Reduced Risk of Failure — By validating processes early, PPAP reduces the chances of failure during the APQP process.</li>
+          </ul>
+
+          <p><strong>PPAP vs APQP</strong></p>
+          <p><strong>APQP (Advanced Product Quality Planning):</strong> A structured framework for planning and defining how a product will be developed and produced. Covers the entire product lifecycle (design → process development → validation → production).</p>
+          <p><strong>PPAP (Production Part Approval Process):</strong> A subset of APQP, focused on ensuring that the manufacturing process produces parts that meet customer requirements consistently. Acts as the evidence of APQP effectiveness.</p>
+
+          <p><strong>Relationship between PPAP and APQP</strong></p>
+          <p>PPAP is an output of APQP. If PPAP fails to meet customer requirements → it indicates that APQP was not implemented effectively. The true test of both PPAP and APQP is during the production trial run. If non-conformances or defects appear in finished product samples, the Cross-Functional Team (CFT) must investigate root causes and close the gaps in both processes.</p>
+        </section>
+
+        <section id="table" class="section">
+          <h2>Quick PPAP Table (S. No. / Document Name / Meaning / Hinglish)</h2>
+          <div class="mini-grid">
+            <div class="mini">
+              <h4>1</h4>
+              <p><strong>Design Records</strong><br>Customer part drawing/specification.<br><em>Customer ka part drawing/specification.</em></p>
+            </div>
+            <div class="mini">
+              <h4>2</h4>
+              <p><strong>Engineering Change Note</strong><br>Approved design changes not yet in drawing.<br><em>Design me approved change jo drawing me update nahi hua.</em></p>
+            </div>
+            <div class="mini">
+              <h4>3</h4>
+              <p><strong>Customer Engineering Approval</strong><br>Formal customer approval.<br><em>Customer engineering team ki approval.</em></p>
+            </div>
+            <div class="mini">
+              <h4>4</h4>
+              <p><strong>DFMEA</strong><br>Design risk analysis.<br><em>Design me galti aur risk ka study.</em></p>
+            </div>
+            <div class="mini">
+              <h4>5</h4>
+              <p><strong>Process Flow Diagram (PFD)</strong><br>Steps of manufacturing.<br><em>Manufacturing process ka step-by-step flow.</em></p>
+            </div>
+            <div class="mini">
+              <h4>6</h4>
+              <p><strong>PFMEA</strong><br>Process risk analysis.<br><em>Process me galti aur uska effect ka study.</em></p>
+            </div>
+            <div class="mini">
+              <h4>7</h4>
+              <p><strong>Control Plan</strong><br>Method to control/measure product & process.<br><em>Product/process ko kaise control aur check karenge.</em></p>
+            </div>
+            <div class="mini">
+              <h4>8</h4>
+              <p><strong>MSA</strong><br>Measurement system study (Gage R&R).<br><em>Measuring tools ki reliability check.</em></p>
+            </div>
+            <div class="mini">
+              <h4>9</h4>
+              <p><strong>Dimensional Results</strong><br>Part measurements as per drawing.<br><em>Drawing ke hisaab se part ke measurement results.</em></p>
+            </div>
+            <div class="mini">
+              <h4>10</h4>
+              <p><strong>Performance Test Results</strong><br>Functional/appearance test reports.<br><em>Part ke function aur look/finish ke test results.</em></p>
+            </div>
+            <div class="mini">
+              <h4>11</h4>
+              <p><strong>Initial Process Capability (SPC)</strong><br>Proof of stable & capable process.<br><em>Process stable hai ya nahi uska proof.</em></p>
+            </div>
+            <div class="mini">
+              <h4>12</h4>
+              <p><strong>Qualified Lab Documentation</strong><br>Testing in certified lab.<br><em>Proof ki testing certified lab me hui.</em></p>
+            </div>
+            <div class="mini">
+              <h4>13</h4>
+              <p><strong>Appearance Approval Report (AAR)</strong><br>Approval for colour/finish.<br><em>Part ke colour/finish/look ki approval.</em></p>
+            </div>
+            <div class="mini">
+              <h4>14</h4>
+              <p><strong>Production Sample Parts</strong><br>Parts made in actual production.<br><em>Production run se bane original parts.</em></p>
+            </div>
+            <div class="mini">
+              <h4>15</h4>
+              <p><strong>Master Sample</strong><br>Customer approved reference sample.<br><em>Customer se approved sample jo reference ke liye rakha jata hai.</em></p>
+            </div>
+            <div class="mini">
+              <h4>16</h4>
+              <p><strong>Checking Aids</strong><br>Tools/fixtures for inspection.<br><em>Parts ko check karne ke tools/gauges.</em></p>
+            </div>
+            <div class="mini">
+              <h4>17</h4>
+              <p><strong>Customer-Specific Requirements</strong><br>Extra customer requirements.<br><em>Customer ke special extra documents.</em></p>
+            </div>
+            <div class="mini">
+              <h4>18</h4>
+              <p><strong>Part Submission Warrant (PSW)</strong><br>Final PPAP summary document.<br><em>Pure PPAP submission ka summary document.</em></p>
+            </div>
+          </div>
+        </section>
+
+        <footer>
+          <div style="opacity:0.9">PPAP content — presented with animated, multicolor gradient design. Built for training & presentation.</div>
+        </footer>
+      </main>
+
+      <!-- Right: nav -->
+      <aside>
+        <nav class="toc" aria-label="Table of contents">
+          <a href="#overview">Overview</a>
+          <a href="#relation-apqp">Relation to APQP</a>
+          <a href="#scope">Scope</a>
+          <a href="#when-required">When Submission Required</a>
+          <a href="#elements">PPAP Elements</a>
+          <a href="#benefits">Benefits</a>
+          <a href="#checking-aids">Checking Aids</a>
+          <a href="#supporting-docs">Supporting Docs</a>
+          <a href="#submission-levels">Submission Levels</a>
+          <a href="#ppap-documents">PPAP Documents</a>
+          <a href="#process-req">Process Requirements</a>
+          <a href="#ppap-benefits">PPAP vs APQP</a>
+          <a href="#table">Quick Table</a>
+        </nav>
+      </aside>
+    </div>
+  </div>
+
+  <div class="progress-wrap" aria-hidden="false">
+    <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+      <i></i>
+    </div>
+    <div style="min-width:60px;text-align:right">0%</div>
+  </div>
+
+  <script>
+    // Intersection Observer to animate sections
+    const sections = document.querySelectorAll('.section');
+    const options = { threshold: 0.12 };
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+        }
+      });
+    }, options);
+    sections.forEach(s=>obs.observe(s));
+
+    // Toggle expand/collapse for example
+    document.querySelectorAll('.toggle').forEach(btn=>{
+      btn.addEventListener('click', ()=> {
+        const target = document.getElementById(btn.dataset.target);
+        const small = btn.querySelector('small');
+        if(target.classList.contains('open')){
+          target.classList.remove('open');
+          small.textContent = 'open';
+        } else {
+          target.classList.add('open');
+          small.textContent = 'close';
+        }
+      });
+    });
+
+    // Highlight TOC as you scroll
+    const tocLinks = document.querySelectorAll('nav.toc a');
+    function onScroll(){
+      const fromTop = window.scrollY + 120;
+      sections.forEach(section=>{
+        if(section.offsetTop <= fromTop && (section.offsetTop + section.offsetHeight) > fromTop){
+          const id = section.id;
+          tocLinks.forEach(a=>{
+            a.classList.toggle('active', a.getAttribute('href') === '#'+id);
+          });
+        }
+      });
+
+      // progress bar
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (window.scrollY / scrollable) * 100;
+      const prog = document.querySelector('.progress > i');
+      const label = document.querySelector('.progress-wrap div:last-child');
+      if(prog) prog.style.width = Math.min(100,Math.max(0,scrolled)) + '%';
+      if(label) label.textContent = Math.round(Math.min(100,Math.max(0,scrolled))) + '%';
+    }
+    window.addEventListener('scroll', onScroll);
+    window.addEventListener('resize', onScroll);
+    onScroll();
+
+    // Smooth scrolling offsets for fixed header
+    document.querySelectorAll('nav.toc a, a.anchor').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const target = document.querySelector(a.getAttribute('href'));
+        if(!target) return;
+        const y = target.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      });
+    });
+
+    // Small keyboard support (j/k to move)
+    let idx = 0;
+    const ids = Array.from(sections).map(s=>s.id);
+    window.addEventListener('keydown', (e)=>{
+      if(e.key === 'j'){
+        idx = Math.min(ids.length-1, idx+1);
+        document.getElementById(ids[idx]).scrollIntoView({behavior:'smooth', block:'start'});
+      } else if(e.key === 'k'){
+        idx = Math.max(0, idx-1);
+        document.getElementById(ids[idx]).scrollIntoView({behavior:'smooth', block:'start'});
+      }
+    });
+  </script>
+</body>
+</html>

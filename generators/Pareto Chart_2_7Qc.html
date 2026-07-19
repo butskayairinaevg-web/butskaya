@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pareto Chart – Professional Leaf Theme</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg-main:#0e2a33;
+  --bg-panel:#0b1f28;
+  --bg-card:#071a22;
+  --accent:#d6b25a;
+  --green:#4f9b3d;
+  --red:#b3212e;
+  --text:#f8fafc;
+  --muted:#9fb3bf;
+  --border:rgba(255,255,255,0.12);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Poppins,system-ui;
+  background:
+    radial-gradient(circle at top, #1b4a56, transparent 55%),
+    linear-gradient(180deg,#0e2a33,#06141b);
+  min-height:100vh;
+  color:var(--text);
+  display:flex;
+  justify-content:center;
+  padding:30px 12px;
+}
+.container{
+  width:100%;
+  max-width:980px;
+  background:linear-gradient(180deg,#122f3a,#091b23);
+  border-radius:22px;
+  border:1px solid var(--border);
+  box-shadow:0 30px 60px rgba(0,0,0,.7);
+  padding:26px;
+}
+.header{
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+.logo{
+  width:58px;height:58px;border-radius:50%;
+  background:linear-gradient(135deg,#ffe08a,#4f9b3d,#b3212e);
+  display:flex;align-items:center;justify-content:center;
+  color:#061013;font-weight:700;font-size:26px;
+}
+.header h1{margin:0;font-size:1.9rem;letter-spacing:.05em}
+.header p{margin:4px 0 0;font-size:.9rem;color:var(--muted)}
+
+.toolbar{
+  margin-top:22px;
+  display:flex;flex-wrap:wrap;gap:14px;align-items:center;
+}
+.badge{
+  padding:7px 16px;border-radius:999px;
+  border:1px solid rgba(214,178,90,.6);
+  background:rgba(10,30,36,.8);
+  font-size:.8rem;color:var(--muted);
+}
+.search{
+  flex:1;min-width:220px;
+  display:flex;align-items:center;gap:10px;
+  background:rgba(5,15,20,.9);
+  border-radius:999px;padding:8px 14px;
+  border:1px solid var(--border);
+}
+.search input{
+  flex:1;background:none;border:none;outline:none;
+  color:var(--text);font-size:.85rem;
+}
+
+.section{
+  margin-top:22px;
+  background:linear-gradient(135deg,#061820,#0a2631);
+  border-radius:16px;
+  border:1px solid var(--border);
+  position:relative;
+  padding:18px 18px 18px 22px;
+}
+.section::before{
+  content:"";position:absolute;left:0;top:14px;bottom:14px;
+  width:4px;border-radius:99px;
+  background:linear-gradient(180deg,#4f9b3d,#d6b25a,#b3212e);
+}
+.section-header{
+  display:flex;align-items:center;gap:10px;cursor:pointer;
+}
+.sec-no{color:var(--accent);font-weight:700}
+.sec-title{font-size:1.05rem;font-weight:600}
+.toggle{margin-left:auto;color:var(--muted)}
+.section-body{
+  margin-top:12px;line-height:1.8;
+  font-size:.95rem;color:#e5eef3;
+}
+.section.collapsed .section-body{display:none}
+
+table{
+  width:100%;border-collapse:collapse;margin:12px 0;font-size:.88rem;
+}
+th,td{
+  padding:8px 10px;border:1px solid rgba(255,255,255,.12);
+}
+th{background:#12313d;text-align:left}
+tr:nth-child(even) td{background:#071a22}
+tr:nth-child(odd) td{background:#091f29}
+
+.chart-box{
+  background:#061820;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+  margin-top:16px;
+}
+
+ul,ol{margin-left:22px}
+li{margin-bottom:4px}
+
+mark{
+  background:rgba(214,178,90,.55);
+  color:#2b2104;
+  padding:0 2px;
+  border-radius:3px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="header">
+  <div class="logo">P</div>
+  <div>
+    <h1>PARETO CHART</h1>
+    <p>Complete consolidated note for manufacturing & quality teams.</p>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="badge">Scroll down to read all sections</div>
+  <div class="search">
+    🔍 <input id="searchInput" placeholder="Search inside this Pareto Chart note...">
+  </div>
+</div>
+
+<!-- ===================== 9 ===================== -->
+<div class="section">
+<div class="section-header">
+<span class="sec-no">9.</span><span class="sec-title">PRACTICAL EXAMPLES</span><span class="toggle">▼</span>
+</div>
+<div class="section-body">
+
+<strong>Example 1 – Manufacturing Defects</strong>
+<table>
+<tr><th>Defect</th><th>Count</th></tr>
+<tr><td>Scratches</td><td>45</td></tr>
+<tr><td>Colour Variation</td><td>25</td></tr>
+<tr><td>Wrong Dimensions</td><td>15</td></tr>
+<tr><td>Dents</td><td>10</td></tr>
+<tr><td>Packing Issues</td><td>5</td></tr>
+</table>
+
+<strong>Insights:</strong>
+<ul>
+<li>Scratches = 45% of defects.</li>
+<li>Scratches + Colour Variation ≈ 70%.</li>
+<li>Improvement should start with these two categories.</li>
+</ul>
+
+<hr>
+
+<strong>Example 2 – Customer Complaints</strong>
+<table>
+<tr><th>Complaint</th><th>Frequency</th></tr>
+<tr><td>Late Delivery</td><td>60</td></tr>
+<tr><td>Wrong Product</td><td>30</td></tr>
+<tr><td>Billing Error</td><td>20</td></tr>
+<tr><td>Poor Packaging</td><td>10</td></tr>
+<tr><td>No Response</td><td>5</td></tr>
+</table>
+
+<strong>Insights:</strong>
+<ul>
+<li>Late Delivery is the major issue.</li>
+<li>Top two contribute 78%.</li>
+</ul>
+
+</div>
+</div>
+
+<!-- ===================== 10 ===================== -->
+<div class="section">
+<div class="section-header">
+<span class="sec-no">10.</span><span class="sec-title">HOW TO BUILD A PARETO CHART (STEP-BY-STEP)</span><span class="toggle">▼</span>
+</div>
+<div class="section-body">
+
+<strong>Step 1: Collect and Categorize Data</strong>
+<p>Begin with a clean and complete dataset that represents the problems, defects, or outcomes you want to analyse.</p>
+<p>Examples in manufacturing include:</p>
+<ul>
+<li>Defect types</li>
+<li>Machine downtime reasons</li>
+<li>Supplier-wise rejection categories</li>
+<li>Assembly errors</li>
+<li>Customer complaints</li>
+</ul>
+
+<p>Group each observation into consistent, meaningful categories such as:</p>
+<ul>
+<li>Scratched part</li>
+<li>Missing label</li>
+<li>Incorrect dimension</li>
+<li>Loose fitting</li>
+</ul>
+
+<strong>Best Practice:</strong>
+<p>Avoid creating too many categories. Over-categorizing spreads your data thin and makes patterns harder to identify.</p>
+
+<strong>Step 2: Sort Categories</strong>
+<p>Count how often each category occurs. If you are measuring cost or impact instead of frequency, compute the total value for each category.</p>
+<p>Then sort the categories in descending order based on:</p>
+<ul>
+<li>Highest frequency</li>
+<li>Highest cost</li>
+<li>Highest impact</li>
+</ul>
+
+<p>The most significant issues should always appear at the top of the list. This ordering is essential because the Pareto Chart arranges bars from largest to smallest, enabling clear prioritization.</p>
+
+<strong>Step 3: Calculate Percentages and Cumulative Percentages</strong>
+
+<p><strong>1. Percentage of Total</strong></p>
+<p>( Category Value / Total Value ) × 100</p>
+<p>Example: If a defect occurs 20 times out of 100 total defects:<br>(20 / 100) × 100 = 20%</p>
+
+<p><strong>2. Cumulative Percentage</strong></p>
+<p>This is the running total of percentages as you move down the sorted list.</p>
+<ul>
+<li>First category: 40% → cumulative = 40%</li>
+<li>Second category: 25% → cumulative = 65%</li>
+<li>Third category: 15% → cumulative = 80%</li>
+</ul>
+<p>The final cumulative percentage will always reach 100%.</p>
+
+<strong>Step 4: Build the Chart (Bars + Line)</strong>
+<p>A Pareto Chart is a combination chart:</p>
+
+<strong>Bars (Vertical Bar Graph)</strong>
+<ul>
+<li>Represent the frequency or cost of each category</li>
+<li>Arranged from tallest to shortest</li>
+</ul>
+
+<strong>Line (Cumulative Percentage Line)</strong>
+<ul>
+<li>Plotted above the bars</li>
+<li>Shows how each category contributes to the total</li>
+<li>Helps identify the "vital few" issues</li>
+</ul>
+
+<div class="chart-box">
+<canvas id="paretoChart" height="320"></canvas>
+</div>
+
+<p>When the line is steep, the categories have a high cumulative impact. When it flattens, the remaining categories have minimal influence.</p>
+
+<strong>Step 5: Interpret the Chart and Prioritize Actions</strong>
+<ul>
+<li>The tallest bars → your biggest problems</li>
+<li>The point where the cumulative line begins to flatten → diminishing returns</li>
+<li>The 80% zone → the most significant causes contributing to most of your issues</li>
+</ul>
+
+<strong>Key Insight:</strong>
+<p>Often, fixing just 20–30% of the categories will eliminate 70–80% of the total problems. This is the foundation of the Pareto Principle (80/20 rule).</p>
+
+<p>Here is your visual Pareto Chart based on the dataset you provided (Button, Pocket, Collar, Cuff, Sleeve defects).</p>
+<ul>
+<li>Button defects are the highest contributor.</li>
+<li>The cumulative line shows how the first few defects account for most of the total issues.</li>
+</ul>
+
+</div>
+</div>
+
+<!-- ===================== 11 ===================== -->
+<div class="section">
+<div class="section-header">
+<span class="sec-no">11.</span><span class="sec-title">USE CASES BEYOND MANUFACTURING</span><span class="toggle">▼</span>
+</div>
+<div class="section-body">
+
+<p>Pareto Charts originated in quality engineering, but the logic applies anywhere you need to identify which issues create the greatest impact.</p>
+
+<strong>Software Bugs – Effects of Using Pareto Charts in System Testing</strong>
+<ul>
+<li>Helps identify major defect categories by grouping hundreds of logged issues into logical clusters (e.g., authentication, API, UI).</li>
+<li>Enables teams to rank problem types by frequency or impact.</li>
+<li>Reveals that a small number of categories cause most defects.</li>
+<li>Allows teams to focus on fixing high-impact issues first.</li>
+<li>Reduces rework and saves time.</li>
+<li>Improves system stability and reliability.</li>
+<li>Supports data-driven decision-making.</li>
+</ul>
+
+<strong>Customer Complaints – Effects of Pareto Charts in Support Centers</strong>
+<ul>
+<li>Groups diverse complaints into categories.</li>
+<li>Reveals that 2–3 categories often cause 80% of dissatisfaction.</li>
+<li>Enables leaders to prioritize fixes.</li>
+<li>Boosts customer experience.</li>
+<li>Improves retention rates.</li>
+<li>Reduces overall complaint volume.</li>
+</ul>
+
+<strong>Sales Analysis – Effects of Pareto Analysis</strong>
+<ul>
+<li>Uncovers that few SKUs drive most revenue.</li>
+<li>Identifies key customers generating majority of sales.</li>
+<li>Highlights top-performing sales channels.</li>
+<li>Supports inventory optimization.</li>
+</ul>
+
+<strong>Maintenance & Field Service – Effects of Pareto Charts</strong>
+<ul>
+<li>Pinpoints chronic failures.</li>
+<li>Identifies frequent breakdowns.</li>
+<li>Drives preventive maintenance.</li>
+<li>Lowers overall maintenance costs.</li>
+</ul>
+
+<strong>Universal Purpose</strong>
+<ul>
+<li>A Pareto Chart highlights the few categories that contribute most to a problem or outcome.</li>
+<li>This principle applies across many domains.</li>
+</ul>
+
+<strong>Role with Root Cause Analysis</strong>
+<ul>
+<li>A Pareto Chart tells which problems to investigate first.</li>
+<li>Teams then apply 5 Whys, Fishbone, or FMEA.</li>
+</ul>
+
+</div>
+</div>
+
+<!-- ===================== 12 ===================== -->
+<div class="section">
+<div class="section-header">
+<span class="sec-no">12.</span><span class="sec-title">HOW TO INTERPRET THE CUMULATIVE LINE</span><span class="toggle">▼</span>
+</div>
+<div class="section-body">
+
+<strong>Steep Curve</strong>
+<ul>
+<li>High-impact categories</li>
+<li>Fix first</li>
+</ul>
+
+<strong>Flattening Curve</strong>
+<ul>
+<li>Low frequency</li>
+<li>Low impact</li>
+<li>Fix only if required for safety, compliance, or risk</li>
+</ul>
+
+<strong>80/20 Identification</strong>
+<p>The point where the cumulative line crosses 70–80% marks your vital few.</p>
+
+<strong>What the Flattening Means</strong>
+<ul>
+<li>Each additional category contributes only a small fraction of the problem.</li>
+<li>Issues appearing once or twice a month usually fall in this zone.</li>
+<li>Fixing these items will not significantly shift total performance metrics.</li>
+</ul>
+
+</div>
+</div>
+
+<!-- ===================== 13 ===================== -->
+<div class="section">
+<div class="section-header">
+<span class="sec-no">13.</span><span class="sec-title">PARETO VS. BAR CHART VS. HISTOGRAM</span><span class="toggle">▼</span>
+</div>
+<div class="section-body">
+
+<table>
+<tr>
+<th>Feature</th>
+<th>Pareto Chart</th>
+<th>Bar Chart</th>
+<th>Histogram</th>
+</tr>
+<tr>
+<td>Primary Use</td>
+<td>Identify key contributors</td>
+<td>Compare categories</td>
+<td>Show variation in continuous data</td>
+</tr>
+<tr>
+<td>Order</td>
+<td>Descending</td>
+<td>Any</td>
+<td>Numeric bins</td>
+</tr>
+<tr>
+<td>Cumulative Line</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Data Type</td>
+<td>Categorical</td>
+<td>Categorical</td>
+<td>Continuous</td>
+</tr>
+<tr>
+<td>Use Case</td>
+<td>Defects</td>
+<td>Output by shift</td>
+<td>Cycle time, weight</td>
+</tr>
+</table>
+
+</div>
+</div>
+
+<!-- ===================== 14 ===================== -->
+<div class="section">
+<div class="section-header">
+<span class="sec-no">14.</span><span class="sec-title">ADVANTAGES AND LIMITATIONS</span><span class="toggle">▼</span>
+</div>
+<div class="section-body">
+
+<strong>Advantages</strong>
+<ol>
+<li>Identifies major contributors quickly</li>
+<li>Simplifies communication</li>
+<li>Supports data-driven decisions</li>
+<li>Drives focused improvement</li>
+</ol>
+
+<strong>Limitations</strong>
+<ol>
+<li>Rare but severe problems may be overlooked</li>
+<li>Requires clean categorization</li>
+<li>Less reliable with small datasets</li>
+</ol>
+
+</div>
+</div>
+
+<!-- ===================== 15 ===================== -->
+<div class="section">
+<div class="section-header">
+<span class="sec-no">15.</span><span class="sec-title">FREQUENTLY ASKED QUESTIONS</span><span class="toggle">▼</span>
+</div>
+<div class="section-body">
+
+<p><strong>Can a Pareto chart track trends over time?</strong><br>
+Only for one period. Use multiple charts for trend analysis.</p>
+
+<p><strong>What if two categories have the same frequency?</strong><br>
+Use cost or severity as a secondary ranking.</p>
+
+<p><strong>Can we combine cost and frequency?</strong><br>
+Yes, by assigning cost values to categories.</p>
+
+<p><strong>How are Pareto charts used in team reviews?</strong><br>
+They highlight major sources of loss and guide discussion.</p>
+
+<p><strong>Can Pareto be automated?</strong><br>
+Yes—most analytics tools support this.</p>
+
+<p><strong>Difference between vital few and critical few?</strong><br>
+Vital few = based purely on data.<br>
+Critical few = vital few + items important for safety or compliance.</p>
+
+</div>
+</div>
+
+</div>
+
+<script>
+/* Collapse */
+document.querySelectorAll('.section-header').forEach(h=>{
+  h.addEventListener('click',()=>h.parentElement.classList.toggle('collapsed'));
+});
+
+/* Search highlight */
+const searchInput=document.getElementById('searchInput');
+const root=document.querySelector('.container');
+let marks=[];
+function clearMarks(){
+  marks.forEach(m=>{
+    const p=m.parentNode;
+    p.replaceChild(document.createTextNode(m.textContent),m);
+    p.normalize();
+  });
+  marks=[];
+}
+function highlight(term){
+  const r=new RegExp(term,'gi');
+  function walk(n){
+    if(n.nodeType===3){
+      if(!r.test(n.textContent))return;
+      const f=document.createDocumentFragment();let last=0;
+      n.textContent.replace(r,(m,i)=>{
+        f.appendChild(document.createTextNode(n.textContent.slice(last,i)));
+        const mk=document.createElement('mark');mk.textContent=m;
+        f.appendChild(mk);marks.push(mk);last=i+m.length;
+      });
+      f.appendChild(document.createTextNode(n.textContent.slice(last)));
+      n.parentNode.replaceChild(f,n);
+    }else if(n.nodeType===1 && !['SCRIPT','STYLE','MARK','CANVAS'].includes(n.tagName)){
+      [...n.childNodes].forEach(walk);
+    }
+  }
+  walk(root);
+}
+searchInput.addEventListener('input',()=>{
+  clearMarks();
+  const t=searchInput.value.trim();
+  if(t.length>1){
+    highlight(t);
+    if(marks[0])marks[0].scrollIntoView({behavior:'smooth',block:'center'});
+  }
+});
+
+/* Pareto Chart */
+const ctx=document.getElementById('paretoChart').getContext('2d');
+const data=[
+{name:'Button',value:23},
+{name:'Pocket',value:16},
+{name:'Collar',value:10},
+{name:'Cuff',value:7},
+{name:'Sleeve',value:3}
+];
+const total=data.reduce((s,d)=>s+d.value,0);
+let cum=0;
+const w=ctx.canvas.width,h=ctx.canvas.height;
+const barW=80,gap=30;
+const max=Math.max(...data.map(d=>d.value));
+const scale=180/max;
+ctx.font='13px Poppins';
+
+/* Bars */
+data.forEach((d,i)=>{
+  const x=60+i*(barW+gap);
+  const bh=d.value*scale;
+  const y=h-50-bh;
+  ctx.fillStyle='#4f9b3d';
+  ctx.fillRect(x,y,barW,bh);
+  ctx.fillStyle='#f8fafc';
+  ctx.fillText(d.name,x,h-30);
+  ctx.fillText(d.value,x+30,y-6);
+});
+
+/* Cumulative line */
+ctx.beginPath();ctx.strokeStyle='#d6b25a';
+data.forEach((d,i)=>{
+  cum+=d.value;
+  const cp=(cum/total)*100;
+  const x=60+i*(barW+gap)+barW/2;
+  const y=h-50-(cp*1.8);
+  if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);
+});
+ctx.stroke();
+</script>
+
+</body>
+</html>

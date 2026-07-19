@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive u Chart Calculator</title>
+    <style>
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes chartGrow {
+            from { height: 0; opacity: 0; }
+            to { height: 500px; opacity: 1; }
+        }
+        @keyframes barRise {
+            from { height: 0; }
+            to { height: var(--height); }
+        }
+
+        * { box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 1200px; margin: 0 auto; 
+            padding: 20px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            overflow-x: hidden;
+        }
+        .container { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 20px; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            animation: fadeInUp 0.8s ease-out;
+        }
+        h1 { 
+            text-align: center; 
+            color: #2c3e50; 
+            margin-bottom: 10px;
+            animation: bounceIn 1s ease-out;
+        }
+        h2 { 
+            color: #34495e; 
+            border-bottom: 3px solid #9b59b6; 
+            padding-bottom: 15px;
+            animation: slideInLeft 0.6s ease-out;
+        }
+        .input-section { 
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            padding: 30px; 
+            border-radius: 15px; 
+            margin: 30px 0; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeInUp 0.7s ease-out forwards;
+        }
+        input, select { 
+            padding: 12px; 
+            margin: 5px; 
+            border: 2px solid #ddd; 
+            border-radius: 10px; 
+            width: 120px; 
+            transition: all 0.3s ease;
+            transform: scale(0.95);
+        }
+        input:focus, select:focus {
+            border-color: #9b59b6;
+            box-shadow: 0 0 15px rgba(155, 89, 182, 0.3);
+            transform: scale(1.02);
+        }
+        button { 
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white; 
+            padding: 15px 30px; 
+            border: none; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            margin: 8px; 
+            font-weight: bold;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+        button:hover::before { left: 100%; }
+        button:hover { 
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(155, 89, 182, 0.4);
+        }
+        .results { 
+            background: linear-gradient(145deg, #d4edda, #c3e6cb);
+            padding: 30px; 
+            border-radius: 15px; 
+            margin: 30px 0; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 20px 0; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 15px; 
+            text-align: center; 
+            transition: all 0.3s ease;
+        }
+        th { 
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white; 
+            font-weight: bold;
+        }
+        tr:hover td { background: #f8f9fa; transform: scale(1.01); }
+        .formula { 
+            font-family: monospace; 
+            background: linear-gradient(145deg, #f3e5f5, #ede7f6);
+            padding: 20px; 
+            border-left: 6px solid #9b59b6; 
+            margin: 15px 0; 
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        #uChartCanvas { 
+            border: 3px solid #9b59b6; 
+            margin: 20px 0; 
+            background: white; 
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            animation: chartGrow 1s ease-out;
+        }
+        .footer { 
+            text-align: center; 
+            padding: 25px; 
+            color: #7f8c8d; 
+            font-size: 1em; 
+            border-top: 2px solid #eee; 
+            margin-top: 50px;
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            animation: fadeInUp 0.8s ease-out 0.5s both;
+        }
+        .loading { 
+            display: inline-block; 
+            width: 20px; 
+            height: 20px; 
+            border: 3px solid #f3f3f3; 
+            border-top: 3px solid #9b59b6; 
+            border-radius: 50%; 
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Interactive u Chart Calculator</h1>
+        <p>Defects per unit area/volume (scratches per cm² chrome finish, defects per gram casting material, porosity per liter plating bath). Variable sample sizes. [web:1][web:2]</p>
+
+        <div class="input-section">
+            <h2>u Chart Calculator (Defects per Unit Area/Volume)</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; margin-bottom: 25px;">
+                <div>
+                    <label>Number of Samples (k):</label><br>
+                    <input type="number" id="numSamples" value="25" min="10" max="100" onchange="resetData()">
+                </div>
+                <button onclick="calculateUChart()">🔄 Calculate Limits <span class="loading" id="loadingSpinner" style="display:none;"></span></button>
+                <button onclick="addRandomData()">🎲 Sample Data</button>
+                <button onclick="clearData()">🗑️ Clear</button>
+            </div>
+            
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Sample #</th>
+                        <th>Sample Size (nᵢ)</th>
+                        <th>Defects (cᵢ)</th>
+                        <th>uᵢ = cᵢ/nᵢ</th>
+                    </tr>
+                </thead>
+                <tbody id="dataBody">
+                    <tr><td>1</td><td><input type="number" value="100" min="1" style="width:80px;"></td><td><input type="number" value="3" min="0" style="width:80px;"></td><td id="u1">-</td></tr>
+                    <tr><td>2</td><td><input type="number" value="120" min="1" style="width:80px;"></td><td><input type="number" value="4" min="0" style="width:80px;"></td><td id="u2">-</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="resultsSection" style="display: none;">
+            <div style="text-align: center;">
+                <h3>u Chart - Defects per Unit Area/Volume</h3>
+                <canvas id="uChartCanvas" width="800" height="500"></canvas>
+            </div>
+
+            <div class="results">
+                <h3>✨ Control Limits & Analysis</h3>
+                <div class="formula">
+                    <strong>u Chart Formulas:</strong><br>
+                    \(\overline{u} = \frac{\sum c_i}{\sum n_i} = <span id="uCL">-</span>\)<br>
+                    \(UCL_u = \overline{u} + 3\sqrt{\frac{\overline{u}}{n_i}} = <span id="uUCL">-</span>\)<br>
+                    \(LCL_u = \overline{u} - 3\sqrt{\frac{\overline{u}}{n_i}} = <span id="uLCL">-</span>\)
+                </div>
+                <div class="formula">
+                    <strong>🚀 Process Performance:</strong><br>
+                    Total Defects: <span id="totalDefects">-</span><br>
+                    Total Area/Vol: <span id="totalArea">-</span><br>
+                    Overall Rate: <span id="overallRate">-</span>/unit<br>
+                    <span id="stabilityMsg" style="font-weight: bold; font-size: 1.1em;">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+
+    </div>
+
+    <script>
+        let sampleData = [{n: 100, c: 3}, {n: 120, c: 4}];
+
+        function resetData() {
+            const k = parseInt(document.getElementById('numSamples').value);
+            sampleData = [];
+            for(let i = 0; i < k; i++) {
+                sampleData.push({n: 100 + i*5, c: 2 + Math.floor(Math.random()*3)});
+            }
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('dataBody');
+            tbody.innerHTML = '';
+            
+            sampleData.forEach((data, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${i+1}</td>
+                    <td><input type="number" value="${data.n}" min="1" onchange="updateSample(${i}, 'n', this.value)" style="width:80px;"></td>
+                    <td><input type="number" value="${data.c}" min="0" onchange="updateSample(${i}, 'c', this.value)" style="width:80px;"></td>
+                    <td id="u${i}">-</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            updateUValues();
+        }
+
+        function updateSample(index, type, value) {
+            sampleData[index][type] = parseFloat(value) || (type === 'n' ? 1 : 0);
+            updateUValues();
+        }
+
+        function updateUValues() {
+            sampleData.forEach((data, i) => {
+                const u = data.n > 0 ? (data.c / data.n).toFixed(4) : 0;
+                document.getElementById(`u${i}`).textContent = u;
+            });
+        }
+
+        function calculateUChart() {
+            document.getElementById('loadingSpinner').style.display = 'inline-block';
+            
+            setTimeout(() => {
+                const k = sampleData.length;
+                if(k < 10) {
+                    alert('Need at least 10 samples');
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                    return;
+                }
+                
+                const totalC = sampleData.reduce((sum, data) => sum + data.c, 0);
+                const totalN = sampleData.reduce((sum, data) => sum + data.n, 0);
+                const ubar = totalC / totalN;
+                
+                // Calculate individual limits for display (using average n)
+                const avgN = totalN / k;
+                const stdDev = Math.sqrt(ubar / avgN);
+                const UCL = ubar + 3 * stdDev;
+                const LCL = Math.max(0, ubar - 3 * stdDev);
+                
+                const uValues = sampleData.map(data => data.c / data.n);
+                const outOfControl = uValues.filter(u => u > UCL || u < LCL).length;
+                const stabilityMsg = outOfControl > 0 ? 
+                    `⚠️ ${outOfControl} samples OUT OF CONTROL!` : 
+                    '✅ Process appears STABLE';
+
+                document.getElementById('uCL').textContent = ubar.toFixed(4);
+                document.getElementById('uUCL').textContent = UCL.toFixed(4);
+                document.getElementById('uLCL').textContent = LCL.toFixed(4);
+                document.getElementById('totalDefects').textContent = totalC;
+                document.getElementById('totalArea').textContent = totalN;
+                document.getElementById('overallRate').textContent = `${ubar.toFixed(4)} defects/unit`;
+                document.getElementById('stabilityMsg').textContent = stabilityMsg;
+                document.getElementById('stabilityMsg').style.color = outOfControl > 0 ? '#e74c3c' : '#27ae60';
+
+                document.getElementById('resultsSection').style.display = 'block';
+                document.getElementById('loadingSpinner').style.display = 'none';
+                drawUChart();
+            }, 800);
+        }
+
+        function drawUChart() {
+            const canvas = document.getElementById('uChartCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const padding = 80;
+            const chartWidth = canvas.width - 2 * padding;
+            const chartHeight = canvas.height - 2 * padding;
+            
+            const totalC = sampleData.reduce((sum, data) => sum + data.c, 0);
+            const totalN = sampleData.reduce((sum, data) => sum + data.n, 0);
+            const ubar = totalC / totalN;
+            const avgN = totalN / sampleData.length;
+            const stdDev = Math.sqrt(ubar / avgN);
+            const UCL = ubar + 3 * stdDev;
+            const LCL = Math.max(0, ubar - 3 * stdDev);
+            const maxVal = Math.max(...sampleData.map(d => d.c/d.n), UCL) * 1.1;
+
+            // Grid
+            ctx.strokeStyle = '#f0f0f0';
+            ctx.lineWidth = 1;
+            for(let i = 0; i <= 10; i++) {
+                const y = padding + (chartHeight * i / 10);
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(canvas.width - padding, y);
+                ctx.stroke();
+            }
+
+            // Axes
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+
+            // Animated control limits
+            const drawAnimatedLine = (val, color, label, delay = 0) => {
+                setTimeout(() => {
+                    const y = padding + chartHeight * (1 - val / maxVal);
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 4;
+                    ctx.setLineDash([10, 5]);
+                    ctx.lineDashOffset = -10;
+                    ctx.beginPath();
+                    ctx.moveTo(padding, y);
+                    ctx.lineTo(canvas.width - padding, y);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    ctx.fillStyle = color;
+                    ctx.font = 'bold 16px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(label, canvas.width - 120, y - 15);
+                    ctx.textAlign = 'left';
+                }, delay);
+            };
+            
+            drawAnimatedLine(UCL, '#e74c3c', 'UCL', 200);
+            drawAnimatedLine(ubar, '#27ae60', 'CL', 400);
+            if(LCL > 0) drawAnimatedLine(LCL, '#e74c3c', 'LCL', 600);
+
+            // Animated bars
+            const barWidth = chartWidth / sampleData.length * 0.8;
+            sampleData.forEach((data, i) => {
+                setTimeout(() => {
+                    const u = data.c / data.n;
+                    const x = padding + (i / sampleData.length) * chartWidth + barWidth/2;
+                    const y = padding + chartHeight * (1 - u / maxVal);
+                    const height = chartHeight * (u / maxVal);
+                    
+                    ctx.fillStyle = u > UCL || u < LCL ? '#e74c3c' : '#3498db';
+                    ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                    ctx.shadowBlur = 15;
+                    ctx.shadowOffsetY = 5;
+                    ctx.fillRect(x - barWidth/2, y, barWidth, height);
+                    ctx.shadowBlur = 0;
+                    
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 14px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(u.toFixed(3), x, y + height/2);
+                    ctx.textAlign = 'left';
+                }, 800 + i * 50);
+            });
+
+            // Title & labels
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = 'bold 24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('u Chart - Defects per Unit Area/Volume 🛁', canvas.width / 2, 45);
+            ctx.textAlign = 'left';
+        }
+
+        function addRandomData() {
+            const k = parseInt(document.getElementById('numSamples').value);
+            const ubar = 0.025; // 2.5% defect rate
+            sampleData = [];
+            
+            for(let i = 0; i < k; i++) {
+                const n = 80 + Math.random() * 60; // Variable sample sizes 80-140
+                const expectedDefects = Math.round(ubar * n);
+                const actualDefects = Math.max(0, expectedDefects + Math.floor((Math.random()-0.5)*3));
+                sampleData.push({n: Math.round(n), c: actualDefects});
+            }
+            renderTable();
+        }
+
+        function clearData() {
+            document.getElementById('resultsSection').style.display = 'none';
+            const k = parseInt(document.getElementById('numSamples').value);
+            sampleData = [];
+            for(let i = 0; i < k; i++) {
+                sampleData.push({n: 100 + i*5, c: 2});
+            }
+            renderTable();
+        }
+
+        // Initialize
+        renderTable();
+    </script>
+</body>
+</html>

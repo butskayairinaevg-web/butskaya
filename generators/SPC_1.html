@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPC – Complete Reference Guide | Neon Glass UI</title>
+
+<style>
+    :root {
+        --primary: #7ce413;
+        --primary-soft: #9af549;
+        --primary-glow: #7ce413aa;
+        --bg-dark: #050505;
+        --glass: rgba(255,255,255,0.05);
+        --glass-strong: rgba(255,255,255,0.09);
+        --text: #f1f1f1;
+        --text-light: #bbbbbb;
+        --border-soft: #232323;
+    }
+
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family: "Poppins", sans-serif;
+    }
+
+    body{
+        background: radial-gradient(circle at top, #111 0, #050505 45%, #000 100%);
+        color: var(--text);
+        padding: 26px 12px 50px;
+    }
+
+    /* GLOBAL LAYOUT */
+    .page-wrap{
+        max-width:1200px;
+        margin:0 auto;
+    }
+
+    a{ color:var(--primary-soft); text-decoration:none; }
+
+    /* HEADER */
+    .header{
+        text-align:center;
+        padding:38px 16px 34px;
+        border-radius:22px;
+        background: radial-gradient(circle at top left, #1f1f1f 0, #101010 40%, #050505 100%);
+        box-shadow:
+            0 0 40px #000 inset,
+            0 0 35px rgba(0,0,0,0.9);
+        border:1px solid #262626;
+        margin-bottom:32px;
+        position:relative;
+        overflow:hidden;
+    }
+
+    .header::before,
+    .header::after{
+        content:"";
+        position:absolute;
+        width:280px;
+        height:280px;
+        background: radial-gradient(circle, var(--primary-glow), transparent);
+        filter: blur(40px);
+        opacity:0.55;
+        z-index:0;
+    }
+    .header::before{
+        top:-120px;
+        left:-80px;
+    }
+    .header::after{
+        bottom:-160px;
+        right:-120px;
+    }
+
+    .header-content{ position:relative; z-index:1; }
+
+    .badge{
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        padding:5px 12px;
+        border-radius:999px;
+        background: rgba(0,0,0,0.55);
+        border:1px solid rgba(124,228,19,0.45);
+        font-size:0.75rem;
+        letter-spacing:0.08em;
+        text-transform:uppercase;
+        color:var(--text-light);
+        margin-bottom:10px;
+    }
+    .badge-dot{
+        width:7px;
+        height:7px;
+        border-radius:50%;
+        background:var(--primary);
+        box-shadow:0 0 8px var(--primary-glow);
+    }
+
+    .header h1{
+        font-size:2.5rem;
+        letter-spacing:2px;
+        text-transform:uppercase;
+        font-weight:700;
+        text-shadow:0 0 14px var(--primary-glow);
+        margin-bottom:6px;
+    }
+
+    .header-sub{
+        font-size:0.96rem;
+        color:var(--text-light);
+        max-width:780px;
+        margin:0 auto;
+        line-height:1.6;
+    }
+
+    .header-sub strong{
+        color:var(--primary-soft);
+        font-weight:500;
+    }
+
+    .tag-row{
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px;
+        justify-content:center;
+        margin-top:16px;
+        font-size:0.78rem;
+    }
+
+    .tag{
+        padding:4px 10px;
+        border-radius:999px;
+        border:1px solid rgba(255,255,255,0.05);
+        background:rgba(0,0,0,0.55);
+        color:var(--text-light);
+    }
+
+    /* SECTION TITLE BAR */
+    .section-label{
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        font-size:0.75rem;
+        letter-spacing:0.18em;
+        text-transform:uppercase;
+        color:var(--text-light);
+        margin-bottom:10px;
+    }
+    .section-line{
+        flex:1;
+        height:1px;
+        background:linear-gradient(90deg, var(--primary-glow), transparent);
+        opacity:0.7;
+    }
+
+    /* MAIN GRID / LAYOUT */
+    .layout-main{
+        display:grid;
+        grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.6fr);
+        gap:18px;
+        margin-bottom:22px;
+    }
+
+    @media(max-width:950px){
+        .layout-main{
+            grid-template-columns:1fr;
+        }
+    }
+
+    .grid-2{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:18px;
+    }
+
+    @media(max-width:800px){
+        .grid-2{
+            grid-template-columns:1fr;
+        }
+    }
+
+    /* CARD / SECTION STYLES */
+    .card,
+    .section-card{
+        background: var(--glass);
+        border:1px solid var(--border-soft);
+        backdrop-filter: blur(14px);
+        border-radius:18px;
+        padding:18px 20px 18px;
+        position:relative;
+        overflow:hidden;
+        transition:0.3s ease;
+    }
+
+    .section-card{
+        background: var(--glass-strong);
+    }
+
+    .card:hover,
+    .section-card:hover{
+        transform: translateY(-6px);
+        box-shadow:0 0 25px var(--primary-glow);
+        border-color: var(--primary);
+    }
+
+    .card::before,
+    .section-card::before{
+        content:"";
+        position:absolute;
+        width:220px;
+        height:220px;
+        background: radial-gradient(circle, rgba(124,228,19,0.32), transparent);
+        top:-130px;
+        left:-80px;
+        filter: blur(55px);
+        opacity:0.4;
+        transition:0.3s ease;
+        pointer-events:none;
+    }
+
+    .card:hover::before,
+    .section-card:hover::before{
+        opacity:0.85;
+        filter: blur(70px);
+    }
+
+    .card h2,
+    .section-card h2{
+        font-size:1.1rem;
+        margin-bottom:8px;
+        color: var(--primary);
+        text-shadow:0 0 10px var(--primary-glow);
+        letter-spacing:0.5px;
+    }
+
+    .card h3{
+        font-size:0.96rem;
+        margin-top:10px;
+        margin-bottom:4px;
+        color:var(--primary-soft);
+    }
+
+    p{
+        color: var(--text-light);
+        font-size:0.9rem;
+        line-height:1.6;
+        margin-bottom:6px;
+    }
+
+    ul{
+        margin:6px 0 4px 16px;
+    }
+
+    li{
+        color:var(--text-light);
+        font-size:0.9rem;
+        margin-bottom:4px;
+    }
+
+    .highlight{
+        background:#121212;
+        padding:10px 12px;
+        border-left:3px solid var(--primary);
+        margin-top:10px;
+        border-radius:6px;
+        color:var(--text);
+        box-shadow:0 0 16px #000 inset;
+        font-size:0.88rem;
+    }
+
+    /* TABLE */
+    table{
+        width:100%;
+        border-collapse:collapse;
+        margin-top:8px;
+        font-size:0.86rem;
+        overflow:hidden;
+        border-radius:10px;
+    }
+
+    th, td{
+        border:1px solid #333;
+        padding:7px 8px;
+        text-align:left;
+    }
+
+    th{
+        background:#141414;
+        color:var(--primary-soft);
+        text-shadow:0 0 6px var(--primary-glow);
+        font-weight:500;
+    }
+
+    tr:nth-child(even){
+        background:#101010;
+    }
+
+    .pill-list{
+        display:flex;
+        flex-wrap:wrap;
+        gap:6px;
+        margin-top:6px;
+    }
+
+    .pill{
+        padding:4px 9px;
+        font-size:0.8rem;
+        border-radius:999px;
+        border:1px solid rgba(255,255,255,0.08);
+        background:rgba(0,0,0,0.7);
+        color:var(--text-light);
+    }
+
+    .sub-note{
+        font-size:0.78rem;
+        color:#999;
+        margin-top:4px;
+    }
+
+    .badge-small{
+        display:inline-block;
+        font-size:0.75rem;
+        padding:2px 7px;
+        border-radius:999px;
+        background:rgba(0,0,0,0.7);
+        border:1px solid rgba(124,228,19,0.45);
+        margin-left:4px;
+    }
+
+    /* FOOTNOTE */
+    .footer-note{
+        margin-top:26px;
+        font-size:0.78rem;
+        color:#7a7a7a;
+        text-align:center;
+    }
+
+</style>
+</head>
+
+<body>
+<div class="page-wrap">
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-content">
+            <div class="badge">
+                <span class="badge-dot"></span>
+                SPC • Statistical Process Control • Complete Reference
+            </div>
+            <h1>Statistical Process Control (SPC)</h1>
+            <p class="header-sub">
+                Statistical Process Control (SPC) is a systematic method of monitoring, controlling, and improving manufacturing
+                processes using statistical techniques. Developed in 1924 by William A. Shewhart at Bell Laboratories, SPC introduced
+                control charts to identify process variability. SPC gained widespread adoption during World War II and was later
+                embraced by Japanese and global manufacturing industries. Today, it is a core tool in quality management.
+            </p>
+            <div class="tag-row">
+                <span class="tag">Real-time Process Monitoring</span>
+                <span class="tag">Variation &amp; Stability</span>
+                <span class="tag">Control Charts</span>
+                <span class="tag">Continuous Improvement</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECTION LABEL -->
+    <div class="section-label">
+        <span>SPC FOUNDATION</span>
+        <span class="section-line"></span>
+    </div>
+
+    <!-- MAIN LAYOUT -->
+    <section class="layout-main">
+
+        <!-- LEFT SIDE – INTRO + WHAT IS SPC -->
+        <article class="section-card">
+            <h2>1. Introduction</h2>
+            <p>
+                Statistical Process Control (SPC) is a systematic method of monitoring, controlling, and improving manufacturing
+                processes using statistical techniques.
+            </p>
+            <p>
+                Developed in 1924 by William A. Shewhart at Bell Laboratories, SPC introduced control charts to identify process
+                variability. SPC gained widespread adoption during World War II and was later embraced by Japanese and global
+                manufacturing industries. Today, it is a core tool in quality management.
+            </p>
+
+            <h2 style="margin-top:12px;">2. What is SPC?</h2>
+            <p>
+                SPC is a method for measuring and controlling quality by monitoring the manufacturing process in real time.
+                Data is collected from product dimensions, features, or process instrumentation readings and plotted on
+                control charts with predetermined limits. By analyzing this data, processes are maintained at optimal
+                performance, enabling prevention of defects and continuous improvement.
+            </p>
+
+            <h3>SPC Principles</h3>
+            <ul>
+                <li>Every product and process is unique; no two items are exactly alike.</li>
+                <li>Manufacturing processes are dynamic and subject to continuous change.</li>
+                <li>Variation is inherent in all processes and is a natural occurrence.</li>
+                <li>All variations, whether in products or processes, can be measured and analyzed to improve quality.</li>
+            </ul>
+        </article>
+
+        <!-- RIGHT SIDE – WHY SPC / OBJECTIVES -->
+        <div class="grid-2">
+
+            <article class="card">
+                <h2>3. Why Use SPC?</h2>
+                <p>SPC enables manufacturers to:</p>
+                <ul>
+                    <li>Shift from inspection-based to prevention-based quality control</li>
+                    <li>Detect trends, shifts, or deviations in real time</li>
+                    <li>Reduce scrap, rework, and defects</li>
+                    <li>Support continuous improvement, cost reduction, and process optimization</li>
+                    <li>Ensure consistent product quality and customer satisfaction</li>
+                </ul>
+            </article>
+
+            <article class="card">
+                <h2>4. Objectives of SPC</h2>
+                <ul>
+                    <li>Collecting the data and drawing meaningful results.</li>
+                    <li>Finding out the root cause of the problem.</li>
+                    <li>Understanding and reducing process variations.</li>
+                    <li>Predicting future tendencies.</li>
+                    <li>Preventing defects to improve product and process quality.</li>
+                    <li>Continuous process improvement.</li>
+                    <li>Improve Customer satisfaction.</li>
+                </ul>
+            </article>
+
+        </div>
+    </section>
+
+    <!-- SECTION LABEL -->
+    <div class="section-label" style="margin-top:22px;">
+        <span>SPC TOOLS &amp; STRATEGY</span>
+        <span class="section-line"></span>
+    </div>
+
+    <!-- TOOLS / STRATEGY / BENEFITS -->
+    <section class="grid-2">
+
+        <article class="card">
+            <h2>SPC Tools</h2>
+            <p>The important popular basic tools are:</p>
+            <ul>
+                <li>Control Charts</li>
+                <li>Run Chart</li>
+                <li>Histogram or Frequency Distribution Diagram</li>
+                <li>Process Capability Analysis tools</li>
+            </ul>
+
+            <h2 style="margin-top:10px;">SPC Strategy</h2>
+            <p>
+                The first strategy is to bring the process under control by removing special causes present in the manufacturing process.
+            </p>
+            <p>
+                The second strategy is to improve process capability by reducing common causes or chance causes present in the manufacturing process.
+            </p>
+        </article>
+
+        <article class="card">
+            <h2>Benefits of SPC</h2>
+            <ul>
+                <li>Early detection of deviations</li>
+                <li>Reduction in scrap, rework, and waste</li>
+                <li>Improved process stability and quality</li>
+                <li>Supports data-driven decision making</li>
+                <li>Enables continuous improvement</li>
+                <li>Ensures compliance with quality standards and customer requirements</li>
+            </ul>
+        </article>
+
+    </section>
+
+    <!-- SECTION LABEL -->
+    <div class="section-label" style="margin-top:24px;">
+        <span>CONTROL CHART CREATION</span>
+        <span class="section-line"></span>
+    </div>
+
+    <!-- STEPS FOR CONTROL CHART -->
+    <section class="section-card">
+        <h2>Steps for Creating a Control Chart</h2>
+        <ol style="margin:6px 0 0 16px; color:var(--text-light); font-size:0.9rem;">
+            <li>Select quality characteristics that need to be controlled.</li>
+            <li>Decide the subgroup size i.e. number of units to be taken in a sample.</li>
+            <li>Decide the subgroup frequency.</li>
+            <li>Collect data on the data collection check sheet.</li>
+            <li>Fill up the control chart data sheet.</li>
+            <li>Calculate the X-bar and Range R for each subgroup.</li>
+            <li>Calculate the grand average X-bar and average range R-bar.</li>
+            <li>Calculate Trial Control Limits.</li>
+            <li>Process Capability Study.</li>
+            <li>Actions for Improvement.</li>
+        </ol>
+    </section>
+
+    <!-- SECTION LABEL -->
+    <div class="section-label" style="margin-top:24px;">
+        <span>CONTROL CHART TYPES &amp; BASICS</span>
+        <span class="section-line"></span>
+    </div>
+
+    <!-- TYPES / SELECTION / COMPONENTS / PURPOSE -->
+    <section class="grid-2">
+
+        <article class="card">
+            <h2>Control Charts – Types</h2>
+            <p>SPC Control Charts are classified into two main categories:</p>
+            <ul>
+                <li><strong>Variable-type Control Charts</strong>: length, weight, diameter, temperature</li>
+                <li><strong>Attribute type Control Charts</strong>: OK/Not OK, Pass/Fail, number of defects</li>
+            </ul>
+
+            <h3>Control Chart Selection</h3>
+            <ul>
+                <li><strong>Variable:</strong> Individual – Moving Range, X-bar – R, X-bar – S</li>
+                <li><strong>Attribute:</strong> p-chart, u-chart</li>
+            </ul>
+
+            <div class="highlight">
+                Control chart selection depends on the <strong>type of data</strong> (variable vs. attribute) and
+                the <strong>subgrouping approach</strong> used in the process.
+            </div>
+        </article>
+
+        <article class="card">
+            <h2>📊 What Is a Control Chart?</h2>
+            <p>
+                A Control Chart is a graphical tool used to monitor the performance of a process over time and detect any unusual variations.
+            </p>
+
+            <h3>🧩 Key Components</h3>
+            <table>
+                <tr>
+                    <th>Component</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>Central Line (CL)</td>
+                    <td>Represents the process average or mean.</td>
+                </tr>
+                <tr>
+                    <td>Upper Control Limit (UCL)</td>
+                    <td>The upper boundary of expected variation.</td>
+                </tr>
+                <tr>
+                    <td>Lower Control Limit (LCL)</td>
+                    <td>The lower boundary of expected variation.</td>
+                </tr>
+                <tr>
+                    <td>Data Points</td>
+                    <td>Actual measurements plotted over time to track process behavior.</td>
+                </tr>
+            </table>
+
+            <h3 style="margin-top:10px;">🛠️ Purpose</h3>
+            <ul>
+                <li>Detect process shifts, trends, or extreme variations</li>
+                <li>Differentiate between common cause and special cause variation</li>
+                <li>Support decision-making for process adjustments</li>
+            </ul>
+        </article>
+
+    </section>
+
+    <!-- SECTION LABEL -->
+    <div class="section-label" style="margin-top:24px;">
+        <span>INTERPRETATION OF CONTROL CHART</span>
+        <span class="section-line"></span>
+    </div>
+
+    <!-- INTERPRETATION – EXTREME VARIATIONS / SHIFT / TREND / ERRATIC -->
+    <section class="grid-2">
+
+        <!-- EXTREME VARIATIONS -->
+        <article class="card">
+            <h2>Extreme Variations – Out of Control</h2>
+            <p>
+                Extreme variation is recognized by the points falling outside the Upper and Lower control limits.
+            </p>
+
+            <h3>Causes of Extreme Variations (Out-of-Control Points)</h3>
+            <p>
+                Extreme variations, indicated by single points falling outside the Upper Control Limit (UCL) or Lower
+                Control Limit (LCL), are signs of an assignable cause impacting the process. Common causes include:
+            </p>
+            <ul>
+                <li>
+                    <strong>Measurement and Data Errors:</strong> Mistakes made during data collection, such as errors in
+                    measurements or calculations, or data that is miscalculated or misplotted.
+                </li>
+                <li>
+                    <strong>Improper Setup:</strong> Issues with the process setup, like the wrong setting of the machine,
+                    tools, or equipment.
+                </li>
+                <li>
+                    <strong>Non-Representative Sampling:</strong> Selecting samples during non-typical periods, for instance,
+                    when samples were chosen only at the start or the end of an operation before the process stabilized or
+                    after it began to degrade.
+                </li>
+            </ul>
+        </article>
+
+        <!-- PROCESS SHIFT -->
+        <article class="card">
+            <h2>⚙ Process Shift in Control Charts</h2>
+            <p>
+                A Process Shift is an out-of-control condition that signals a sustained change in the process average,
+                indicating that a new, persistent factor is influencing the process.
+            </p>
+            <ul>
+                <li>
+                    <strong>Definition:</strong> A shift is detected when a series of consecutive points falls entirely on
+                    one side (either above or below) the center line (Xˉ or average) on the control chart.
+                </li>
+                <li>
+                    <strong>Detection Rule (The "Run of 7"):</strong> It is generally assumed that a significant shift has
+                    occurred when seven or more consecutive points lie above or below the center line.
+                </li>
+                <li>Seven points above the centre line → Shift towards the upper side.</li>
+                <li>Seven points below the centre line → Shift towards the lower side.</li>
+            </ul>
+
+            <h3>🔧 Common Assignable Causes of a Process Shift</h3>
+            <p>The following factors often introduce a systematic change that moves the process average, leading to a shift pattern on the control chart:</p>
+            <ul>
+                <li>
+                    <strong>Equipment and Setup Changes:</strong>
+                    <ul style="margin-left:16px; margin-top:4px;">
+                        <li>Change in Machine Setting (e.g., a setting drifting or being incorrectly adjusted).</li>
+                        <li>Loose Fixture, Tooling, or Wear (e.g., a clamp coming loose, or tool wear gradually changing the dimension).</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Material Changes:</strong>
+                    <ul style="margin-left:16px; margin-top:4px;">
+                        <li>Change in Material (e.g., a new supplier, a different batch with varying properties, or a change in raw material quality).</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Personnel and Measurement Factors:</strong>
+                    <ul style="margin-left:16px; margin-top:4px;">
+                        <li>Change in Operator, Inspector, or Inspection Equipment (e.g., a newly trained operator, a different measurement device used, or equipment that has gone out of calibration).</li>
+                        <li>New or Unskilled Operator or a general carelessness of the operator (introducing consistent bias or different work methods).</li>
+                    </ul>
+                </li>
+            </ul>
+        </article>
+
+    </section>
+
+    <!-- TRENDS & ERRATIC FLUCTUATIONS -->
+    <section class="grid-2" style="margin-top:18px;">
+
+        <!-- TREND -->
+        <article class="card">
+            <h2>Trend in Control Chart</h2>
+            <p>
+                A trend is indicated when a series of consecutive points on the control chart move continuously upward or
+                downward. This shows that the process is gradually drifting in one direction instead of remaining stable.
+            </p>
+            <ul>
+                <li>Generally, if 7 consecutive points keep increasing (upward) or decreasing (downward), it is considered a trend.</li>
+                <li>A trend is a warning signal that the process may go out of control if corrective actions are not taken.</li>
+            </ul>
+            <p><em>Seven consecutive points having upward trend.</em></p>
+            <p><em>Seven consecutive points having a downward trend.</em></p>
+
+            <h3>Examples of Trend:</h3>
+            <ul>
+                <li>Points rising continuously → Process mean is increasing.</li>
+                <li>Points falling continuously → Process mean is decreasing.</li>
+            </ul>
+
+            <h3>Possible Causes of Trend:</h3>
+            <ul>
+                <li>Gradual wear and tear of tools or machines.</li>
+                <li>Slow deterioration of measuring instruments.</li>
+                <li>Continuous change in material properties (e.g., hardness, thickness).</li>
+                <li>Environmental factors like temperature or humidity changes.</li>
+                <li>Operator’s changing method or increasing fatigue.</li>
+            </ul>
+        </article>
+
+        <!-- ERRATIC FLUCTUATIONS -->
+        <article class="card">
+            <h2>Erratic Fluctuations in Control Chart</h2>
+            <p>
+                Erratic fluctuations are sudden, irregular, and unpredictable variations in the plotted points of a
+                control chart. Unlike a shift or a trend, which follow a pattern, erratic fluctuations do not show any
+                consistent direction. Instead, the points move up and down randomly and sharply.
+            </p>
+
+            <h3>Indication:</h3>
+            <ul>
+                <li>Points fluctuate in a zig-zag manner, without forming a steady pattern.</li>
+                <li>Control chart looks unstable and scattered.</li>
+                <li>May cross control limits frequently or stay very close to them.</li>
+            </ul>
+
+            <h3>Possible Causes of Erratic Fluctuations:</h3>
+            <ul>
+                <li>Variation in raw material quality.</li>
+                <li>Operator inconsistency or carelessness.</li>
+                <li>Faulty or unstable measuring instruments.</li>
+                <li>Machine vibration, looseness, or poor maintenance.</li>
+                <li>Uncontrolled environmental conditions (e.g., sudden temperature or pressure changes).</li>
+                <li>Poor or unstable process settings.</li>
+            </ul>
+
+            <h3>Conclusion:</h3>
+            <p>
+                Erratic fluctuations are a sign of special causes of variation. The process is not stable, and immediate
+                investigation is required to identify and eliminate the root cause.
+            </p>
+        </article>
+
+    </section>
+
+    <!-- FOOTNOTE -->
+    <div class="footer-note">
+        SPC – Complete Reference Guide • Same content, upgraded into a premium neon glass UI for study & training.
+    </div>
+
+</div>
+
+<!-- (Optional) Tiny JS hook – placeholder for future interactivity -->
+<script>
+    // Reserved for any future JS enhancements (filters, animations, etc.)
+</script>
+
+</body>
+</html>

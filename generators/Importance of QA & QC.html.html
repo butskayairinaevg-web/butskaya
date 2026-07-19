@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Importance of QA & QC — Navigation Demo</title>
+  <style>
+    :root{
+      --bg:#ffffff; --text:#111111; --muted:#555555; --accent:#ff7a00; --card:#f7f7f7;
+    }
+    [data-theme="dark"]{ --bg:#0b0c0f; --text:#e6eef8; --muted:#9aa6b2; --card:#0f1418; }
+
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:var(--bg); color:var(--text); line-height:1.6}
+
+    .container{display:grid; grid-template-columns:260px 1fr; min-height:100vh}
+    .sidebar{position:sticky; top:0;height:100vh; padding:24px; border-right:1px solid rgba(0,0,0,0.06); background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);}
+    [data-theme="dark"] .sidebar{border-right-color:rgba(255,255,255,0.04); background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
+
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+    .logo{width:44px;height:44px;border-radius:8px;background:var(--accent);display:inline-grid;place-items:center;color:#fff;font-weight:700}
+    .title{font-weight:700}
+
+    .index{display:flex;flex-direction:column;gap:8px}
+    .index a{padding:8px 10px;border-radius:6px;text-decoration:none;color:var(--muted);display:flex;align-items:center;gap:8px}
+    .index a.active{background:var(--card); color:var(--text); font-weight:600}
+    [data-theme="dark"] .index a.active{background:rgba(255,255,255,0.03)}
+
+    .topbar{position:fixed;left:260px;right:0;top:0;height:6px;z-index:40}
+    .progress-wrap{height:6px;background:transparent}
+    .progress{height:6px;width:0%;background:linear-gradient(90deg,var(--accent),#ffad66);border-radius:3px}
+
+    .content{padding:64px 48px; max-width:900px}
+    section{margin-bottom:48px;padding-bottom:24px}
+    h2{color:var(--accent); margin:0 0 12px 0}
+    p{margin:0 0 10px 0}
+
+    .controls{display:flex;align-items:center;gap:12px;margin-top:8px}
+    .toggle{padding:8px 10px;border-radius:999px;background:var(--card);cursor:pointer;border:1px solid rgba(0,0,0,0.04)}
+    [data-theme="dark"] .toggle{border-color:rgba(255,255,255,0.04)}
+
+    @media (max-width:880px){
+      .container{grid-template-columns:1fr}
+      .sidebar{position:relative;height:auto;border-right:none;padding:12px;display:flex;overflow:auto}
+      .topbar{left:0}
+      .content{padding:120px 18px 48px}
+    }
+
+    .badge{background:#efefef;padding:4px 8px;border-radius:999px;font-size:12px;color:var(--muted)}
+    [data-theme="dark"] .badge{background:rgba(255,255,255,0.03)}
+
+    footer{margin-top:40px;border-top:1px dashed rgba(0,0,0,0.06);padding-top:18px;color:var(--muted);text-align:center;font-size:14px}
+    footer a{color:var(--accent);text-decoration:none}
+  </style>
+</head>
+<body data-theme="light">
+  <div class="container">
+    <aside class="sidebar" aria-label="Table of contents">
+      <div class="brand">
+        <div class="logo">QA</div>
+        <div>
+          <div class="title">QA & QC Guide</div>
+          <div class="badge">Overview</div>
+        </div>
+      </div>
+
+      <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
+        <small style="color:var(--muted)">Navigation</small>
+        <div class="controls">
+          <button class="toggle" id="themeToggle" aria-pressed="false">🌙</button>
+        </div>
+      </div>
+
+      <nav class="index" id="toc" style="margin-top:18px">
+        <a href="#defect-prevention" data-target>Defect Prevention & Detection</a>
+        <a href="#customer-satisfaction" data-target>Customer Satisfaction</a>
+        <a href="#costs-efficiency" data-target>Cost Reduction & Efficiency</a>
+        <a href="#brand-reputation" data-target>Brand Reputation</a>
+        <a href="#market-access" data-target>Market Access</a>
+        <a href="#safety-reliability" data-target>Safety & Reliability</a>
+        <a href="#continuous-improvement" data-target>Continuous Improvement</a>
+      </nav>
+
+      <div style="margin-top:18px;color:var(--muted);font-size:13px">Tip: Click any topic to jump. Scroll to update the progress bar.</div>
+    </aside>
+
+    <main style="position:relative">
+      <div class="topbar">
+        <div class="progress-wrap"><div id="progress" class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div></div>
+      </div>
+
+      <article class="content" id="mainContent">
+        <h1 style="margin-top:12px">Importance of Quality Assurance (QA) and Quality Control (QC)</h1>
+        <p style="color:var(--muted)">QA focuses on preventing defects by building quality into processes; QC finds and corrects defects in products/processes. Below is a quick, structured guide.</p>
+
+        <section id="defect-prevention">
+          <h2>1. Defect Prevention and Detection</h2>
+          <p><strong>QA:</strong> Embeds quality into processes to prevent errors.</p>
+          <p><strong>QC:</strong> Identifies and corrects defects before they reach the customer.</p>
+        </section>
+
+        <section id="customer-satisfaction">
+          <h2>2. Customer Satisfaction</h2>
+          <p>Ensures products and services meet expectations, increasing loyalty and repeat business.</p>
+        </section>
+
+        <section id="costs-efficiency">
+          <h2>3. Cost Reduction & Efficiency</h2>
+          <p>Reduces waste, rework, and delays — improving overall profitability.</p>
+        </section>
+
+        <section id="brand-reputation">
+          <h2>4. Brand Reputation</h2>
+          <p>Demonstrates commitment to quality, building trust with customers and regulators.</p>
+        </section>
+
+        <section id="market-access">
+          <h2>5. Market Access</h2>
+          <p>Helps organizations meet regulatory requirements and enter new markets.</p>
+        </section>
+
+        <section id="safety-reliability">
+          <h2>6. Safety & Reliability</h2>
+          <p>Protects consumers by ensuring products are safe and effective.</p>
+        </section>
+
+        <section id="continuous-improvement">
+          <h2>7. Continuous Improvement</h2>
+          <p>Creates feedback loops for refining processes and raising standards over time.</p>
+        </section>
+
+        <footer>
+          <p>© 2025 Quality Learning</p>
+          <small>Fully mobile compatible — works on both desktop and mobile browsers.</small>
+        </footer>
+      </article>
+    </main>
+  </div>
+
+  <script>
+    const links = document.querySelectorAll('[data-target]');
+    const toc = document.getElementById('toc');
+    const sections = Array.from(document.querySelectorAll('main article section'));
+
+    links.forEach(a=>{
+      a.addEventListener('click', e=>{
+        e.preventDefault();
+        const id = a.getAttribute('href').slice(1);
+        const el = document.getElementById(id);
+        el.scrollIntoView({behavior:'smooth',block:'start'});
+      })
+    });
+
+    function onScroll(){
+      const fromTop = window.scrollY + 80;
+      let current = sections.find(s => s.offsetTop <= fromTop && s.offsetTop + s.offsetHeight > fromTop);
+      links.forEach(l=>l.classList.remove('active'));
+      if(current){
+        const activeLink = toc.querySelector(`a[href="#${current.id}"]`);
+        if(activeLink) activeLink.classList.add('active');
+      }
+
+      const scrolled = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? (scrolled / docHeight) * 100 : 0;
+      document.getElementById('progress').style.width = pct + '%';
+      document.getElementById('progress').setAttribute('aria-valuenow', Math.round(pct));
+    }
+
+    window.addEventListener('scroll', onScroll);
+    window.addEventListener('resize', onScroll);
+    onScroll();
+
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', ()=>{
+      const root = document.body;
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      themeToggle.textContent = isDark ? '🌙' : '☀️';
+      themeToggle.setAttribute('aria-pressed', String(!isDark));
+    });
+
+    window.addEventListener('keydown', e=>{
+      if(e.key.toLowerCase() === 't'){
+        const first = toc.querySelector('a');
+        if(first) first.focus();
+      }
+    });
+  </script>
+</body>
+</html>
