@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FMEA | AIAG & VDA Premium Notes</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --burgundy: #811844;
+      --gold: #f6b75d;
+      --bg: #f7f2f7;
+      --text: #222222;
+      --muted: #555555;
+      --card-bg: rgba(255, 255, 255, 0.7);
+      --card-border: rgba(255, 255, 255, 0.9);
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.10);
+      --radius-xl: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #ffe5f5 0%, #f7f2f7 40%, #ffffff 100%);
+      color: var(--text);
+      line-height: 1.85;
+      font-size: 0.98rem;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1e9f2;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--burgundy);
+      border-radius: 999px;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100%;
+      background: linear-gradient(180deg, #811844, #a52a52, #f6b75d);
+      padding: 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+      color: white;
+      box-shadow: 4px 0 25px rgba(0,0,0,0.25);
+      z-index: 1000;
+    }
+
+    .sidebar-logo {
+      font-size: 1.6rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    .sidebar-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-top: 0.5rem;
+    }
+
+    .sidebar-links a {
+      text-decoration: none;
+      color: white;
+      padding: 0.45rem 0.7rem;
+      border-radius: 8px;
+      transition: 0.25s;
+      font-size: 0.9rem;
+    }
+
+    .sidebar-links a:hover,
+    .sidebar-links a.active {
+      background: rgba(255,255,255,0.25);
+      padding-left: 1rem;
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        display: none;
+      }
+    }
+
+    /* NAVBAR */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.92),
+        rgba(255, 255, 255, 0.96)
+      );
+      border-bottom: 1px solid rgba(129, 24, 68, 0.08);
+      margin-left: 230px;
+    }
+
+    .nav-inner {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .nav-logo-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 18px;
+      background: conic-gradient(from 210deg, #ffe5b8, #811844, #f9b248, #ffffff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      box-shadow: 0 8px 18px rgba(129, 24, 68, 0.5);
+    }
+
+    .nav-title {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .nav-title-main {
+      font-size: 1.15rem;
+      font-weight: 700;
+      background: linear-gradient(120deg, var(--burgundy), var(--gold));
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: 0.03em;
+    }
+
+    .nav-title-sub {
+      font-size: 0.70rem;
+      color: var(--muted);
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 0.55rem;
+      font-size: 0.78rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.9);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .nav-links a:hover {
+      border-color: rgba(129, 24, 68, 0.3);
+      box-shadow: 0 6px 14px rgba(129, 24, 68, 0.35);
+      color: var(--burgundy);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 900px) {
+      .navbar {
+        margin-left: 0;
+      }
+    }
+
+    /* PAGE LAYOUT */
+    .page {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 1.8rem 1.5rem 3rem;
+      margin-left: 230px;
+    }
+
+    @media (max-width: 900px) {
+      .page {
+        margin-left: 0;
+      }
+    }
+
+    /* SEARCH BAR */
+    .search-box {
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+
+    #searchInput {
+      width: 80%;
+      max-width: 450px;
+      padding: 0.7rem 1rem;
+      border-radius: 30px;
+      border: 1px solid rgba(129,24,68,0.3);
+      background: #ffffffdd;
+      font-size: 1rem;
+      outline: none;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+
+    /* SUMMARY CARDS */
+    .summary-cards {
+      margin-bottom: 2rem;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .summary-card {
+      background: linear-gradient(135deg, rgba(129,24,68,0.12), rgba(246,183,93,0.25));
+      padding: 1.2rem;
+      border-radius: 14px;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.12);
+      text-align: center;
+    }
+
+    .summary-card h3 {
+      font-size: 1rem;
+      color: var(--burgundy);
+    }
+
+    .summary-card p {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-top: 0.3rem;
+    }
+
+    /* HERO */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.9fr) minmax(0, 1.4fr);
+      gap: 2.5rem;
+      margin: 2.3rem 0 3rem;
+      align-items: center;
+    }
+
+    @media (max-width: 880px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hero-main {
+      padding-right: 1rem;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(129, 24, 68, 0.28);
+      background: rgba(255, 255, 255, 0.9);
+      font-size: 0.75rem;
+      color: var(--burgundy);
+      margin-bottom: 0.75rem;
+    }
+
+    .kicker-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--gold), var(--burgundy));
+    }
+
+    .hero-main h1 {
+      font-size: clamp(2.2rem, 4vw, 2.7rem);
+      margin-bottom: 0.6rem;
+      line-height: 1.2;
+    }
+
+    .hero-main h1 span {
+      background: linear-gradient(135deg, var(--burgundy), var(--gold));
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-sub {
+      font-size: 0.98rem;
+      color: var(--muted);
+      max-width: 640px;
+      margin-bottom: 1rem;
+    }
+
+    .hero-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 1rem;
+    }
+
+    .chip {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(129, 24, 68, 0.18);
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--burgundy);
+    }
+
+    .hero-note {
+      font-size: 0.8rem;
+      color: var(--muted);
+      max-width: 640px;
+    }
+
+    .hero-card {
+      position: relative;
+      border-radius: 26px;
+      padding: 1.4rem 1.6rem;
+      background: radial-gradient(circle at top left, rgba(255, 229, 184, 0.5), rgba(129, 24, 68, 0.16), rgba(255, 255, 255, 0.98));
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: conic-gradient(
+        from 210deg,
+        rgba(255, 229, 184, 0.75),
+        rgba(129, 24, 68, 0.4),
+        transparent,
+        transparent
+      );
+      opacity: 0.55;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    .hero-card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--burgundy);
+      margin-bottom: 0.35rem;
+    }
+
+    .hero-card-sub {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 0.9rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.7rem;
+      font-size: 0.78rem;
+    }
+
+    .hero-mini {
+      padding: 0.5rem 0.6rem;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(255,255,255,0.9);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+    }
+
+    .hero-mini span {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .hero-mini strong {
+      font-size: 0.82rem;
+      color: var(--burgundy);
+    }
+
+    /* SECTIONS */
+    section {
+      margin-bottom: 2.2rem;
+    }
+
+    .section-card {
+      position: relative;
+      background: var(--card-bg);
+      border-radius: var(--radius-xl);
+      padding: 1.7rem 1.8rem;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(14px);
+      overflow: hidden;
+    }
+
+    .section-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.95),
+        rgba(255, 255, 255, 0.85)
+      );
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .section-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      color: var(--burgundy);
+      margin-bottom: 0.7rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 2px solid rgba(246, 183, 93, 0.7);
+      display: inline-block;
+      padding-right: 0.4rem;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      color: var(--burgundy);
+      margin-top: 0.9rem;
+      margin-bottom: 0.3rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+    }
+
+    ul {
+      padding-left: 1.2rem;
+      margin-bottom: 0.4rem;
+    }
+
+    li {
+      font-size: 0.9rem;
+      margin-bottom: 0.22rem;
+    }
+
+    .short-note {
+      font-size: 0.86rem;
+      font-style: italic;
+      color: var(--muted);
+      margin-top: 0.35rem;
+    }
+
+    .inline-emoji {
+      font-size: 0.95rem;
+      margin-right: 0.2rem;
+    }
+
+    /* TABLE */
+    .table-wrapper {
+      margin-top: 0.7rem;
+      overflow-x: auto;
+    }
+
+    table {
+      border-collapse: collapse;
+      min-width: 100%;
+      font-size: 0.82rem;
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+    }
+
+    th, td {
+      border: 1px solid rgba(129, 24, 68, 0.18);
+      padding: 0.6rem 0.7rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: linear-gradient(
+        135deg,
+        rgba(129, 24, 68, 0.12),
+        rgba(246, 183, 93, 0.25)
+      );
+      color: var(--burgundy);
+      font-weight: 600;
+    }
+
+    /* Fade Animation */
+    .fade-section {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .fade-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* BACK TO TOP BUTTON */
+    .back-to-top {
+      position: fixed;
+      right: 1.3rem;
+      bottom: 1.3rem;
+      border: none;
+      border-radius: 999px;
+      padding: 0.7rem 0.95rem;
+      background: linear-gradient(135deg, var(--burgundy), var(--gold));
+      color: #fff;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      gap: 0.3rem;
+      box-shadow: 0 14px 30px rgba(129, 24, 68, 0.6);
+      z-index: 70;
+    }
+
+    .back-to-top span {
+      font-size: 1rem;
+    }
+
+    .back-to-top.show {
+      display: inline-flex;
+    }
+
+    /* RIGHT INFO PANEL */
+    .info-panel {
+      position: fixed;
+      right: 15px;
+      top: 160px;
+      width: 210px;
+      padding: 1rem;
+      background: rgba(255,255,255,0.9);
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.18);
+      backdrop-filter: blur(12px);
+      z-index: 900;
+    }
+    .info-panel h3 {
+      color: var(--burgundy);
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+    .info-panel ul {
+      font-size: 0.85rem;
+      color: #444;
+      padding-left: 1rem;
+    }
+
+    @media (max-width: 1000px) {
+      .info-panel {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- FIXED SIDEBAR NAVIGATION -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">FMEA</div>
+    <nav class="sidebar-links">
+      <a href="#meaning">Meaning</a>
+      <a href="#types">Types</a>
+      <a href="#when-start">When to Start</a>
+      <a href="#seven-steps">7 Steps</a>
+      <a href="#aiag-vda">AIAG &amp; VDA</a>
+      <a href="#old-new">Old vs New</a>
+      <a href="#alignment">Alignment</a>
+      <a href="#benefits">Benefits</a>
+      <a href="#failure-modes">Failure Modes</a>
+      <a href="#dfmea">DFMEA</a>
+      <a href="#pfmea">PFMEA</a>
+      <a href="#ap-table">AP Table</a>
+      <a href="#control-plan">Control Plan</a>
+    </nav>
+  </aside>
+
+  <!-- RIGHT INFO PANEL -->
+  <aside class="info-panel">
+    <h3>Quick References</h3>
+    <ul>
+      <li><strong>DFMEA</strong> – Design risks</li>
+      <li><strong>PFMEA</strong> – Process risks</li>
+      <li><strong>AP</strong> – Action Priority</li>
+      <li><strong>Control Plan</strong> – Process stability</li>
+      <li><strong>FMEA-MSR</strong> – Monitoring &amp; System Response</li>
+    </ul>
+  </aside>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <div class="nav-logo-badge">F</div>
+        <div class="nav-title">
+          <div class="nav-title-main">FMEA – AIAG &amp; VDA</div>
+          <div class="nav-title-sub">Failure Mode and Effect Analysis | Design &amp; Process Risk Evaluation</div>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="#meaning">Meaning</a>
+        <a href="#types">Types</a>
+        <a href="#dfmea">DFMEA</a>
+        <a href="#pfmea">PFMEA</a>
+        <a href="#ap-table">AP</a>
+        <a href="#control-plan">Control Plan</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+
+    <!-- SEARCH BAR -->
+    <div class="search-box fade-section">
+      <input type="text" id="searchInput" placeholder="Search FMEA content...">
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <section class="summary-cards fade-section">
+      <div class="summary-grid">
+        <div class="summary-card">
+          <h3>Total Sections</h3>
+          <p>14</p>
+        </div>
+        <div class="summary-card">
+          <h3>DFMEA Items</h3>
+          <p>3 (sample)</p>
+        </div>
+        <div class="summary-card">
+          <h3>PFMEA Steps</h3>
+          <p>3 (sample)</p>
+        </div>
+        <div class="summary-card">
+          <h3>Risk Actions</h3>
+          <p>AP: H / M / L</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- HERO -->
+    <section class="hero fade-section">
+      <div class="hero-main">
+        <div class="kicker">
+          <div class="kicker-dot"></div>
+          FMEA | AIAG &amp; VDA First Edition 2019
+        </div>
+        <h1><span>Failure Mode and Effect Analysis (FMEA)</span></h1>
+        <p class="hero-sub">
+          A structured, prevention-focused method to identify, evaluate and reduce risks in product design and manufacturing
+          processes, aligned with the AIAG &amp; VDA FMEA 2019 handbook.
+        </p>
+        <div class="hero-chips">
+          <div class="chip">DFMEA &amp; PFMEA</div>
+          <div class="chip">Action Priority (AP)</div>
+          <div class="chip">IATF 16949 Core Tool</div>
+          <div class="chip">7-Step Approach</div>
+        </div>
+        <p class="hero-note">
+          This page summarizes key FMEA topics: meaning, objectives, main types (DFMEA &amp; PFMEA), the AIAG &amp; VDA FMEA 2019
+          structure, the 7-step approach, old vs new FMEA comparison, the reason for AIAG–VDA alignment, benefits of FMEA,
+          and the seven typical failure mode behaviours, plus DFMEA/PFMEA examples, Action Priority table and a basic Control Plan.
+        </p>
+      </div>
+
+      <aside class="hero-card">
+        <div class="hero-card-inner">
+          <div class="hero-card-title">Quick Snapshot</div>
+          <div class="hero-card-sub">
+            FMEA (Failure Mode and Effect Analysis) is a proactive tool used to identify potential failures, understand their
+            effects, and define actions to reduce or eliminate risk.
+          </div>
+          <div class="hero-grid">
+            <div class="hero-mini">
+              <span>Core Tools of IATF 16949</span>
+              <strong>APQP, PPAP, FMEA, MSA, SPC</strong>
+            </div>
+            <div class="hero-mini">
+              <span>Main Focus</span>
+              <strong>Risk prevention &amp; reliability</strong>
+            </div>
+            <div class="hero-mini">
+              <span>Types</span>
+              <strong>Design FMEA (DFMEA)<br>Process FMEA (PFMEA)</strong>
+            </div>
+            <div class="hero-mini">
+              <span>New Concepts</span>
+              <strong>Action Priority (AP), FMEA-MSR</strong>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- MEANING -->
+    <section id="meaning" class="fade-section">
+      <div class="section-card">
+        <div class="section-inner">
+          <h2>Failure Mode and Effect Analysis (FMEA) – Meaning</h2>
+          <p>
+            Failure Mode and Effect Analysis (FMEA) is a systematic and structured method used to identify potential failure
+            modes in a product, process, or system, assess their effects, and prioritize actions to reduce the associated risks.
+          </p>
+          <p>The main objectives of FMEA are:</p>
+          <ul>
+            <li>To identify possible failure modes before they occur.</li>
+            <li>To understand the potential effects of these failures on the customer, safety, function, and performance.</li>
+            <li>To identify the causes of these failures and implement preventive or corrective actions.</li>
+            <li>To improve the reliability, safety, and robustness of products and processes.</li>
+          </ul>
+          <p>
+            In simple terms, FMEA helps a team anticipate problems before they happen and define actions to prevent or
+            control those problems, rather than reacting after failures occur.
+          </p>
+          <p>FMEA is one of the five Core Tools of IATF 16949:2016:</p>
+          <ul>
+            <li>Advanced Product Quality Planning (APQP)</li>
+            <li>Production Part Approval Process (PPAP)</li>
+            <li>Failure Mode and Effect Analysis (FMEA)</li>
+            <li>Measurement System Analysis (MSA)</li>
+            <li>Statistical Process Control (SPC)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- TYPES -->
+    <section id="types" class="fade-section">
+      <div class="section-card">
+        <div class="section-inner">
+          <h2>Types of FMEA</h2>
+          <p>There are two main types of FMEA commonly used in industry:</p>
+
+          <h3>1. Design FMEA (DFMEA)</h3>
+          <ul>
+            <li>Focuses on failures related to the <strong>design</strong> of the product.</li>
+            <li>Evaluates potential issues with material selection, dimensions, tolerances, strength, performance, and safety.</li>
+            <li>Is performed during the product design and development phase, before releasing drawings for production.</li>
+            <li>Typical concerns include:
+              <ul>
+                <li>Insufficient strength leading to fatigue or breakage.</li>
+                <li>Incorrect material choice causing corrosion or wear.</li>
+                <li>Dimensional or tolerance issues causing misfit or misalignment.</li>
+              </ul>
+            </li>
+            <li>The objective is to make the design robust, safe, and capable of meeting customer and regulatory requirements.</li>
+          </ul>
+
+          <h3>2. Process FMEA (PFMEA)</h3>
+          <ul>
+            <li>Focuses on failures related to the <strong>manufacturing or assembly process</strong>.</li>
+            <li>Evaluates potential issues in process steps, machines, methods, material handling, inspection, and human activities.</li>
+            <li>Is performed during process planning and industrialization, before mass production starts.</li>
+            <li>Typical concerns include:
+              <ul>
+                <li>Incorrect torque leading to loose fasteners.</li>
+                <li>Incorrect welding parameters causing weak welds.</li>
+                <li>Mix-up of parts due to poor identification or process control.</li>
+              </ul>
+            </li>
+            <li>The objective is to ensure that the process is capable, controlled, and not likely to produce defects.</li>
+          </ul>
+
+          <p class="short-note">
+            Summary:<br>
+            <strong>DFMEA</strong> asks: “What can go wrong in the design?”<br>
+            <strong>PFMEA</strong> asks: “What can go wrong in the process?”
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHEN TO START -->
+    <section id="when-start" class="fade-section">
+      <div class="section-card">
+        <div class="section-inner">
+          <h2>When Should FMEA Be Started?</h2>
+          <p>
+            <span class="inline-emoji">👉</span> FMEA should always be started as <strong>early</strong> as possible in the design or process
+            development phase, when changes are easier and less expensive to implement.
+          </p>
+
+          <h3>For Design FMEA (DFMEA)</h3>
+          <ul>
+            <li>Start after the product concept has been defined but before design is frozen.</li>
+            <li>Perform DFMEA while requirements, specifications, and customer expectations are being translated into design features.</li>
+            <li>The goal is to identify potential design weaknesses before releasing drawings for tooling and production.</li>
+          </ul>
+
+          <h3>For Process FMEA (PFMEA)</h3>
+          <ul>
+            <li>Start during process design and planning, when process flow, layout, equipment, and control plans are being developed.</li>
+            <li>PFMEA should be completed before the start of mass production.</li>
+            <li>The goal is to identify and mitigate process risks before they can affect production and customers.</li>
+          </ul>
+
+          <p class="short-note">
+            Early FMEA means fewer changes during production, lower cost, fewer customer issues, and higher confidence in the design and process.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 STEP APPROACH -->
+    <section id="seven-steps" class="fade-section">
+      <div class="section-card">
+        <div class="section-inner">
+          <h2>AIAG &amp; VDA FMEA – 7 Step Approach</h2>
+          <p>
+            The AIAG &amp; VDA FMEA Handbook (1st Edition 2019) introduced a new <strong>7-step approach</strong> that is more
+            structured and prevention-focused compared to the earlier 5-step method.
+          </p>
+
+          <h3>Step 1 – Planning and Preparation</h3>
+          <ul>
+            <li>Define the scope, boundaries, and objectives of the FMEA.</li>
+            <li>Collect relevant customer requirements, technical specifications, and historical data.</li>
+            <li>Form a cross-functional team (Design, Process, Quality, Production, Supplier, etc.).</li>
+          </ul>
+
+          <h3>Step 2 – Structure Analysis</h3>
+          <p>Break down the system, design, or process into a structured hierarchy:</p>
+          <ul>
+            <li><strong>Process Item</strong> – e.g. an assembly line or overall process.</li>
+            <li><strong>Process Step</strong> – e.g. machining, pressing, welding, assembly operations.</li>
+            <li><strong>Process Work Element</strong> – e.g. operator actions, machine functions, material movements.</li>
+          </ul>
+
+          <h3>Step 3 – Functional Analysis</h3>
+          <p>Define the functions and requirements at each level:</p>
+          <ul>
+            <li>Functions of the process item.</li>
+            <li>Functions of each process step and related product characteristics.</li>
+            <li>Functions of each work element and related process characteristics.</li>
+          </ul>
+
+          <h3>Step 4 – Failure Analysis</h3>
+          <p>Identify how each function can fail:</p>
+          <ul>
+            <li><strong>Failure modes</strong> – How can the function fail?</li>
+            <li><strong>Effects of failure</strong> – What happens if the failure occurs (impact on customer, safety, or system)?</li>
+            <li><strong>Causes of failure</strong> – Why would the failure occur (root causes)?</li>
+          </ul>
+
+          <h3>Step 5 – Risk Analysis</h3>
+          <ul>
+            <li>Evaluate the Severity (S), Occurrence (O), and Detection (D) ratings.</li>
+            <li>Instead of using RPN (S×O×D), the new method uses <strong>Action Priority (AP)</strong>.</li>
+            <li>AP tables classify combinations of S, O, and D into High, Medium, or Low action priority.</li>
+            <li>High Action Priority items require immediate and effective actions.</li>
+          </ul>
+
+          <h3>Step 6 – Optimization</h3>
+          <ul>
+            <li>Define and implement actions to reduce risk (design changes, process improvements, error-proofing, controls, training, etc.).</li>
+            <li>Update the FMEA with revised S, O, and D ratings after actions are implemented.</li>
+            <li>Ensure that residual risk is acceptable and documented.</li>
+          </ul>
+
+          <h3>Step 7 – Documentation</h3>
+          <ul>
+            <li>Record all relevant information, decisions, and actions in the FMEA document.</li>
+            <li>Maintain transparency for audits, lessons learned, and future projects.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- AIAG & VDA DETAILS -->
+    <section id="aiag-vda" class="fade-section">
+      <div class="section-card">
+        <div class="section-inner">
+          <h2>AIAG &amp; VDA FMEA | 1st Edition 2019</h2>
+          <p>
+            Historically, AIAG (Automotive Industry Action Group – USA) and VDA (German Association of the Automotive Industry)
+            had separate FMEA manuals with different rating tables, formats, and expectations.
+          </p>
+          <p>
+            In 2019, AIAG and VDA jointly released the <strong>AIAG &amp; VDA FMEA Handbook (1st Edition)</strong> to provide a
+            harmonized, global FMEA approach.
+          </p>
+          <p>Key features of the AIAG &amp; VDA FMEA Handbook:</p>
+          <ul>
+            <li>Replaces the old AIAG 4th Edition FMEA and VDA Volume 4 FMEA manuals.</li>
+            <li>Introduces a 7-step structured methodology for FMEA.</li>
+            <li>Replaces the RPN concept with <strong>Action Priority (AP)</strong> for better decision making.</li>
+            <li>Introduces <strong>FMEA-MSR</strong> (Monitoring and System Response) for system-level and in-use risk evaluation.</li>
+            <li>Provides a common, globally recognized framework for Design FMEA, Process FMEA, and System FMEA.</li>
+          </ul>
+          <p>
+            The main focus of this handbook is to strengthen prevention, improve transparency in risk assessment,
+            and align expectations between OEMs and suppliers worldwide.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- OLD VS NEW FMEA -->
+    <section id="old-new" class="fade-section">
+      <div class="section-card">
+        <div class="section-inner">
+          <h2>Old FMEA vs New AIAG &amp; VDA FMEA</h2>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Point</th>
+                  <th>Old FMEA (AIAG 4th / VDA Vol. 4)</th>
+                  <th>New AIAG &amp; VDA FMEA (2019)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Standard</td>
+                  <td>Separate standards – AIAG (USA) and VDA (Germany).</td>
+                  <td>Joint global standard – AIAG + VDA together.</td>
+                </tr>
+                <tr>
+                  <td>Approach</td>
+                  <td>5-step approach.</td>
+                  <td>7-step structured approach.</td>
+                </tr>
+                <tr>
+                  <td>Risk Evaluation</td>
+                  <td>RPN (Risk Priority Number) = S × O × D.</td>
+                  <td>Action Priority (AP) tables – High / Medium / Low.</td>
+                </tr>
+                <tr>
+                  <td>Focus</td>
+                  <td>More emphasis on detection and ranking using RPN.</td>
+                  <td>More emphasis on prevention and effective risk-reduction actions.</td>
+                </tr>
+                <tr>
+                  <td>Additional Type</td>
+                  <td>No dedicated FMEA-MSR concept.</td>
+                  <td>FMEA-MSR (Monitoring &amp; System Response) added.</td>
+                </tr>
+                <tr>
+                  <td>Alignment</td>
+                  <td>Region-specific expectations; suppliers had to follow different standards.</td>
+                  <td>Common, harmonized expectations for global OEMs and suppliers.</td>
+                </tr>
+                <tr>
+                  <td>Action Tracking</td>
+                  <td>Less focus on structured action tracking.</td>
+                  <td>Clear documentation of actions, responsible persons, target dates, and status.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="short-note">
+            In summary: the old FMEA was mainly RPN-based and less harmonized; the new AIAG &amp; VDA FMEA is a structured,
+            7-step, prevention-focused, globally aligned approach with Action Priority.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ALIGNMENT NEED -->
+    <section id="alignment" class="fade-section">
+      <div class="section-card">
+        <div class="section-inner">
+          <h2>Why Alignment Between AIAG &amp; VDA Was Needed</h2>
+
+          <h3>1. Different Approaches for the Same Supplier</h3>
+          <p>
+            Many automotive suppliers work with both North American (AIAG-based) and German (VDA-based) OEMs. Before alignment,
+            they had to maintain different FMEA formats and rating methods for different customers, which increased complexity and workload.
+          </p>
+
+          <h3>2. Confusing Rating and Risk Criteria</h3>
+          <p>
+            Severity, Occurrence, and Detection rating tables were different between AIAG and VDA. The same failure could receive
+            different ratings and RPNs, leading to confusion when comparing risk levels across customers or regions.
+          </p>
+
+          <h3>3. Extra Work and Documentation Overlap</h3>
+          <p>
+            Suppliers sometimes had to prepare two different FMEA versions for the same part or process – one for AIAG-style
+            expectations and one for VDA-style expectations. This duplicated effort and made audits and maintenance more difficult.
+          </p>
+
+          <h3>4. Need for One Global Standard</h3>
+          <p>
+            The automotive industry needed a single, harmonized FMEA standard that would be accepted globally. This would:
+          </p>
+          <ul>
+            <li>Simplify the FMEA process for suppliers.</li>
+            <li>Provide clear and common expectations for OEMs.</li>
+            <li>Make training, auditing, and continuous improvement more efficient.</li>
+          </ul>
+
+          <p class="short-note">
+            The AIAG &amp; VDA FMEA Handbook is the result of this alignment and provides one common FMEA “language” for the global automotive supply chain.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- BENEFITS -->
+    <section id="benefits" class="fade-section">
+      <div class="section-card">
+        <div class="section-inner">
+          <h2>Why AIAG &amp; VDA FMEA? | Key Benefits</h2>
+          <p>
+            Modern vehicles, machines, and systems are highly complex. With increasing complexity, the potential for failure also increases.
+            FMEA helps organizations systematically identify and reduce these risks before they affect the customer.
+          </p>
+
+          <h3>Main Benefits of FMEA</h3>
+          <ul>
+            <li><strong>Early Risk Identification:</strong> Risks are detected and evaluated during design and process development.</li>
+            <li><strong>Improved Reliability:</strong> Products and processes become more stable and reliable over time.</li>
+            <li><strong>Prevention Culture:</strong> Shifts the organization from a reactive “fire-fighting” approach to a preventive mindset.</li>
+            <li><strong>Reduced Customer Issues:</strong> Complaints, rejections, warranty claims, and field failures are reduced.</li>
+            <li><strong>Cost Savings:</strong> Less rework, scrap, recalls, and legal exposure due to failures.</li>
+            <li><strong>Better Communication:</strong> Cross-functional teams use a common document to discuss and manage risk.</li>
+          </ul>
+
+          <p class="short-note">
+            FMEA is not just a form to fill in; it is a thinking process that strengthens the organization’s approach to risk and quality.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 FAILURE MODES -->
+    <section id="failure-modes" class="fade-section">
+      <div class="section-card">
+        <div class="section-inner">
+          <h2>7 Types of Failure Modes in FMEA</h2>
+          <p>
+            In AIAG &amp; VDA FMEA, failure analysis pays special attention to typical ways in which a function can deviate
+            from the intended performance. These are often described through seven types of functional behaviour.
+          </p>
+
+          <h3>1. Loss of Function</h3>
+          <ul>
+            <li>The function does not occur at all.</li>
+            <li><strong>Example (Ball Pen):</strong> The pen does not write; no ink flows to the paper.</li>
+          </ul>
+
+          <h3>2. Degradation of Function</h3>
+          <ul>
+            <li>The function is present but deteriorates over time or performance becomes weaker.</li>
+            <li><strong>Example:</strong> The pen writes well initially, but later the ink becomes faint or inconsistent.</li>
+          </ul>
+
+          <h3>3. Intermittent Function</h3>
+          <ul>
+            <li>The function starts and stops irregularly, with no consistent pattern.</li>
+            <li><strong>Example:</strong> While writing, some letters appear correctly and others are missing because ink flow is intermittent.</li>
+          </ul>
+
+          <h3>4. Partial Function</h3>
+          <ul>
+            <li>The function is performed, but not to the required level.</li>
+            <li><strong>Example:</strong> The pen writes, but the ink coverage is poor and the writing looks patchy.</li>
+          </ul>
+
+          <h3>5. Exceeding Function</h3>
+          <ul>
+            <li>The function output exceeds what is required.</li>
+            <li><strong>Example:</strong> The pen releases too much ink, causing smearing or spreading on the paper.</li>
+          </ul>
+
+          <h3>6. Delayed Function</h3>
+          <ul>
+            <li>The function occurs but not at the required time; it is delayed.</li>
+            <li><strong>Example:</strong> After pressing or clicking the pen, the ink flow starts only after some delay.</li>
+          </ul>
+
+          <h3>7. Unintended Function</h3>
+          <ul>
+            <li>The system produces an unexpected or opposite outcome compared to what is intended.</li>
+            <li><strong>Example (Steering System):</strong> The driver turns the steering wheel to the left, but the vehicle responds incorrectly and moves to the right.</li>
+          </ul>
+
+          <p class="short-note">
+            Understanding these failure behaviours helps the FMEA team to systematically analyze how functions can deviate
+            and what risks must be addressed through design and process controls.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- DFMEA MASTER TABLE -->
+    <section id="dfmea" class="fade-section">
+      <div class="section-card">
+        <div class="section-inner">
+          <h2>Design FMEA (DFMEA) – AIAG &amp; VDA Format</h2>
+
+          <p>
+            DFMEA evaluates potential failure modes in the <strong>product design</strong> before the product is released for production.
+            The purpose is to identify design weaknesses early and improve functional robustness, safety, and performance.
+          </p>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Item / Function</th>
+                  <th>Failure Mode</th>
+                  <th>Effect of Failure</th>
+                  <th>Severity (S)</th>
+                  <th>Cause of Failure</th>
+                  <th>Occurrence (O)</th>
+                  <th>Current Design Controls</th>
+                  <th>Detection (D)</th>
+                  <th>Action Priority (AP)</th>
+                  <th>Recommended Actions</th>
+                  <th>Action Results (Revised S/O/D)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Pen Tip – Provide ink flow</td>
+                  <td>No ink flow</td>
+                  <td>Pen cannot write</td>
+                  <td>8</td>
+                  <td>Clogged tip due to dust</td>
+                  <td>4</td>
+                  <td>Material selection, design validation test</td>
+                  <td>5</td>
+                  <td>High</td>
+                  <td>Improve tip filtration design</td>
+                  <td>S=8, O=2, D=4</td>
+                </tr>
+
+                <tr>
+                  <td>Housing – Provide grip &amp; structure</td>
+                  <td>Cracks during usage</td>
+                  <td>User dissatisfaction; unsafe grip</td>
+                  <td>6</td>
+                  <td>Low strength plastic</td>
+                  <td>3</td>
+                  <td>Material spec, drop test</td>
+                  <td>4</td>
+                  <td>Medium</td>
+                  <td>Change material grade</td>
+                  <td>S=6, O=2, D=3</td>
+                </tr>
+
+                <tr>
+                  <td>Cap – Prevent ink drying</td>
+                  <td>Cap not sealing fully</td>
+                  <td>Ink dries early</td>
+                  <td>5</td>
+                  <td>Incorrect dimension tolerance</td>
+                  <td>4</td>
+                  <td>Design FMEA, tolerance stack-up study</td>
+                  <td>3</td>
+                  <td>Low</td>
+                  <td>Improve tolerance control</td>
+                  <td>S=5, O=3, D=3</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="short-note">
+            DFMEA focuses on preventing design-related issues before manufacturing begins.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PFMEA MASTER TABLE -->
+    <section id="pfmea" class="fade-section">
+      <div class="section-card">
+        <div class="section-inner">
+          <h2>Process FMEA (PFMEA) – AIAG &amp; VDA Format</h2>
+
+          <p>
+            PFMEA evaluates potential failure modes in the <strong>manufacturing and assembly process</strong>.
+            The purpose is to identify process risks and prevent the production of defects.
+          </p>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Process Step</th>
+                  <th>Function / Requirement</th>
+                  <th>Failure Mode</th>
+                  <th>Effect of Failure</th>
+                  <th>Severity (S)</th>
+                  <th>Cause of Failure</th>
+                  <th>Occurrence (O)</th>
+                  <th>Current Process Controls</th>
+                  <th>Detection (D)</th>
+                  <th>Action Priority (AP)</th>
+                  <th>Recommended Actions</th>
+                  <th>Action Results (Revised S/O/D)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Ink Filling</td>
+                  <td>Fill ink at correct volume</td>
+                  <td>Under-filled ink</td>
+                  <td>Pen stops writing early</td>
+                  <td>7</td>
+                  <td>Incorrect filling calibration</td>
+                  <td>4</td>
+                  <td>Calibration check, periodic audit</td>
+                  <td>5</td>
+                  <td>High</td>
+                  <td>Install auto-fill sensor</td>
+                  <td>S=7, O=2, D=3</td>
+                </tr>
+
+                <tr>
+                  <td>Cap Assembly</td>
+                  <td>Cap should be fully fitted</td>
+                  <td>Cap loose</td>
+                  <td>Ink evaporation</td>
+                  <td>6</td>
+                  <td>Operator error, misalignment</td>
+                  <td>5</td>
+                  <td>Manual inspection</td>
+                  <td>4</td>
+                  <td>Medium</td>
+                  <td>Introduce Poka-Yoke fixture</td>
+                  <td>S=6, O=3, D=3</td>
+                </tr>
+
+                <tr>
+                  <td>Tip Pressing</td>
+                  <td>Press tip at correct force</td>
+                  <td>Excess force – deformed tip</td>
+                  <td>Poor writing performance</td>
+                  <td>5</td>
+                  <td>Machine parameter variation</td>
+                  <td>3</td>
+                  <td>SPC control chart</td>
+                  <td>4</td>
+                  <td>Low</td>
+                  <td>Add load cell monitoring</td>
+                  <td>S=5, O=2, D=3</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="short-note">
+            PFMEA focuses on preventing process failures that lead to production defects.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACTION PRIORITY TABLE -->
+    <section id="ap-table" class="fade-section">
+      <div class="section-card">
+        <div class="section-inner">
+          <h2>Action Priority (AP) Table – AIAG &amp; VDA FMEA 2019</h2>
+
+          <p>
+            The AIAG &amp; VDA handbook replaces the RPN concept with 
+            <strong>Action Priority (AP)</strong>, which guides the team on whether 
+            action is required to reduce risk. AP is determined based on the 
+            <strong>Severity (S)</strong>, <strong>Occurrence (O)</strong>, and 
+            <strong>Detection (D)</strong> rating combination.
+          </p>
+
+          <p>
+            AP Levels:
+          </p>
+          <ul>
+            <li><strong>H – High Priority:</strong> Action is required.</li>
+            <li><strong>M – Medium Priority:</strong> Action should be considered.</li>
+            <li><strong>L – Low Priority:</strong> Action is optional.</li>
+          </ul>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Severity (S)</th>
+                  <th>Occurrence (O)</th>
+                  <th>Detection (D)</th>
+                  <th>Action Priority (AP)</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                <!-- HIGH AP ROWS -->
+                <tr>
+                  <td>9–10</td>
+                  <td>Any value (1–10)</td>
+                  <td>Any value (1–10)</td>
+                  <td><strong>High (H)</strong> – Action required</td>
+                </tr>
+
+                <tr>
+                  <td>7–8</td>
+                  <td>≥ 5</td>
+                  <td>≥ 5</td>
+                  <td><strong>High (H)</strong></td>
+                </tr>
+
+                <tr>
+                  <td>5–6</td>
+                  <td>≥ 7</td>
+                  <td>≥ 7</td>
+                  <td><strong>High (H)</strong></td>
+                </tr>
+
+                <!-- MEDIUM AP ROWS -->
+                <tr>
+                  <td>7–8</td>
+                  <td>3–4</td>
+                  <td>≥ 6</td>
+                  <td>Medium (M)</td>
+                </tr>
+
+                <tr>
+                  <td>5–6</td>
+                  <td>4–6</td>
+                  <td>≥ 5</td>
+                  <td>Medium (M)</td>
+                </tr>
+
+                <tr>
+                  <td>3–4</td>
+                  <td>≥ 6</td>
+                  <td>≥ 6</td>
+                  <td>Medium (M)</td>
+                </tr>
+
+                <!-- LOW AP ROWS -->
+                <tr>
+                  <td>1–4</td>
+                  <td>1–3</td>
+                  <td>1–3</td>
+                  <td>Low (L)</td>
+                </tr>
+
+                <tr>
+                  <td>5–6</td>
+                  <td>1–3</td>
+                  <td>1–3</td>
+                  <td>Low (L)</td>
+                </tr>
+
+                <tr>
+                  <td>7–8</td>
+                  <td>1–2</td>
+                  <td>2–3</td>
+                  <td>Low (L)</td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+
+          <p class="short-note">
+            Note: Action Priority does not replace engineering judgment. It helps the
+            team determine which S-O-D combinations need urgent action to reduce risk.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTROL PLAN SECTION -->
+    <section id="control-plan" class="fade-section">
+      <div class="section-card">
+        <div class="section-inner">
+
+          <h2>Control Plan – Product &amp; Process (AIAG Format)</h2>
+
+          <p>
+            A Control Plan defines how product and process characteristics will be controlled
+            to ensure consistent quality during production. It is directly connected to FMEA
+            and is one of the mandatory APQP deliverables.
+          </p>
+
+          <h3>1. Product Control Plan</h3>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Product / Part Characteristic</th>
+                  <th>Specification / Requirement</th>
+                  <th>Measurement Method</th>
+                  <th>Frequency</th>
+                  <th>Reaction Plan</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Tip Diameter</td>
+                  <td>1.00 ± 0.05 mm</td>
+                  <td>Digital Vernier</td>
+                  <td>Hourly</td>
+                  <td>Stop machine, adjust tool, re-check</td>
+                </tr>
+
+                <tr>
+                  <td>Body Material Hardness</td>
+                  <td>75 ± 3 Shore A</td>
+                  <td>Hardness Tester</td>
+                  <td>Each Batch</td>
+                  <td>Segregate batch, inform supplier</td>
+                </tr>
+
+                <tr>
+                  <td>Ink Viscosity</td>
+                  <td>2500–3000 cP</td>
+                  <td>Brookfield Viscometer</td>
+                  <td>Each Lot</td>
+                  <td>Hold lot, adjust formulation</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+          <h3 style="margin-top: 2rem;">2. Process Control Plan</h3>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Process Step</th>
+                  <th>Process Characteristic</th>
+                  <th>Specification / Method</th>
+                  <th>Control Method</th>
+                  <th>Frequency</th>
+                  <th>Reaction Plan</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                <tr>
+                  <td>Ink Filling</td>
+                  <td>Filled Volume</td>
+                  <td>Fill Sensor, Weighing</td>
+                  <td>Auto-check + SPC Chart</td>
+                  <td>Each Cycle</td>
+                  <td>Stop line, adjust filling nozzle</td>
+                </tr>
+
+                <tr>
+                  <td>Cap Assembly</td>
+                  <td>Cap Fit</td>
+                  <td>Poka-Yoke Fixture</td>
+                  <td>Visual + Go/No-Go</td>
+                  <td>Each Piece</td>
+                  <td>Correct fixture, retrain operator</td>
+                </tr>
+
+                <tr>
+                  <td>Tip Pressing</td>
+                  <td>Pressing Force</td>
+                  <td>Load Cell Reading</td>
+                  <td>Machine Auto-check</td>
+                  <td>100% Inline</td>
+                  <td>Stop machine, recalibrate press</td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+
+          <p class="short-note">
+            Control Plans maintain process stability and ensure that critical product characteristics remain within specification.
+          </p>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BACK TO TOP BUTTON -->
+  <button class="back-to-top" id="backToTopBtn" aria-label="Back to top">
+    <span>↑</span> Top
+  </button>
+
+  <script>
+    // Fade-in animation for sections
+    const fadeSections = document.querySelectorAll(".fade-section");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    fadeSections.forEach((section) => observer.observe(section));
+
+    // Smooth scroll for nav links (top nav + sidebar)
+    document.querySelectorAll('a[href^="#"]').forEach((link) => {
+      link.addEventListener("click", (e) => {
+        const href = link.getAttribute("href");
+        if (!href || href === "#") return;
+        e.preventDefault();
+        const id = href.slice(1);
+        const target = document.getElementById(id);
+        if (target) {
+          const rect = target.getBoundingClientRect();
+          const offset = window.pageYOffset + rect.top - 80;
+          window.scrollTo({
+            top: offset,
+            behavior: "smooth",
+          });
+        }
+      });
+    });
+
+    // Sidebar active highlight on scroll
+    const sectionsAll = document.querySelectorAll("section[id]");
+    const sidebarLinks = document.querySelectorAll(".sidebar-links a");
+
+    window.addEventListener("scroll", () => {
+      const top = window.scrollY;
+      sectionsAll.forEach(sec => {
+        const offset = sec.offsetTop - 130;
+        const height = sec.offsetHeight;
+        const id = sec.getAttribute("id");
+
+        if (top >= offset && top < offset + height) {
+          sidebarLinks.forEach(link => {
+            link.classList.remove("active");
+            if (link.getAttribute("href") === "#" + id) {
+              link.classList.add("active");
+            }
+          });
+        }
+      });
+    });
+
+    // SEARCH FUNCTION
+    document.getElementById("searchInput").addEventListener("keyup", function () {
+      const value = this.value.toLowerCase();
+      const sections = document.querySelectorAll("section");
+
+      sections.forEach(sec => {
+        if (sec.classList.contains("hero") || sec.classList.contains("summary-cards")) {
+          // Always show hero and summary
+          sec.style.display = "";
+        } else {
+          sec.style.display = sec.innerText.toLowerCase().includes(value) ? "block" : "none";
+        }
+      });
+    });
+
+    // Back to top button logic
+    const backToTopBtn = document.getElementById("backToTopBtn");
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 240) {
+        backToTopBtn.classList.add("show");
+      } else {
+        backToTopBtn.classList.remove("show");
+      }
+    });
+    backToTopBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  </script>
+</body>
+</html>

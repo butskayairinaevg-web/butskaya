@@ -1,0 +1,2241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Control Chart (SPC / Shewhart Chart)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      /* Base tokens */
+      --duration-fast: 0.2s;
+      --duration-med: 0.35s;
+      --easing-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+      /* Dark theme (default) */
+      --bg: #0b1020;
+      --bg-soft: #151a2b;
+      --bg-softer: #1f263a;
+      --accent: #3db6ff;
+      --accent-soft: rgba(61,182,255,0.15);
+      --accent-strong: #18a0ff;
+      --text-main: #f5f7ff;
+      --text-soft: #c3c8e5;
+      --border-soft: #272f45;
+      --danger: #ff5c7a;
+      --success: #3dd68c;
+      --warning: #ffcf5c;
+      --shadow-soft: 0 18px 45px rgba(0,0,0,0.45);
+      --shadow-hover: 0 22px 55px rgba(0,0,0,0.65);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+
+      /* Special backgrounds */
+      --bg-gradient: radial-gradient(circle at top left, #1d2740 0, #050814 45%, #02030a 100%);
+      --bg-card: linear-gradient(135deg, rgba(9,13,34,0.98), rgba(13,18,43,0.98));
+      --bg-hero: radial-gradient(circle at top right, rgba(61,182,255,0.16) 0, rgba(20,24,43,0.9) 45%, #050814 100%);
+    }
+
+    /* Light theme override */
+    :root[data-theme="light"] {
+      --bg: #f4f6ff;
+      --bg-soft: #ffffff;
+      --bg-softer: #eef1ff;
+      --accent: #2563eb;
+      --accent-soft: rgba(37,99,235,0.08);
+      --accent-strong: #1d4ed8;
+      --text-main: #050816;
+      --text-soft: #4b5563;
+      --border-soft: #d0d7f5;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --warning: #eab308;
+      --shadow-soft: 0 14px 30px rgba(15,23,42,0.18);
+      --shadow-hover: 0 18px 40px rgba(15,23,42,0.28);
+      --bg-gradient: radial-gradient(circle at top left, #e0e7ff 0, #f4f6ff 50%, #e5e7eb 100%);
+      --bg-card: linear-gradient(135deg, #ffffff, #eef2ff);
+      --bg-hero: radial-gradient(circle at top right, rgba(56,189,248,0.16) 0, #eff6ff 45%, #e5e7eb 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      animation: pageFadeIn 0.55s var(--easing-soft);
+    }
+
+    /* Animated background glow */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(59,130,246,0.16), transparent 40%),
+        radial-gradient(circle at 90% 100%, rgba(236,72,153,0.16), transparent 40%);
+      opacity: 0.8;
+      z-index: -2;
+      pointer-events: none;
+      animation: bgFloat 18s linear infinite alternate;
+    }
+
+    a {
+      color: var(--accent-strong);
+      text-decoration: none;
+      transition: color var(--duration-fast) var(--easing-soft);
+    }
+
+    a:hover {
+      text-decoration: underline;
+      color: var(--accent);
+    }
+
+    /* Layout */
+    .page-shell {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 20px;
+      padding: 18px clamp(16px, 4vw, 28px);
+      min-height: 100vh;
+    }
+
+    @media (max-width: 900px) {
+      .page-shell {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: sticky;
+      top: 18px;
+      align-self: flex-start;
+      background: linear-gradient(145deg, var(--bg-soft), rgba(5,8,20,0.9));
+      border-radius: var(--radius-lg);
+      padding: 18px 18px 14px;
+      border: 1px solid rgba(255,255,255,0.04);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(18px);
+      transform: translateY(8px);
+      opacity: 0;
+      animation: cardSlideIn 0.55s var(--easing-soft) 0.08s forwards;
+    }
+
+    .logo-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .logo-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 25%, #ffffff 0, var(--accent) 28%, var(--bg) 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+      color: #02030a;
+      box-shadow: 0 0 0 2px rgba(61,182,255,0.4);
+      animation: logoPulse 3s ease-in-out infinite;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo-text span:first-child {
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-strong);
+    }
+
+    .logo-text span:last-child {
+      font-size: 15px;
+      color: var(--text-soft);
+    }
+
+    .tagline {
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-bottom: 12px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .chip {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(111, 133, 207, 0.7);
+      background: linear-gradient(135deg, rgba(41,53,97,0.95), rgba(22,31,64,0.95));
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: #d6ddff;
+      box-shadow: 0 6px 14px rgba(15,23,42,0.55);
+      transition: transform var(--duration-fast) var(--easing-soft), box-shadow var(--duration-fast) var(--easing-soft);
+    }
+
+    :root[data-theme="light"] .chip {
+      background: linear-gradient(135deg, #e0e7ff, #ffffff);
+      color: #1f2937;
+    }
+
+    .chip:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(15,23,42,0.7);
+    }
+
+    .chip-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 7px rgba(61,214,140,0.9);
+    }
+
+    .nav-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #7f8ac3;
+      margin: 6px 0 8px;
+    }
+
+    .sidebar-nav {
+      list-style: none;
+      max-height: min(360px, 70vh);
+      overflow: auto;
+      padding-right: 4px;
+      margin-bottom: 12px;
+    }
+
+    .sidebar-nav li {
+      margin-bottom: 4px;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 10px;
+      color: var(--text-soft);
+      font-size: 13px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      background: transparent;
+      text-align: left;
+      transition:
+        background var(--duration-fast) var(--easing-soft),
+        color var(--duration-fast) var(--easing-soft),
+        border-color var(--duration-fast) var(--easing-soft),
+        transform var(--duration-fast) var(--easing-soft),
+        box-shadow var(--duration-fast) var(--easing-soft);
+    }
+
+    .sidebar-link span.index {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: rgba(22, 102, 255, 0.16);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--accent);
+      transition: background var(--duration-fast) var(--easing-soft), transform var(--duration-fast) var(--easing-soft);
+    }
+
+    .sidebar-link:hover {
+      background: rgba(53, 77, 139, 0.6);
+      border-color: rgba(61,182,255,0.5);
+      color: var(--text-main);
+      transform: translateX(2px);
+      box-shadow: 0 6px 16px rgba(15,23,42,0.9);
+    }
+
+    :root[data-theme="light"] .sidebar-link:hover {
+      background: rgba(191, 219, 254, 0.9);
+      box-shadow: 0 6px 16px rgba(148,163,184,0.75);
+    }
+
+    .sidebar-link:hover span.index {
+      transform: scale(1.05);
+      background: var(--accent-soft);
+    }
+
+    .sidebar-link.active {
+      background: linear-gradient(135deg, rgba(61,182,255,0.22), rgba(20,186,123,0.2));
+      border-color: rgba(61,182,255,0.9);
+      color: var(--text-main);
+      box-shadow: 0 6px 18px rgba(59,130,246,0.55);
+    }
+
+    :root[data-theme="light"] .sidebar-link.active {
+      box-shadow: 0 6px 20px rgba(37,99,235,0.45);
+    }
+
+    .sidebar-footer {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin-top: 6px;
+      padding-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: #7f8ac3;
+    }
+
+    .badge-qc {
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(61,182,255,0.2);
+      border: 1px solid rgba(61,182,255,0.8);
+      color: var(--accent);
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 8px 18px rgba(37,99,235,0.45);
+    }
+
+    /* Theme toggle button */
+    .theme-toggle {
+      position: fixed;
+      right: 18px;
+      top: 18px;
+      z-index: 60;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148,163,255,0.8);
+      background: radial-gradient(circle at 20% 0%, rgba(255,255,255,0.4), rgba(15,23,42,0.96));
+      padding: 6px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 12px 26px rgba(15,23,42,0.85);
+      color: #020617;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      backdrop-filter: blur(14px);
+      transform: translateY(-8px);
+      opacity: 0;
+      animation: themeBtnIn 0.5s var(--easing-soft) 0.2s forwards;
+      transition:
+        transform var(--duration-fast) var(--easing-soft),
+        box-shadow var(--duration-fast) var(--easing-soft),
+        background var(--duration-fast) var(--easing-soft);
+    }
+
+    :root[data-theme="light"] .theme-toggle {
+      background: radial-gradient(circle at 20% 0%, rgba(255,255,255,0.85), #e5edff);
+      color: #0f172a;
+      box-shadow: 0 12px 24px rgba(148,163,184,0.9);
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 32px rgba(15,23,42,0.95);
+    }
+
+    :root[data-theme="light"] .theme-toggle:hover {
+      box-shadow: 0 16px 32px rgba(148,163,184,1);
+    }
+
+    .theme-toggle-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #ffffff, #facc15 40%, #f97316 70%);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--duration-med) var(--easing-soft), box-shadow var(--duration-med) var(--easing-soft);
+      box-shadow: 0 0 0 2px rgba(248,250,252,0.6);
+    }
+
+    :root[data-theme="light"] .theme-toggle-icon {
+      background: radial-gradient(circle at 30% 20%, #e5f2ff, #0f172a 55%, #020617 90%);
+      color: #e5f2ff;
+    }
+
+    .theme-toggle-icon::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: 0 0 18px rgba(250,204,21,0.9);
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    :root[data-theme="light"] .theme-toggle-icon::after {
+      box-shadow: 0 0 18px rgba(15,23,42,0.85);
+    }
+
+    .theme-toggle:hover .theme-toggle-icon {
+      transform: rotate(18deg) scale(1.05);
+    }
+
+    .theme-toggle-label {
+      white-space: nowrap;
+    }
+
+    /* Main content */
+    .main {
+      max-width: 980px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .hero-card {
+      background: var(--bg-hero);
+      border-radius: var(--radius-lg);
+      padding: 20px 20px 18px;
+      border: 1px solid rgba(255,255,255,0.06);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+      transform-origin: top center;
+      transform: translateY(10px) scale(0.99);
+      opacity: 0;
+      animation: cardFadeUp 0.6s var(--easing-soft) 0.1s forwards;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(59,130,246,0.35), transparent 45%),
+        radial-gradient(circle at 100% 100%, rgba(16,185,129,0.3), transparent 40%);
+      mix-blend-mode: soft-light;
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: -1;
+      animation: heroGlow 10s ease-in-out infinite alternate;
+    }
+
+    .hero-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .pill {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(121, 153, 255, 0.55);
+      color: #d4ddff;
+      background: rgba(9, 16, 38, 0.85);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transform-origin: left center;
+      animation: pillIn 0.45s var(--easing-soft) 0.15s backwards;
+    }
+
+    :root[data-theme="light"] .pill {
+      background: rgba(219, 234, 254, 0.9);
+      color: #1e293b;
+    }
+
+    .pill strong {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .hero-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .hero-title-group {
+      max-width: 70%;
+    }
+
+    @media (max-width: 700px) {
+      .hero-title-group {
+        max-width: 100%;
+      }
+      .hero-header {
+        flex-direction: column;
+      }
+    }
+
+    h1 {
+      font-size: clamp(22px, 3vw, 26px);
+      margin-bottom: 4px;
+      letter-spacing: 0.03em;
+    }
+
+    .hero-subtitle {
+      color: var(--text-soft);
+      font-size: 13px;
+      max-width: 640px;
+    }
+
+    .hero-subtitle span.highlight {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .meta-tag {
+      padding: 4px 9px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(3,7,25,0.85);
+    }
+
+    :root[data-theme="light"] .meta-tag {
+      background: rgba(219, 234, 254, 0.9);
+      border-color: rgba(191,219,254,1);
+      color: #111827;
+    }
+
+    .meta-tag strong {
+      color: var(--accent);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 2.5fr) minmax(0, 1.6fr);
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 800px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hero-panel {
+      background: linear-gradient(135deg, rgba(12,18,45,0.98), rgba(7,11,33,0.98));
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 12px 12px 10px;
+      box-shadow: 0 10px 24px rgba(15,23,42,0.75);
+      transition:
+        transform var(--duration-med) var(--easing-soft),
+        box-shadow var(--duration-med) var(--easing-soft),
+        border-color var(--duration-med) var(--easing-soft),
+        background var(--duration-med) var(--easing-soft);
+    }
+
+    :root[data-theme="light"] .hero-panel {
+      background: linear-gradient(135deg, #ffffff, #e5edff);
+      box-shadow: 0 10px 22px rgba(148,163,184,0.6);
+      border-color: rgba(199,210,254,0.9);
+    }
+
+    .hero-panel:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(61,182,255,0.8);
+    }
+
+    .hero-panel h2 {
+      font-size: 14px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #9fb3ff;
+    }
+
+    p {
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-bottom: 4px;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .hero-badge {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(61,182,255,0.6);
+      background: rgba(61,182,255,0.12);
+      color: #c6e7ff;
+    }
+
+    .hero-legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .legend-item {
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-soft);
+    }
+
+    .legend-swatch {
+      width: 24px;
+      height: 4px;
+      border-radius: 999px;
+    }
+
+    .swatch-mean {
+      background: #9fa6ff;
+    }
+
+    .swatch-ucl {
+      background: var(--danger);
+    }
+
+    .swatch-lcl {
+      background: var(--success);
+    }
+
+    .swatch-sample {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #ffcf5c;
+      box-shadow: 0 0 6px rgba(255,207,92,0.7);
+    }
+
+    /* Section cards */
+    .section-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 16px 16px 14px;
+      box-shadow: var(--shadow-soft);
+      transform-origin: top center;
+      transform: translateY(12px);
+      opacity: 0;
+      animation: cardFadeUp 0.55s var(--easing-soft) forwards;
+    }
+
+    /* Staggered animation using nth-child */
+    .section-card:nth-of-type(1) { animation-delay: 0.18s; }
+    .section-card:nth-of-type(2) { animation-delay: 0.24s; }
+    .section-card:nth-of-type(3) { animation-delay: 0.30s; }
+    .section-card:nth-of-type(4) { animation-delay: 0.36s; }
+    .section-card:nth-of-type(5) { animation-delay: 0.42s; }
+    .section-card:nth-of-type(6) { animation-delay: 0.48s; }
+    .section-card:nth-of-type(7) { animation-delay: 0.54s; }
+    .section-card:nth-of-type(8) { animation-delay: 0.60s; }
+    .section-card:nth-of-type(9) { animation-delay: 0.66s; }
+
+    :root[data-theme="light"] .section-card {
+      border-color: rgba(199,210,254,0.9);
+    }
+
+    .section-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(4px);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #a8b7ff;
+    }
+
+    :root[data-theme="light"] .section-title {
+      color: #1d4ed8;
+    }
+
+    .section-tag {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(61,182,255,0.5);
+      color: var(--accent);
+      background: rgba(16,44,95,0.8);
+    }
+
+    :root[data-theme="light"] .section-tag {
+      background: rgba(219,234,254,0.9);
+      border-color: rgba(129,140,248,1);
+    }
+
+    .section-intro {
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-bottom: 8px;
+    }
+
+    h3 {
+      font-size: 14px;
+      margin: 10px 0 4px;
+      color: #d7deff;
+    }
+
+    :root[data-theme="light"] h3 {
+      color: #111827;
+    }
+
+    ul, ol {
+      margin-left: 18px;
+      margin-bottom: 6px;
+    }
+
+    li {
+      font-size: 13px;
+      color: var(--text-soft);
+      padding-left: 3px;
+      margin-bottom: 2px;
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+
+    .pill-list span {
+      font-size: 11px;
+      padding: 3px 7px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(123, 144, 232, 0.8);
+      color: #cdd6ff;
+      background: rgba(10,17,37,0.95);
+    }
+
+    :root[data-theme="light"] .pill-list span {
+      background: rgba(219,234,254,0.96);
+      color: #0f172a;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 10px;
+    }
+
+    .col-card {
+      background: rgba(5,10,25,0.97);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 10px;
+      box-shadow: 0 6px 16px rgba(15,23,42,0.75);
+      transition: transform var(--duration-med) var(--easing-soft), box-shadow var(--duration-med) var(--easing-soft), border-color var(--duration-med) var(--easing-soft);
+    }
+
+    :root[data-theme="light"] .col-card {
+      background: #ffffff;
+      border-color: rgba(209,213,219,1);
+      box-shadow: 0 8px 20px rgba(148,163,184,0.65);
+    }
+
+    .col-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(96,165,250,0.9);
+    }
+
+    .highlight-box {
+      background: rgba(14, 52, 90, 0.95);
+      border-left: 3px solid var(--accent);
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      color: #d0e5ff;
+      margin-top: 6px;
+      box-shadow: 0 6px 16px rgba(15,23,42,0.9);
+    }
+
+    :root[data-theme="light"] .highlight-box {
+      background: rgba(219,234,254,0.96);
+      color: #1f2937;
+      box-shadow: 0 6px 18px rgba(148,163,184,0.8);
+    }
+
+    /* Table */
+    .table-wrapper {
+      margin-top: 8px;
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #050814;
+      box-shadow: 0 8px 20px rgba(15,23,42,0.85);
+      transition: box-shadow var(--duration-med) var(--easing-soft), transform var(--duration-med) var(--easing-soft);
+    }
+
+    :root[data-theme="light"] .table-wrapper {
+      background: #ffffff;
+      border-color: rgba(210,214,255,0.9);
+      box-shadow: 0 8px 20px rgba(148,163,184,0.7);
+    }
+
+    .table-wrapper:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 420px;
+    }
+
+    th, td {
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    th {
+      background: linear-gradient(135deg, #151a2b, #13162b);
+      text-align: left;
+      font-weight: 600;
+      color: #cfd6ff;
+      white-space: nowrap;
+    }
+
+    :root[data-theme="light"] th {
+      background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+      color: #111827;
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(19,24,53,0.8);
+    }
+
+    tr:nth-child(odd) td {
+      background: rgba(7,11,30,0.98);
+    }
+
+    :root[data-theme="light"] tr:nth-child(even) td {
+      background: #eff6ff;
+    }
+
+    :root[data-theme="light"] tr:nth-child(odd) td {
+      background: #ffffff;
+    }
+
+    .tag-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: rgba(61,182,255,0.12);
+      color: #b5ddff;
+      border: 1px solid rgba(61,182,255,0.7);
+    }
+
+    /* Formula block */
+    .formula-block {
+      background: #050814;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(61,182,255,0.5);
+      padding: 8px 10px;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      color: #dff2ff;
+      overflow-x: auto;
+      margin: 6px 0;
+      box-shadow: 0 6px 18px rgba(15,23,42,0.85);
+    }
+
+    :root[data-theme="light"] .formula-block {
+      background: #020617;
+      color: #e5e7eb;
+    }
+
+    /* Tiny scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(8,11,28,0.9);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(80,103,166,0.9);
+      border-radius: 999px;
+    }
+
+    :root[data-theme="light"] ::-webkit-scrollbar-track {
+      background: #e5e7eb;
+    }
+
+    :root[data-theme="light"] ::-webkit-scrollbar-thumb {
+      background: #9ca3af;
+    }
+
+    /* Scroll margin */
+    section[id] {
+      scroll-margin-top: 100px;
+    }
+
+    /* Back to top button */
+    .top-btn {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      padding: 8px 11px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(61,182,255,0.7);
+      background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.26), rgba(27,73,115,0.92));
+      color: #031323;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: none;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.55);
+      z-index: 50;
+      transition: transform var(--duration-fast) var(--easing-soft), box-shadow var(--duration-fast) var(--easing-soft), opacity var(--duration-fast) var(--easing-soft);
+    }
+
+    :root[data-theme="light"] .top-btn {
+      background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.9), #bfdbfe);
+      color: #0f172a;
+      box-shadow: 0 10px 20px rgba(148,163,184,0.9);
+    }
+
+    .top-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 32px rgba(0,0,0,0.7);
+    }
+
+    .top-btn.show {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Keyframes */
+    @keyframes pageFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bgFloat {
+      from { transform: translate3d(-10px, 0, 0) scale(1.02); }
+      to { transform: translate3d(10px, -10px, 0) scale(1.04); }
+    }
+
+    @keyframes cardFadeUp {
+      from { opacity: 0; transform: translateY(16px) scale(0.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes cardSlideIn {
+      from { opacity: 0; transform: translate(-12px, 10px); }
+      to { opacity: 1; transform: translate(0, 0); }
+    }
+
+    @keyframes logoPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 2px rgba(56,189,248,0.6); }
+      50% { transform: scale(1.06); box-shadow: 0 0 0 5px rgba(56,189,248,0.22); }
+    }
+
+    @keyframes heroGlow {
+      from { opacity: 0.35; transform: translate3d(-8px, 4px, 0); }
+      to { opacity: 0.5; transform: translate3d(8px, -4px, 0); }
+    }
+
+    @keyframes themeBtnIn {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pillIn {
+      from { opacity: 0; transform: translateY(8px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Floating Action Buttons */
+    .fab-container {
+      position: fixed;
+      right: 22px;
+      bottom: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 90;
+    }
+
+    .fab {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.55);
+      font-size: 18px;
+      cursor: pointer;
+      transition:
+        transform var(--duration-med) var(--easing-soft),
+        box-shadow var(--duration-med) var(--easing-soft),
+        background var(--duration-med) var(--easing-soft);
+    }
+
+    .fab:hover {
+      transform: translateY(-3px) scale(1.08);
+      background: rgba(61,182,255,0.25);
+      box-shadow: 0 14px 32px rgba(0,0,0,0.75);
+    }
+
+    :root[data-theme="light"] .fab {
+      background: rgba(255,255,255,0.66);
+      border-color: rgba(148,163,184,0.4);
+    }
+
+    /* Sticky Bottom Action Bar */
+    .sticky-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 54px;
+      background: rgba(10,12,22,0.88);
+      border-top: 1px solid rgba(255,215,0,0.25);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      backdrop-filter: blur(12px);
+      z-index: 80;
+    }
+
+    .sticky-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255,215,0,0.55);
+      background: rgba(255,215,0,0.15);
+      color: #ffe680;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition:
+        background var(--duration-fast) var(--easing-soft),
+        transform var(--duration-fast) var(--easing-soft);
+    }
+
+    .sticky-btn:hover {
+      background: rgba(255,215,0,0.30);
+      transform: translateY(-1px);
+    }
+
+    :root[data-theme="light"] .sticky-bar {
+      background: rgba(255,255,255,0.75);
+      border-color: rgba(200,180,0,0.45);
+    }
+
+    :root[data-theme="light"] .sticky-btn {
+      color: #7a6400;
+      background: rgba(255,215,0,0.25);
+    }
+
+    /* Glass-morphism enhancement on cards */
+    .section-card,
+    .hero-card,
+    .col-card {
+      backdrop-filter: blur(20px) saturate(180%);
+      background-blend-mode: overlay;
+    }
+
+    /* Chart tooltip placeholder */
+    .chartjs-tooltip {
+      opacity: 1;
+      border-radius: 10px;
+      padding: 6px 10px;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px);
+      color: #fff;
+      font-size: 12px;
+      pointer-events: none;
+      transform: translate(-50%, -100%) scale(0.95);
+      transition: transform 0.2s var(--easing-soft), opacity 0.2s var(--easing-soft);
+    }
+
+    .chartjs-tooltip.show {
+      transform: translate(-50%, -100%) scale(1);
+      opacity: 1;
+    }
+
+    /* ===== Section 11: X̄–R Calculator CSS ===== */
+    #inputTable td[contenteditable="true"] {
+      background: transparent;
+      color: var(--text-main);
+      outline: none;
+      min-width:64px;
+      text-align:center;
+      font-family: inherit;
+      font-size:13px;
+      padding:6px 8px;
+    }
+
+    #inputTable tbody tr td.mean-cell,
+    #inputTable tbody tr td.range-cell {
+      font-weight:700;
+      color: #ffe680;
+      text-align:center;
+    }
+
+    #inputTable thead th {
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      background: linear-gradient(135deg, rgba(8,10,26,0.96), rgba(12,16,34,0.96));
+    }
+
+    .input-invalid {
+      box-shadow: inset 0 0 0 2px rgba(255,92,122,0.18);
+      background: linear-gradient(90deg, rgba(255,92,122,0.04), transparent);
+    }
+
+    /* Out-of-control pulse on table row */
+    .ooc {
+      animation: pulseOOC 1.2s ease-in-out infinite;
+      border-left: 3px solid var(--danger);
+    }
+    @keyframes pulseOOC {
+      0% { box-shadow: 0 0 0 0 rgba(255,92,122,0.0); }
+      50% { box-shadow: 0 6px 18px rgba(255,92,122,0.12); }
+      100% { box-shadow: 0 0 0 0 rgba(255,92,122,0.0); }
+    }
+
+    /* Responsive tweak so charts fit on narrow screens */
+    @media (max-width:900px) {
+      #xbarChart, #rChart { height: 220px !important; }
+    }
+
+    /* minor spacing for section */
+    #xbar-r .table-wrapper { border-radius: 10px; }
+  </style>
+</head>
+<body>
+
+<!-- Theme toggle button -->
+<button class="theme-toggle" id="themeToggle" type="button">
+  <span class="theme-toggle-icon" aria-hidden="true">☀</span>
+  <span class="theme-toggle-label" id="themeToggleLabel">Dark mode</span>
+</button>
+
+<!-- Floating Action Buttons -->
+<div class="fab-container" aria-hidden="true">
+  <button class="fab" id="fabTop" title="Top">↑</button>
+  <button class="fab" id="fabTheme" title="Toggle theme">☀</button>
+  <button class="fab" id="fabMenu" title="Go to menu">☰</button>
+</div>
+
+<div class="page-shell">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo-badge">
+      <div class="logo-circle">CC</div>
+      <div class="logo-text">
+        <span>SPC TOOLBOX</span>
+        <span>Control / Shewhart Charts</span>
+      </div>
+    </div>
+
+    <p class="tagline">
+      Quick reference for using Control Charts in SPC, problem solving, and process capability.
+    </p>
+
+    <div class="chip-row">
+      <div class="chip">
+        <span class="chip-dot"></span>
+        Live process monitoring
+      </div>
+      <div class="chip">Cp · Cpk · Pp · Ppk</div>
+      <div class="chip">7 QC Tools · Six Sigma</div>
+    </div>
+
+    <div class="nav-title">Sections</div>
+    <ul class="sidebar-nav" id="sidebarNav">
+      <li><button class="sidebar-link active" data-target="intro"><span class="index">01</span> What is a Control Chart?</button></li>
+      <li><button class="sidebar-link" data-target="purpose"><span class="index">02</span> Purpose</button></li>
+      <li><button class="sidebar-link" data-target="components"><span class="index">03</span> Key Components</button></li>
+      <li><button class="sidebar-link" data-target="types"><span class="index">04</span> Types of Charts</button></li>
+      <li><button class="sidebar-link" data-target="rules"><span class="index">05</span> Interpretation Rules</button></li>
+      <li><button class="sidebar-link" data-target="run-vs-control"><span class="index">06</span> Run vs Control Chart</button></li>
+      <li><button class="sidebar-link" data-target="when-use"><span class="index">07</span> When to Use</button></li>
+      <li><button class="sidebar-link" data-target="benefits"><span class="index">08</span> Benefits</button></li>
+      <li><button class="sidebar-link" data-target="steps"><span class="index">09</span> Steps to Create</button></li>
+      <li><button class="sidebar-link" data-target="trial-limits"><span class="index">10</span> Trial Control Limits</button></li>
+      <li><button class="sidebar-link" data-target="xbar-r"><span class="index">11</span> X̄–R Calculator (Live)</button></li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <span>Made for quality engineers</span>
+      <span class="badge-qc">SPC · 7 QC · 8D</span>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <!-- Hero -->
+    <section id="intro" class="hero-card">
+      <div class="hero-pill-row">
+        <div class="pill"><strong>Control Chart</strong> · SPC · Shewhart</div>
+        <div class="pill">Process Behaviour · In-control vs Out-of-control</div>
+        <div class="pill">Variables & Attributes Data</div>
+      </div>
+
+      <div class="hero-header">
+        <div class="hero-title-group">
+          <h1>Control Chart (SPC / Shewhart Chart)</h1>
+          <p class="hero-subtitle">
+            A Control Chart is a statistical tool used to monitor, control, and improve a process over time by plotting data in time order and comparing it with statistically calculated control limits.<br>
+            It is a core tool of <span class="highlight">Statistical Process Control (SPC)</span> and was developed by Dr. Walter A. Shewhart at Bell Laboratories.
+          </p>
+        </div>
+        <div class="hero-meta">
+          <div class="meta-tag"><strong>Also called:</strong> Shewhart Chart, Process Behaviour Chart, SPC Chart</div>
+          <div class="meta-tag"><strong>Usage:</strong> 7 QC Tools · 8D · PDCA · Six Sigma</div>
+        </div>
+      </div>
+
+      <div class="hero-grid">
+        <div class="hero-panel">
+          <h2>Why use a Control Chart?</h2>
+          <p>
+            A Control Chart separates normal variation (common causes) from abnormal variation (special causes), helping you decide when to act and when to leave the process alone.
+          </p>
+          <div class="hero-badges">
+            <span class="hero-badge">Monitor process stability</span>
+            <span class="hero-badge">Support Cp, Cpk / Pp, Ppk</span>
+            <span class="hero-badge">Early warning before defects</span>
+          </div>
+        </div>
+
+        <div class="hero-panel">
+          <h2>Chart legend (X̄ Chart)</h2>
+          <div class="hero-legend">
+            <div class="legend-item">
+              <span class="legend-swatch swatch-mean"></span>
+              <span>CL: Process mean (X̄)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-swatch swatch-ucl"></span>
+              <span>UCL: +3σ from mean</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-swatch swatch-lcl"></span>
+              <span>LCL: −3σ from mean</span>
+            </div>
+            <div class="legend-item">
+              <span class="swatch-sample"></span>
+              <span>Points: Sample averages over time</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- (Other existing sections preserved: purpose, components, types, rules, run-vs-control, when-use, benefits, steps, trial-limits) -->
+    <section id="purpose" class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">Purpose of a Control Chart</h2>
+        <span class="section-tag">Why we use it</span>
+      </div>
+      <p class="section-intro">
+        Control Charts are used wherever a process produces data over time and you want to manage variation using statistical evidence instead of guesswork.
+      </p>
+      <ul>
+        <li>Monitor process variation and performance over time.</li>
+        <li>Detect special cause variations that require investigation.</li>
+        <li>Maintain process stability and predictability.</li>
+        <li>Identify when corrective actions are really necessary.</li>
+        <li>Reduce defects, scrap, and rework and improve quality.</li>
+        <li>Predict future performance and support capability analysis (Cp, Cpk, Pp, Ppk).</li>
+      </ul>
+      <div class="highlight-box">
+        When used correctly, a Control Chart becomes one of the most powerful tools for quality control, continuous improvement, and decision making.
+      </div>
+    </section>
+
+    <section id="components" class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">Key Components</h2>
+        <span class="section-tag">Structure of the chart</span>
+      </div>
+      <p class="section-intro">
+        Every Control Chart has a common structure that makes interpretation simple and consistent.
+      </p>
+      <div class="two-col">
+        <div class="col-card">
+          <h3>Graph layout</h3>
+          <ul>
+            <li>Horizontal axis (X-axis): Sample number, time, or subgroup index.</li>
+            <li>Vertical axis (Y-axis): Sample statistic (individual value, subgroup mean X̄, range R, standard deviation S, or defect counts).</li>
+            <li>Data points: Actual process measurements or subgroup statistics plotted in sequence.</li>
+          </ul>
+        </div>
+        <div class="col-card">
+          <h3>Statistical lines</h3>
+          <ul>
+            <li>Centre Line (CL): Process average or mean (target / X̄).</li>
+            <li>Upper Control Limit (UCL): Mean + 3σ (or A₂×R̄ etc., depending on chart).</li>
+            <li>Lower Control Limit (LCL): Mean − 3σ (or A₂×R̄ etc., depending on chart).</li>
+            <li>Control rules: Patterns and limits used to detect abnormal behaviour.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="types" class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">Types of Control Charts</h2>
+        <span class="section-tag">Variables & attributes</span>
+      </div>
+      <p class="section-intro">
+        Control Charts are broadly divided into charts for <strong>variable data</strong> (continuous measurements) and <strong>attribute data</strong> (counts of defects/defectives).
+      </p>
+
+      <div class="two-col">
+        <div class="col-card">
+          <h3>A. Variable Control Charts</h3>
+          <p>Used when the quality characteristic is measured on a continuous scale (mm, kg, seconds, bar, etc.).</p>
+          <ul>
+            <li><strong>X̄ – R Chart</strong>: For subgrouped data with small n (typically 2–10); monitors mean and range.</li>
+            <li><strong>X̄ – S Chart</strong>: For larger subgroups (n ≥ 10); monitors mean and standard deviation.</li>
+            <li><strong>I – MR Chart</strong>: Individuals and Moving Range chart for single observations (n = 1).</li>
+          </ul>
+        </div>
+        <div class="col-card">
+          <h3>B. Attribute Control Charts</h3>
+          <p>Used for count data such as number of defects or defective units.</p>
+          <ul>
+            <li><strong>p Chart</strong>: Proportion defective (fraction defective) with varying sample size.</li>
+            <li><strong>np Chart</strong>: Number of defectives with constant sample size.</li>
+            <li><strong>c Chart</strong>: Count of defects for a constant inspection area or unit.</li>
+            <li><strong>u Chart</strong>: Defects per unit when sample size or area varies.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="rules" class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">Control Chart Interpretation Rules</h2>
+        <span class="section-tag">In-control vs out-of-control</span>
+      </div>
+      <p class="section-intro">
+        A process is considered <strong>out of control</strong> when the plot shows evidence of special causes instead of only random variation.
+      </p>
+      <ul>
+        <li>Any single point outside the UCL or LCL.</li>
+        <li>Seven (or more) consecutive points on one side of the mean.</li>
+        <li>Continuous upward or downward trends.</li>
+        <li>Repeating or cyclic patterns, or “irrational” behaviour that cannot be random.</li>
+      </ul>
+      <div class="highlight-box">
+        If any of these signals appear, investigate root causes (machine, tooling, material, method, operator, environment) before taking action on the process.
+      </div>
+    </section>
+
+    <section id="run-vs-control" class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">Control Chart vs Run Chart</h2>
+        <span class="section-tag">Key differences</span>
+      </div>
+      <p class="section-intro">
+        Both Run Charts and Control Charts show data over time, but only Control Charts include statistically calculated control limits and rules for detecting special causes.
+      </p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Control Chart</th>
+            <th>Run Chart</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>Control limits (UCL &amp; LCL)</td>
+            <td>Yes – statistically calculated from data</td>
+            <td>No – typically only a centre/median line</td>
+          </tr>
+          <tr>
+            <td>Detects special causes</td>
+            <td>Yes – uses formal rules and 3σ limits</td>
+            <td>Limited – mainly visual trends and shifts</td>
+          </tr>
+          <tr>
+            <td>Statistical basis</td>
+            <td>Strong – based on probability and sampling</td>
+            <td>Weak – descriptive only</td>
+          </tr>
+          <tr>
+            <td>Primary purpose</td>
+            <td>Process control and stability</td>
+            <td>Trend and shift monitoring</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="highlight-box">
+        Control Charts are also known as <strong>Shewhart Charts</strong> because they were introduced by Dr. Walter A. Shewhart in the 1920s as part of Statistical Process Control.
+      </div>
+    </section>
+
+    <section id="when-use" class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">When to Use a Control Chart</h2>
+        <span class="section-tag">Practical scenarios</span>
+      </div>
+      <p class="section-intro">
+        Use a Control Chart whenever you collect data in time order and want to distinguish normal variation from abnormal issues.
+      </p>
+
+      <div class="two-col">
+        <div class="col-card">
+          <h3>Typical situations</h3>
+          <ul>
+            <li>Process produces data over time (daily dimensions, hourly defect count, batch hardness, plating thickness, etc.).</li>
+            <li>You need to separate common cause variation from special cause variation.</li>
+            <li>Before adjusting machine settings (to avoid tampering when process is actually stable).</li>
+            <li>During commissioning of a new process or new machine to confirm stability.</li>
+            <li>To monitor Critical-to-Quality (CTQ) characteristics affecting function, safety, compliance, or customer satisfaction.</li>
+          </ul>
+        </div>
+        <div class="col-card">
+          <h3>Projects & compliance</h3>
+          <ul>
+            <li>Measure, Analyse, and Control phases in Six Sigma DMAIC and Kaizen projects.</li>
+            <li>Early warning before parts go out of specification.</li>
+            <li>Evidence of statistical control for audits (ISO / IATF 16949), PPAP, and customer requirements.</li>
+            <li>To reduce rejection, rework, and improve process capability (Cp, Cpk, Pp, Ppk).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pill-list">
+        <span>Continuous data → X̄–R, X̄–S, I–MR</span>
+        <span>Attribute data → p, np, c, u</span>
+      </div>
+    </section>
+
+    <section id="benefits" class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">Benefits of Control Charts</h2>
+        <span class="section-tag">Technical & operational</span>
+      </div>
+      <p class="section-intro">
+        Control Charts provide both technical insight into variation and practical benefits in production and service environments.
+      </p>
+
+      <div class="two-col">
+        <div class="col-card">
+          <h3>Technical benefits</h3>
+          <ul>
+            <li>Early detection of small shifts, trends, and abnormal patterns.</li>
+            <li>Clear distinction between normal (common) and abnormal (special) variation.</li>
+            <li>Improved process stability, predictability, and capability (Cp, Cpk, Pp, Ppk).</li>
+            <li>Essential input for Root Cause Analysis (RCA) by showing when a problem started and whether it is temporary or permanent.</li>
+          </ul>
+        </div>
+        <div class="col-card">
+          <h3>Operational benefits</h3>
+          <ul>
+            <li>Reduced defects, scrap, rework, and customer complaints.</li>
+            <li>Better productivity and machine efficiency by controlling drift and misalignment.</li>
+            <li>Data-based decision making instead of assumptions or over-adjustment.</li>
+            <li>Better communication between operators, inspectors, engineers, and managers using a simple visual tool.</li>
+            <li>Support for continuous improvement (Kaizen, Lean, Six Sigma) and compliance (ISO, IATF, PPAP).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        A stable process with a well-maintained Control Chart delivers consistent quality and higher customer satisfaction with lower Cost of Poor Quality (COPQ).
+      </div>
+    </section>
+
+    <section id="steps" class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">Steps to Create a Control Chart</h2>
+        <span class="section-tag">Practical workflow</span>
+      </div>
+      <p class="section-intro">
+        The same high-level procedure applies to most Control Charts; only formulas and constants change with chart type and data type.
+      </p>
+
+      <ol>
+        <li><strong>Select the quality characteristic (CTQ)</strong><br>
+          Choose the parameter to monitor (dimension, weight, thickness, pressure, number of defects or defectives, etc.).
+        </li>
+        <li><strong>Choose the correct chart type</strong><br>
+          Variables: X̄–R, X̄–S, or I–MR. Attributes: p, np, c, or u chart.
+        </li>
+        <li><strong>Plan data collection</strong><br>
+          Decide sample size (n), frequency (hourly, per shift, per batch), measuring instrument, and responsible operator (ensure MSA-compliant method).
+        </li>
+        <li><strong>Collect data over time</strong><br>
+          Record data in sequence, usually 20–25 subgroups for initial analysis.
+        </li>
+        <li><strong>Calculate subgroup statistics</strong><br>
+          For each subgroup calculate X̄, R or S, or for attribute charts calculate counts and proportions.
+        </li>
+        <li><strong>Calculate control limits (UCL & LCL)</strong><br>
+          Use standard SPC formulas for the selected chart (examples below).
+        </li>
+        <li><strong>Plot the chart</strong><br>
+          Draw CL, UCL, LCL and plot data points versus time/subgroup number.
+        </li>
+        <li><strong>Interpret the chart</strong><br>
+          Look for points outside limits, trends, runs, cycles, and sudden level shifts.
+        </li>
+        <li><strong>Investigate special causes</strong><br>
+          When abnormal patterns appear, perform root cause analysis and implement corrective actions.</li>
+        <li><strong>Maintain and update</strong><br>
+          Keep adding new data, monitor stability, and revise limits when the process changes significantly.</li>
+      </ol>
+
+      <div class="highlight-box">
+        Think of the Control Chart as a “live document” used daily in production and quality meetings, not a one-time study.
+      </div>
+    </section>
+
+    <section id="trial-limits" class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">Calculation of Trial Control Limits</h2>
+        <span class="section-tag">SPC formulas</span>
+      </div>
+      <p class="section-intro">
+        Trial Control Limits (TCLs) are calculated from an initial dataset (typically 20–25 subgroups) and then refined after removing special causes to get final limits.
+      </p>
+
+      <h3>1. X̄ – R Chart (variables)</h3>
+      <p>For k subgroups, each of size n:</p>
+      <div class="formula-block">
+        For each subgroup i:<br>
+        X̄ᵢ = Σx / n<br>
+        Rᵢ = max(x) − min(x)<br><br>
+        Grand mean: X̄̄ = average of all X̄ᵢ<br>
+        Average range: R̄ = average of all Rᵢ<br><br>
+        X̄ Chart:<br>
+        UCLₓ̄ = X̄̄ + A₂ × R̄<br>
+        CLₓ̄ = X̄̄<br>
+        LCLₓ̄ = X̄̄ − A₂ × R̄<br><br>
+        R Chart:<br>
+        UCLᵣ = D₄ × R̄<br>
+        CLᵣ = R̄<br>
+        LCLᵣ = D₃ × R̄
+      </div>
+      <p>Typical constants:</p>
+      <ul>
+        <li>For n = 5: A₂ = 0.577, D₃ = 0, D₄ = 2.115</li>
+        <li>For n = 4: A₂ = 0.729, D₃ = 0, D₄ = 2.282</li>
+      </ul>
+
+      <h3>2. X̄ – S Chart (variables)</h3>
+      <div class="formula-block">
+        Mean chart:<br>
+        UCLₓ̄ = X̄̄ + A₃ × S̄<br>
+        CLₓ̄ = X̄̄<br>
+        LCLₓ̄ = X̄̄ − A₃ × S̄<br><br>
+        S chart:<br>
+        UCLₛ = B₄ × S̄<br>
+        CLₛ = S̄<br>
+        LCLₛ = B₃ × S̄
+      </div>
+      <p>Example constants for n = 10: A₃ = 0.308, B₃ = 0.552, B₄ = 1.448.</p>
+
+      <h3>3. p Chart (proportion defective)</h3>
+      <div class="formula-block">
+        For each sample i:<br>
+        pᵢ = number of defectives / sample size nᵢ<br><br>
+        Average fraction defective:<br>
+        p̄ = Σpᵢ / k<br><br>
+        For sample size n:<br>
+        UCL = p̄ + 3 × √[p̄(1 − p̄) / n]<br>
+        CL = p̄<br>
+        LCL = p̄ − 3 × √[p̄(1 − p̄) / n]  (if LCL &lt; 0, set LCL = 0)
+      </div>
+
+      <h3>4. np Chart (number of defectives)</h3>
+      <div class="formula-block">
+        For constant sample size n:<br>
+        np̄ = average number of defectives<br>
+        p̄ = np̄ / n<br><br>
+        UCL = np̄ + 3 × √[np̄ (1 − p̄)]<br>
+        CL = np̄<br>
+        LCL = np̄ − 3 × √[np̄ (1 − p̄)]
+      </div>
+
+      <h3>5. c Chart (count of defects)</h3>
+      <div class="formula-block">
+        c̄ = average number of defects per sample<br><br>
+        UCL = c̄ + 3 √c̄<br>
+        CL = c̄<br>
+        LCL = c̄ − 3 √c̄   (if LCL &lt; 0, set LCL = 0)
+      </div>
+
+      <h3>6. u Chart (defects per unit)</h3>
+      <div class="formula-block">
+        For each sample i:<br>
+        uᵢ = cᵢ / nᵢ (defects per unit)<br><br>
+        ū = Σuᵢ / k<br><br>
+        UCL = ū + 3 × √(ū / nᵢ)<br>
+        CL = ū<br>
+        LCL = ū − 3 × √(ū / nᵢ)
+      </div>
+
+      <div class="highlight-box">
+        After you plot trial limits, remove points with known special causes, recalculate limits, and then use the revised limits for ongoing process control.
+      </div>
+    </section>
+
+    <!-- ====== Section 11: X̄–R Calculator & Interactive Chart ====== -->
+    <section id="xbar-r" class="section-card">
+      <div class="section-header">
+        <h2 class="section-title">X̄–R Calculator & Interactive Chart</h2>
+        <span class="section-tag">Subgroup size n = 5 · Live chart</span>
+      </div>
+
+      <p class="section-intro">
+        Enter subgroup measurements (n = 5). Rows = subgroups (S1..S25). Use <strong>Auto-fill</strong> to load sample data.
+      </p>
+
+      <div class="two-col" style="align-items:flex-start;">
+        <div class="col-card" style="min-width:560px;">
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+            <button class="sticky-btn" id="btnAutoFill" type="button">Auto-fill sample data</button>
+            <button class="sticky-btn" id="btnClear" type="button">Clear data</button>
+            <button class="sticky-btn" id="btnCalc" type="button">Recalculate</button>
+            <div style="margin-left:auto;font-size:13px;color:var(--text-soft);">
+              <strong>n = 5</strong> · A₂=0.577 · D₃=0 · D₄=2.115
+            </div>
+          </div>
+
+          <div class="table-wrapper" style="max-height:360px;overflow:auto;">
+            <table id="inputTable">
+              <thead>
+                <tr>
+                  <th>Sr. No.</th>
+                  <th>X1</th><th>X2</th><th>X3</th><th>X4</th><th>X5</th>
+                  <th>Mean (X̄)</th>
+                  <th>Range (R)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 25 rows generated by JS on init -->
+              </tbody>
+            </table>
+          </div>
+
+          <div style="display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;">
+            <div class="highlight-box" style="flex:1;min-width:220px;">
+              <div style="font-size:13px;color:var(--text-soft);">Grand Mean (X̄̄): <strong id="grandMean">—</strong></div>
+              <div style="font-size:13px;color:var(--text-soft);">Average Range (R̄): <strong id="avgRange">—</strong></div>
+            </div>
+            <div class="highlight-box" style="flex:1;min-width:220px;">
+              <div style="font-size:13px;color:var(--text-soft);">X̄ Chart Limits</div>
+              <div style="font-size:13px;color:var(--text-soft);">UCL: <strong id="uclX">—</strong>, CL: <strong id="clX">—</strong>, LCL: <strong id="lclX">—</strong></div>
+              <div style="font-size:13px;color:var(--text-soft);margin-top:6px;">R Chart Limits</div>
+              <div style="font-size:13px;color:var(--text-soft);">UCL: <strong id="uclR">—</strong>, CL: <strong id="clR">—</strong>, LCL: <strong id="lclR">—</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-card" style="min-width:360px;">
+          <h3>Charts</h3>
+          <p style="font-size:13px;color:var(--text-soft);margin-bottom:8px;">
+            X̄ chart (top) and R chart (bottom). Points outside limits are highlighted; tooltips show subgroup detail.
+          </p>
+          <div style="height:240px;margin-bottom:12px;">
+            <canvas id="xbarChart" style="width:100%;height:100%;"></canvas>
+          </div>
+          <div style="height:140px;">
+            <canvas id="rChart" style="width:100%;height:100%;"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ====== End Section 11 ====== -->
+
+  </main>
+</div>
+
+<button class="top-btn" id="topBtn" type="button">
+  ↑ Top
+</button>
+
+<!-- Sticky bottom bar -->
+<div class="sticky-bar" aria-hidden="true">
+  <button class="sticky-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">Top</button>
+  <button class="sticky-btn" onclick="document.getElementById('types').scrollIntoView({behavior:'smooth'})">Charts</button>
+  <button class="sticky-btn" onclick="document.getElementById('steps').scrollIntoView({behavior:'smooth'})">Steps</button>
+  <button class="sticky-btn" onclick="document.getElementById('trial-limits').scrollIntoView({behavior:'smooth'})">Formulas</button>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+  // --- THEME TOGGLE WITH LOCALSTORAGE ---
+  const root = document.documentElement;
+  const themeToggle = document.getElementById('themeToggle');
+  const themeToggleLabel = document.getElementById('themeToggleLabel');
+  const themeIcon = themeToggle.querySelector('.theme-toggle-icon');
+
+  function setTheme(theme) {
+    root.setAttribute('data-theme', theme);
+    localStorage.setItem('spc-theme', theme);
+    if (theme === 'light') {
+      themeToggleLabel.textContent = 'Light mode';
+      themeIcon.textContent = '☾';
+    } else {
+      themeToggleLabel.textContent = 'Dark mode';
+      themeIcon.textContent = '☀';
+    }
+    // allow charts to refresh colors (if created)
+    if (window.xbarChartInstance) {
+      try { xbarChartInstance.update(); } catch (e) {}
+    }
+    if (window.rChartInstance) {
+      try { rChartInstance.update(); } catch (e) {}
+    }
+  }
+
+  // Initialise theme: localStorage → system preference → default dark
+  (function initTheme() {
+    const stored = localStorage.getItem('spc-theme');
+    if (stored === 'light' || stored === 'dark') {
+      setTheme(stored);
+    } else {
+      const prefersLight = window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: light)').matches;
+      setTheme(prefersLight ? 'light' : 'dark');
+    }
+  })();
+
+  themeToggle.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    const next = current === 'light' ? 'dark' : 'light';
+    setTheme(next);
+  });
+
+  // --- Smooth scroll for sidebar links ---
+  const navLinks = document.querySelectorAll('.sidebar-link');
+  navLinks.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target');
+      const section = document.getElementById(targetId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // --- Highlight active section in sidebar ---
+  const sections = document.querySelectorAll('main section[id]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navLinks.forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-target') === id);
+        });
+      }
+    });
+  }, {
+    root: null,
+    rootMargin: '0px 0px -60% 0px',
+    threshold: 0.2
+  });
+
+  sections.forEach(sec => observer.observe(sec));
+
+  // --- Back to top button ---
+  const topBtn = document.getElementById('topBtn');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 220) {
+      topBtn.classList.add('show');
+    } else {
+      topBtn.classList.remove('show');
+    }
+  });
+
+  topBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // --- FAB Actions ---
+  document.getElementById("fabTop").onclick = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  document.getElementById("fabTheme").onclick = () => {
+    const current = root.getAttribute("data-theme");
+    setTheme(current === "light" ? "dark" : "light");
+  };
+
+  document.getElementById("fabMenu").onclick = () => {
+    document.querySelector(".sidebar").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  };
+
+  /* ===== Section 11: X̄–R Calculator & Chart Logic (n=5) ===== */
+  (function(){
+    // Constants for n = 5
+    const n = 5;
+    const A2 = 0.577;
+    const D3 = 0.0;
+    const D4 = 2.115;
+    const defaultRows = 25;
+
+    // Utilities
+    const $ = (sel, root=document) => root.querySelector(sel);
+
+    // Build table rows
+    const tbody = $('#inputTable tbody');
+    function buildRows() {
+      tbody.innerHTML = '';
+      for (let i=1;i<=defaultRows;i++){
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="width:64px">S${i}</td>
+          <td contenteditable="true" data-col="x1"></td>
+          <td contenteditable="true" data-col="x2"></td>
+          <td contenteditable="true" data-col="x3"></td>
+          <td contenteditable="true" data-col="x4"></td>
+          <td contenteditable="true" data-col="x5"></td>
+          <td class="mean-cell">—</td>
+          <td class="range-cell">—</td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    // Parse table to numeric data; returns array of subgroups {values:[], mean, range}
+    function readTable() {
+      const rows = [];
+      Array.from(tbody.rows).forEach((tr, idx) => {
+        const cells = Array.from(tr.querySelectorAll('td[contenteditable="true"]'));
+        const values = cells.map(td => {
+          const v = td.textContent.trim();
+          const num = v === '' ? NaN : Number(v);
+          return num;
+        });
+        rows.push({ tr, values });
+      });
+      return rows;
+    }
+
+    // Validate input cells; highlight invalid
+    function validateRows(rows) {
+      rows.forEach(row => {
+        const {tr, values} = row;
+        const cds = tr.querySelectorAll('td[contenteditable="true"]');
+        let anyNumeric = false;
+        cds.forEach((td, i) => {
+          const val = values[i];
+          if (isNaN(val)) {
+            td.classList.add('input-invalid');
+          } else {
+            td.classList.remove('input-invalid');
+            anyNumeric = true;
+          }
+        });
+        if (!anyNumeric) {
+          tr.querySelector('.mean-cell').textContent = '—';
+          tr.querySelector('.range-cell').textContent = '—';
+        }
+      });
+    }
+
+    // Compute stats, update DOM and return numeric arrays for charts
+    function computeAndUpdate() {
+      const rows = readTable();
+      validateRows(rows);
+
+      const subgroupMeans = [];
+      const subgroupRanges = [];
+      rows.forEach(row => {
+        const nums = row.values.filter(v => !isNaN(v));
+        if (nums.length === 0) {
+          row.tr.classList.remove('ooc');
+          return;
+        }
+        const sum = nums.reduce((a,b)=>a+b,0);
+        const mean = sum / nums.length;
+        const range = Math.max(...nums) - Math.min(...nums);
+        row.tr.querySelector('.mean-cell').textContent = round(mean);
+        row.tr.querySelector('.range-cell').textContent = round(range);
+        subgroupMeans.push(mean);
+        subgroupRanges.push(range);
+        row.mean = mean;
+        row.range = range;
+      });
+
+      // Grand mean and average range
+      const grandMean = subgroupMeans.length ? subgroupMeans.reduce((a,b)=>a+b,0)/subgroupMeans.length : NaN;
+      const avgRange = subgroupRanges.length ? subgroupRanges.reduce((a,b)=>a+b,0)/subgroupRanges.length : NaN;
+
+      // Control limits
+      const uclX = isNaN(avgRange) ? NaN : (grandMean + A2 * avgRange);
+      const lclX = isNaN(avgRange) ? NaN : (grandMean - A2 * avgRange);
+      const uclR = isNaN(avgRange) ? NaN : (D4 * avgRange);
+      const lclR = isNaN(avgRange) ? NaN : (D3 * avgRange);
+
+      // Update DOM summary
+      $('#grandMean').textContent = isNaN(grandMean) ? '—' : round(grandMean);
+      $('#avgRange').textContent = isNaN(avgRange) ? '—' : round(avgRange);
+      $('#uclX').textContent = isNaN(uclX) ? '—' : round(uclX);
+      $('#clX').textContent = isNaN(grandMean) ? '—' : round(grandMean);
+      $('#lclX').textContent = isNaN(lclX) ? '—' : round(lclX);
+      $('#uclR').textContent = isNaN(uclR) ? '—' : round(uclR);
+      $('#clR').textContent = isNaN(avgRange) ? '—' : round(avgRange);
+      $('#lclR').textContent = isNaN(lclR) ? '—' : round(lclR);
+
+      // Mark out-of-control rows (where mean outside X limits or range outside R limits)
+      rows.forEach(row => {
+        row.tr.classList.remove('ooc');
+        if (typeof row.mean === 'number' && !isNaN(row.mean)) {
+          if (!isNaN(uclX) && (row.mean > uclX || row.mean < lclX)) {
+            row.tr.classList.add('ooc');
+          }
+        }
+        if (typeof row.range === 'number' && !isNaN(row.range)) {
+          if (!isNaN(uclR) && (row.range > uclR || row.range < lclR)) {
+            row.tr.classList.add('ooc');
+          }
+        }
+      });
+
+      // Prepare arrays for charts (use only those rows that have numeric mean/range)
+      const labels = [];
+      const xMeans = [];
+      const rVals = [];
+      rows.forEach((row, idx) => {
+        const label = `S${idx+1}`;
+        if (typeof row.mean === 'number' && !isNaN(row.mean)) {
+          labels.push(label);
+          xMeans.push(round(Number(row.mean)));
+          rVals.push(typeof row.range === 'number' && !isNaN(row.range) ? round(Number(row.range)) : 0);
+        }
+      });
+
+      updateCharts(labels, xMeans, rVals, {grandMean, avgRange, uclX, lclX, uclR, lclR});
+    }
+
+    function round(v) {
+      if (isNaN(v)) return v;
+      return Math.round((v + Number.EPSILON) * 1000) / 1000;
+    }
+
+    // Auto-fill helper: generate sample data around a baseline and small sigma
+    function autoFill() {
+      const base = Number(prompt("Enter approximate process mean (suggested):", "50")) || 50;
+      const sigma = Number(prompt("Enter approx within-subgroup spread (suggested):", "0.6")) || 0.6;
+      Array.from(tbody.rows).forEach((tr, idx) => {
+        const cols = tr.querySelectorAll('td[contenteditable="true"]');
+        const shift = (Math.sin(idx/3) * sigma * 0.6);
+        cols.forEach((td, j) => {
+          const noise = (Math.random() - 0.5) * sigma * 2;
+          const val = round(base + shift + noise + (j - (n/2)) * 0.02);
+          td.textContent = val;
+          td.classList.remove('input-invalid');
+        });
+      });
+      computeAndUpdate();
+    }
+
+    function clearData() {
+      Array.from(tbody.querySelectorAll('td[contenteditable="true"]')).forEach(td => {
+        td.textContent = '';
+        td.classList.remove('input-invalid');
+      });
+      computeAndUpdate();
+    }
+
+    // Chart.js setup & update
+    let xbarChart = null;
+    let rChart = null;
+
+    function createCharts() {
+      const ctxX = document.getElementById('xbarChart').getContext('2d');
+      const ctxR = document.getElementById('rChart').getContext('2d');
+
+      const softColor = getComputedStyle(document.documentElement).getPropertyValue('--text-soft').trim() || '#c3c8e5';
+      const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#3db6ff';
+      const danger = getComputedStyle(document.documentElement).getPropertyValue('--danger').trim() || '#ff5c7a';
+      const success = getComputedStyle(document.documentElement).getPropertyValue('--success').trim() || '#3dd68c';
+
+      // common config
+      const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            enabled: true,
+            animation: { duration: 180 }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: softColor }
+          },
+          y: {
+            ticks: { color: softColor },
+            grid: { color: 'rgba(255,255,255,0.03)' }
+          }
+        }
+      };
+
+      // Xbar chart
+      xbarChart = new Chart(ctxX, {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [
+            {
+              label: 'X̄',
+              data: [],
+              tension: 0.18,
+              pointRadius: 6,
+              pointHoverRadius: 8,
+              borderWidth: 2.5,
+              borderColor: accent,
+              backgroundColor: 'transparent',
+              pointBackgroundColor: [],
+              pointBorderColor: '#020617'
+            },
+            {
+              label: 'CL',
+              data: [],
+              borderDash: [6,6],
+              borderColor: '#9fa6ff',
+              borderWidth: 1.8,
+              pointRadius: 0,
+              fill: false
+            },
+            {
+              label: 'UCL',
+              data: [],
+              borderDash: [4,4],
+              borderColor: danger,
+              borderWidth: 1.6,
+              pointRadius: 0,
+              fill: false
+            },
+            {
+              label: 'LCL',
+              data: [],
+              borderDash: [4,4],
+              borderColor: success,
+              borderWidth: 1.6,
+              pointRadius: 0,
+              fill: false
+            }
+          ]
+        },
+        options: commonOptions
+      });
+
+      // R chart
+      rChart = new Chart(ctxR, {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [
+            {
+              label: 'R',
+              data: [],
+              tension: 0.12,
+              pointRadius: 6,
+              pointHoverRadius: 8,
+              borderWidth: 2.2,
+              borderColor: '#ffcf5c',
+              backgroundColor: 'transparent',
+              pointBackgroundColor: [],
+              pointBorderColor: '#020617'
+            },
+            {
+              label: 'CL',
+              data: [],
+              borderDash: [6,6],
+              borderColor: '#9fa6ff',
+              borderWidth: 1.6,
+              pointRadius: 0,
+              fill: false
+            },
+            {
+              label: 'UCL',
+              data: [],
+              borderDash: [4,4],
+              borderColor: danger,
+              borderWidth: 1.6,
+              pointRadius: 0,
+              fill: false
+            },
+            {
+              label: 'LCL',
+              data: [],
+              borderDash: [4,4],
+              borderColor: success,
+              borderWidth: 1.6,
+              pointRadius: 0,
+              fill: false
+            }
+          ]
+        },
+        options: commonOptions
+      });
+
+      // keep global references so theme toggle can refresh
+      window.xbarChartInstance = xbarChart;
+      window.rChartInstance = rChart;
+    }
+
+    function updateCharts(labels, xMeans, rVals, limits) {
+      if (!xbarChart || !rChart) return;
+      const {grandMean, avgRange, uclX, lclX, uclR, lclR} = limits;
+
+      // Xbar dataset
+      xbarChart.data.labels = labels;
+      xbarChart.data.datasets[0].data = xMeans;
+      // CL/UCL/LCL arrays
+      xbarChart.data.datasets[1].data = labels.map(()=> isNaN(grandMean) ? null : round(grandMean));
+      xbarChart.data.datasets[2].data = labels.map(()=> isNaN(uclX) ? null : round(uclX));
+      xbarChart.data.datasets[3].data = labels.map(()=> isNaN(lclX) ? null : round(lclX));
+      // point colors - mark out-of-control in danger
+      xbarChart.data.datasets[0].pointBackgroundColor = xMeans.map(v => {
+        return (!isNaN(uclX) && (v > uclX || v < lclX)) ? getComputedStyle(document.documentElement).getPropertyValue('--danger').trim() : getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+      });
+
+      // R chart
+      rChart.data.labels = labels;
+      rChart.data.datasets[0].data = rVals;
+      rChart.data.datasets[1].data = labels.map(()=> isNaN(avgRange) ? null : round(avgRange));
+      rChart.data.datasets[2].data = labels.map(()=> isNaN(uclR) ? null : round(uclR));
+      rChart.data.datasets[3].data = labels.map(()=> isNaN(lclR) ? null : round(lclR));
+      rChart.data.datasets[0].pointBackgroundColor = rVals.map(v => {
+        return (!isNaN(uclR) && (v > uclR || v < lclR)) ? getComputedStyle(document.documentElement).getPropertyValue('--danger').trim() : getComputedStyle(document.documentElement).getPropertyValue('--success').trim();
+      });
+
+      // Animate update
+      xbarChart.update();
+      rChart.update();
+    }
+
+    // Attach events: recalc on input, buttons
+    function attachEvents() {
+      // Recalc on input after small debounce
+      let timer = null;
+      tbody.addEventListener('input', (e) => {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => computeAndUpdate(), 320);
+      });
+
+      $('#btnAutoFill').addEventListener('click', () => autoFill());
+      $('#btnClear').addEventListener('click', () => {
+        if (confirm('Clear all measurement cells?')) clearData();
+      });
+      $('#btnCalc').addEventListener('click', () => computeAndUpdate());
+
+      // Keep charts themed when theme toggles
+      const observer = new MutationObserver(() => {
+        if (xbarChart) xbarChart.update();
+        if (rChart) rChart.update();
+      });
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    }
+
+    // Initialization
+    buildRows();
+    createCharts();
+    attachEvents();
+    // initial example fill for visibility
+    (function firstFill(){
+      const base = 50;
+      Array.from(tbody.rows).forEach((tr, idx) => {
+        const cols = tr.querySelectorAll('td[contenteditable="true"]');
+        const shift = (idx < 12) ? (Math.sin(idx/4)*0.4) : 0;
+        cols.forEach((td, j) => {
+          const noise = (Math.random()-0.5)*0.8;
+          const val = round(base + shift + noise + (j - (n/2)) * 0.02);
+          td.textContent = val;
+        });
+      });
+      computeAndUpdate();
+    })();
+
+  })();
+</script>
+
+</body>
+</html>

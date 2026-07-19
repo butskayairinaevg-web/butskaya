@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>PSW — Part Submission Warrant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; background:#f4f7fb; }
+    .formbox {
+      max-width:870px; margin:26px auto; background:#fff; border-radius:8px; box-shadow:0 2px 17px #4442;
+      padding: 24px 18px; border: 1px solid #dde6ed;
+    }
+    h2 { text-align:center; font-size:1.33rem; font-weight:600; color:#274d74; margin-bottom:7px; }
+    .row { display:flex; gap:9px; margin-bottom:7px; flex-wrap:wrap; }
+    .cell { flex:1; min-width:120px; }
+    .cellshort { flex:.6; min-width:80px; }
+    label, .cell label { font-size:.96rem; color:#324c6a; font-weight:400; }
+    input,select,textarea {
+      width:100%; padding:6px 7px; font-size:.96rem; border-radius:3.8px; border:1px solid #c2c7d4; background:#f7fafd;
+      margin-top:2px; margin-bottom:1px; box-sizing:border-box; transition:border .22s;
+    }
+    input:focus,select:focus,textarea:focus { border:1.4px solid #397ad7; outline:none; }
+    textarea {resize:vertical;}
+    .group { background:#ecf4fb; color:#266dbb; font-size:.97rem; font-weight:600; padding:6px 0 6px 10px;
+      border-radius:5px 0 0 0; border-left:4px solid #499dff; margin:13px 0 7px 0;
+    }
+    .checkrow, .radiorow { display:flex; gap:22px; flex-wrap:wrap; }
+    .checkrow label, .radiorow label { font-size:.93rem; }
+    .doublerow{display:flex;gap:7px;}
+    .doublerow > .cell{flex:1;}
+    .pdfbtn {
+      background: linear-gradient(90deg,#2987DB,#175d90 90%);
+      color:#fff; border:none; border-radius:5px;
+      padding:11px 30px; font-size:1.1rem; font-weight:700;
+      box-shadow:0 2px 15px #2587d87c; margin:23px auto 0 auto;display:block;
+      transition: background .19s, box-shadow .21s, transform .19s;
+      cursor:pointer;
+    }
+    .pdfbtn:hover { background:#155ca8; box-shadow:0 8px 26px #132a6a30; }
+    @media(max-width:700px) {
+      .row,.checkrow,.radiorow,.doublerow{flex-direction:column;gap:7px;}
+      .formbox{padding:7px;}
+    }
+    small { color:#555d; font-size:.91rem;}
+    .mt-3 {margin-top:12px;}
+    .fw700{font-weight:700;}
+    .back-link { display:inline-flex; align-items:center; gap:4px; color:#397ad7; font-size:0.85rem; text-decoration:none; margin-bottom:6px; opacity:0.7; transition:opacity 0.2s; }
+    .back-link:hover { opacity:1; }
+    /* Paywall modal */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal-box { background: #fff; border-radius: 16px; padding: 32px; max-width: 460px; width: 90%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .modal-box h2 { font-size: 1.3rem; color: #811844; margin-bottom: 8px; font-family: 'Segoe UI', sans-serif; }
+    .modal-box p { font-size: 0.9rem; color: #555; margin-bottom: 20px; line-height: 1.5; }
+    .modal-plans { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .modal-plan { border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s; text-align: left; }
+    .modal-plan:hover { border-color: #C9A84C; }
+    .modal-plan.selected { border-color: #C9A84C; background: #fefcf5; }
+    .modal-plan .plan-name { font-weight: 700; font-size: 1.05rem; color: #1a1a1a; }
+    .modal-plan .plan-price { font-weight: 700; font-size: 1.4rem; color: #811844; }
+    .modal-plan .plan-price small { font-size: 0.8rem; font-weight: 400; color: #888; }
+    .modal-plan .plan-desc { font-size: 0.82rem; color: #666; margin-top: 2px; }
+    .modal-plan .plan-badge { display: inline-block; background: #C9A84C; color: #1a1a1a; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; margin-left: 8px; vertical-align: middle; }
+    .modal-box .modal-btn { display: block; width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-bottom: 10px; transition: background 0.2s; }
+    .modal-box .modal-btn.primary { background: #C9A84C; color: #1a1a1a; }
+    .modal-box .modal-btn.primary:hover { background: #b8973a; }
+    .modal-box .modal-btn.green { background: #16a34a; color: #fff; }
+    .modal-box .modal-btn.green:hover { background: #15803d; }
+    .modal-box .modal-btn.secondary { background: transparent; color: #888; border: 1px solid #ddd; }
+    .modal-box .modal-btn.secondary:hover { background: #f5f5f5; }
+    .modal-box .modal-note { font-size: 0.78rem; color: #aaa; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <div style="max-width:870px; margin:0 auto;">
+    <a href="../../../../Documents/%D0%BB%D0%B5%D0%BD%D0%B4%D0%B8%D0%BD%D0%B3_%D0%98%D1%80%D0%B8%D0%BD%D0%B0_%D0%91%D1%83%D1%86%D0%BA%D0%B0%D1%8F.html" class="back-link">← Назад к Ирине Буцкой</a>
+  </div>
+  <form class="formbox" id="pswForm">
+    <h2>Part Submission Warrant</h2>
+    <div class="row">
+      <div class="cell"><label>Part Name<input></label></div>
+      <div class="cell"><label>Part Description<input></label></div>
+    </div>
+    <div class="row">
+      <div class="cell"><label>Company Part #<input></label></div>
+      <div class="cell"><label>Supplier Part #<input></label></div>
+      <div class="cellshort"><label>Rev Level<input></label></div>
+      <div class="cellshort"><label>Rev Date<input type="date"></label></div>
+    </div>
+    <div class="row">
+      <div class="cell"><label>Drg Number<input></label></div>
+      <div class="cell"><label>Engineering Change Level<input></label></div>
+      <div class="cell"><label>Additional Engg Changes<input></label></div>
+      <div class="cellshort"><label>Dated<input type="date"></label></div>
+    </div>
+    <div class="row">
+      <div class="cell"><label>Safety/Government Regulation<select><option></option><option>Yes</option><option>No</option></select></label></div>
+      <div class="cell"><label>Purchase Order No.<input></label></div>
+      <div class="cell"><label>Checking Aid No.<input></label></div>
+      <div class="cell"><label>Checking Aid Engg Change Level<input></label></div>
+    </div>
+    <div class="group">SUPPLIER MANUFACTURING INFORMATION</div>
+    <div class="row">
+      <div class="cell"><label>Your Company Name, Supplier Code from Company<input></label></div>
+      <div class="cell"><label>Organization Name & Supplier/Vendor Code<input></label></div>
+    </div>
+    <div class="row">
+      <div class="cell"><label>Your Street Address<input></label></div>
+      <div class="cell"><label>City<input></label></div>
+      <div class="cell"><label>Region<input></label></div>
+      <div class="cell"><label>Postal Code<input></label></div>
+      <div class="cell"><label>Country<input></label></div>
+    </div>
+    <div class="group">CUSTOMER/SUBMITTAL INFORMATION</div>
+    <div class="row">
+      <div class="cell"><label>Customer Name<input></label></div>
+      <div class="cell"><label>Name/Division<input></label></div>
+      <div class="cell"><label>Buyer Code<input></label></div>
+      <div class="cell"><label>End Application<input></label></div>
+    </div>
+    <div class="group">MATERIALS REPORTING</div>
+    <div class="row">
+      <div class="cell"><label>Has RoHS requirements been reported?<select><option></option><option>Yes</option><option>No</option><option>n/a</option></select></label></div>
+      <div class="cell"><label>HTS Code<input></label><small>Ref: http://www.usitc.gov/tata/hts/index.htm</small></div>
+    </div>
+    <div class="group">REASON FOR SUBMISSION</div>
+    <div class="doublerow">
+      <div class="cell">
+        <div class="checkrow">
+          <label><input type="checkbox"> Initial Submission</label>
+          <label><input type="checkbox"> Engineering Change(s)</label>
+          <label><input type="checkbox"> Tooling: Transfer, Replacement...</label>
+          <label><input type="checkbox"> Correction of Discrepancy</label>
+          <label><input type="checkbox"> Tooling Inactive > 1 year</label>
+        </div>
+      </div>
+      <div class="cell">
+        <div class="checkrow">
+          <label><input type="checkbox"> Change to Optional Construction/Material</label>
+          <label><input type="checkbox"> Supplier or Material Source Change</label>
+          <label><input type="checkbox"> Change in Part Processing</label>
+          <label><input type="checkbox"> Parts Produced at Additional Location</label>
+          <label><input type="checkbox"> Other</label>
+        </div>
+      </div>
+    </div>
+    <!-- Exact, full content as requested -->
+    <div class="group">
+      REQUESTED SUBMISSION LEVEL <span style="font-weight:400; color:#777; font-size:.9em;">(Check one)</span>
+    </div>
+    <div style="font-size:.95rem; line-height:1.45; margin-bottom:8px; color:#222;">
+      <label style="display:block; margin-bottom:3px;">
+        <input type="radio" name="submission_level">
+        Level 1 - Warrant only (and for designated appearance items, an Appearance Approval Report) submitted to Company.
+      </label>
+      <label style="display:block; margin-bottom:3px;">
+        <input type="radio" name="submission_level">
+        Level 2 - PPAP Report with product sample(s) and dimensional/performance/material requirements as defined by Company.
+      </label>
+      <label style="display:block; margin-bottom:3px;">
+        <input type="radio" name="submission_level">
+        Level 3 - Warrant with product samples and complete supporting data submitted to customer.
+      </label>
+      <label style="display:block; margin-bottom:3px;">
+        <input type="radio" name="submission_level">
+        Level 4 - Warrant and other requirements as defined by Company.
+      </label>
+      <label style="display:block;">
+        <input type="radio" name="submission_level">
+        Level 5 - Warrant with product samples and complete supporting data reviewed at Supplier's manufacturing location.
+      </label>
+    </div>
+    <div class="group">SUBMISSION RESULTS</div>
+    <div class="checkrow">
+      <label><input type="checkbox">Dimensional measurements</label>
+      <label><input type="checkbox">Material & functional tests</label>
+      <label><input type="checkbox">Appearance criteria</label>
+      <label><input type="checkbox">Statistical process package</label>
+    </div>
+    <div class="row">
+      <div class="cell"><label class="fw700">These results meet all drawing/spec requirements<select><option></option><option>Yes</option><option>No</option></select></label></div>
+      <div class="cell"><label>If "NO" - Explanation Required<input></label></div>
+    </div>
+    <div class="group">COMMENTS</div>
+    <div class="row"><div class="cell"><textarea rows="2"></textarea></div></div>
+    <div class="group">SUPPLIER AUTHORIZATION</div>
+    <div class="row" style="flex-wrap:wrap;">
+      <div class="cell"><label>Every tool properly tagged?<select><option></option><option>Yes</option><option>No</option><option>n/a</option></select></label></div>
+      <div class="cell"><label>Supplier Authorized Signature<input></label></div>
+      <div class="cellshort"><label>Date<input type="date"></label></div>
+      <div class="cell"><label>Print Name<input></label></div>
+      <div class="cell"><label>Phone No.<input></label></div>
+      <div class="cell"><label>Fax No.<input></label></div>
+      <div class="cell"><label>Title<input></label></div>
+      <div class="cell" style="min-width:120px;max-width:180px;flex:.8;">
+        <label>E-mail <input type="email" style="width:100%;min-width:80px;max-width:170px;"></label>
+      </div>
+    </div>
+    <div class="group">FOR CUSTOMER USE ONLY (IF APPLICABLE)</div>
+    <div class="row">
+      <div class="cell"><label>Part Disposition<select><option></option><option>Approved</option><option>Rejected</option><option>Other</option></select></label></div>
+      <div class="cell"><label>Signature<input></label></div>
+      <div class="cellshort"><label>Date<input type="date"></label></div>
+      <div class="cell"><label>Print Name<input></label></div>
+      <div class="cell"><label>Tracking Number<input></label></div>
+    </div>
+    <button type="button" class="pdfbtn" id="pdfBtn">⬇ Скачать PDF</button>
+  </form>
+
+  <!-- Paywall Modal -->
+  <div class="modal-overlay" id="payModal">
+    <div class="modal-box">
+      <h2>🔒 Выберите тариф</h2>
+      <p>Скачивайте PDF с вашими данными без ограничений</p>
+
+      <div class="modal-plans">
+        <div class="modal-plan" data-plan="once" onclick="selectPlan(this)">
+          <div>
+            <span class="plan-price">350 ₽</span>
+            <span class="plan-name"> — один документ</span>
+          </div>
+          <div class="plan-desc">Оплатили — скачали. Проще некуда.</div>
+        </div>
+        <div class="modal-plan" data-plan="ten" onclick="selectPlan(this)">
+          <div>
+            <span class="plan-price">1 000 ₽</span>
+            <span class="plan-name">10 PDF</span>
+            <span class="plan-badge">🔥 выгодно</span>
+          </div>
+          <div class="plan-desc">10 любых документов. Экономия 2 500 ₽ против поштучных.</div>
+        </div>
+        <div class="modal-plan" data-plan="month" onclick="selectPlan(this)">
+          <div>
+            <span class="plan-price">2 000 ₽ <small>/ мес</small></span>
+            <span class="plan-name">Безлимит на месяц</span>
+          </div>
+          <div class="plan-desc">Сколько угодно PDF. Для регулярной работы с документацией.</div>
+        </div>
+      </div>
+
+      <button class="modal-btn green" id="payBtn" onclick="paySelected()">Оплатить 350 ₽ →</button>
+      <button class="modal-btn secondary" onclick="closePayModal()">Закрыть</button>
+      <div class="modal-note">После оплаты напишите @Irina_Butskaya — пришлю PDF в течение часа</div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let _selectedPlan = 'once';
+
+    function selectPlan(el) {
+      document.querySelectorAll('.modal-plan').forEach(p => p.classList.remove('selected'));
+      el.classList.add('selected');
+      _selectedPlan = el.dataset.plan;
+      const labels = { once: 'Оплатить 350 ₽ →', ten: 'Оплатить 1 000 ₽ →', month: 'Оформить на 2 000 ₽ →' };
+      document.getElementById('payBtn').textContent = labels[_selectedPlan];
+    }
+
+    function paySelected() {
+      const links = {
+        once: 'https://yoomoney.ru/to/4100119578034128?label=psw_once&sum=350',
+        ten: 'https://yoomoney.ru/to/4100119578034128?label=psw_ten&sum=1000',
+        month: 'https://yoomoney.ru/to/4100119578034128?label=psw_month&sum=2000'
+      };
+      window.open(links[_selectedPlan], '_blank');
+    }
+
+    /* Paywall modal functions */
+    function showPayModal(docName) {
+      _selectedPlan = 'once';
+      document.querySelectorAll('.modal-plan').forEach(p => p.classList.remove('selected'));
+      document.getElementById('payBtn').textContent = 'Оплатить 350 ₽ →';
+      document.getElementById('payModal').classList.add('open');
+    }
+    function closePayModal() {
+      document.getElementById('payModal').classList.remove('open');
+    }
+    document.getElementById('payModal').addEventListener('click', function(e) {
+      if (e.target === this) closePayModal();
+    });
+
+    /* PDF export — paywalled */
+    document.getElementById('pdfBtn').onclick = function () {
+      showPayModal('PSW');
+    };
+  </script>
+</body>
+</html>

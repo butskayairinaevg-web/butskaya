@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scatter Diagram – Correlation Types</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+
+        body{
+            font-family: "Segoe UI",system-ui,-apple-system,sans-serif;
+            background: radial-gradient(circle at top, #253A5C 0%, #05081a 55%, #02030a 100%);
+            color:#fff;
+            min-height:100vh;
+        }
+
+        .container{
+            max-width:1400px;
+            margin:0 auto;
+            padding:30px 20px 60px;
+        }
+
+        .header{
+            position:relative;
+            text-align:center;
+            padding:30px 20px 40px;
+            margin-bottom:35px;
+            border-radius:26px;
+            background:linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02));
+            border:1px solid rgba(255,255,255,0.18);
+            backdrop-filter:blur(26px);
+            box-shadow:0 24px 70px rgba(0,0,0,0.65);
+            overflow:hidden;
+        }
+
+        .header:before{
+            content:"";
+            position:absolute;
+            width:260px;
+            height:260px;
+            background:radial-gradient(circle,#00d4ff40 0%,transparent 65%);
+            top:-80px;
+            left:-40px;
+        }
+
+        .header:after{
+            content:"";
+            position:absolute;
+            width:260px;
+            height:260px;
+            background:radial-gradient(circle,#ff6b9d45 0%,transparent 65%);
+            bottom:-110px;
+            right:-60px;
+        }
+
+        h1{
+            font-size:2.6rem;
+            letter-spacing:0.04em;
+            margin-bottom:8px;
+            background:linear-gradient(90deg,#46f0ff,#b374ff,#ff6b9d);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+
+        .subtitle{
+            font-size:0.98rem;
+            color:rgba(255,255,255,0.76);
+        }
+
+        .correlation-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+            gap:26px;
+            margin-top:25px;
+        }
+
+        .card{
+            position:relative;
+            padding:22px 22px 26px;
+            border-radius:24px;
+            background:linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02));
+            border:1px solid rgba(255,255,255,0.16);
+            backdrop-filter:blur(22px);
+            box-shadow:0 20px 60px rgba(0,0,0,0.6);
+            overflow:hidden;
+            transition:transform .4s ease, box-shadow .4s ease, border-color .4s ease;
+        }
+
+        .card:hover{
+            transform:translateY(-10px);
+            box-shadow:0 30px 80px rgba(0,0,0,0.8);
+            border-color:rgba(255,255,255,0.45);
+        }
+
+        .card-header{
+            margin-bottom:14px;
+        }
+
+        .card-title{
+            font-weight:700;
+            font-size:1.18rem;
+        }
+
+        .accent-line{
+            width:70px;
+            height:3px;
+            border-radius:999px;
+            margin-top:8px;
+            background:linear-gradient(90deg,#00d4ff,#ff6b9d);
+        }
+
+        .chart-shell{
+            margin-top:10px;
+            border-radius:18px;
+            height:230px;
+            background:radial-gradient(circle at top left,#ffffff14 0%,#111727 55%,#050713 100%);
+            position:relative;
+            overflow:hidden;
+        }
+
+        .chart-shell:before{
+            content:"";
+            position:absolute;
+            inset:0;
+            background:linear-gradient(145deg,rgba(255,255,255,0.05),transparent 55%);
+            mix-blend-mode:screen;
+            pointer-events:none;
+        }
+
+        svg.scatter{
+            width:100%;
+            height:100%;
+            display:block;
+        }
+
+        .axis path,
+        .axis line{
+            stroke:rgba(255,255,255,0.42);
+        }
+
+        .axis text{
+            fill:rgba(255,255,255,0.82);
+            font-size:10px;
+        }
+
+        .grid-line{
+            stroke:rgba(255,255,255,0.10);
+            stroke-width:1;
+        }
+
+        .point{
+            stroke:#fff;
+            stroke-width:2.6;
+            transition:r .25s ease, filter .25s ease;
+        }
+        .point.positive{fill:#2fd5ff;}
+        .point.negative{fill:#ff6b9d;}
+        .point.weak{fill:#ffd86b;}
+        .point.none{fill:#9ea5c3;}
+
+        .point:hover{
+            r:7.5;
+            filter:drop-shadow(0 0 10px currentColor);
+        }
+
+        .example{
+            margin-top:10px;
+            font-size:0.9rem;
+            color:rgba(237,241,255,0.86);
+        }
+
+        .section{
+            margin-top:40px;
+            padding:30px 22px;
+            border-radius:24px;
+            background:linear-gradient(140deg,rgba(255,255,255,0.06),rgba(255,255,255,0.01));
+            border:1px solid rgba(255,255,255,0.12);
+            backdrop-filter:blur(18px);
+            box-shadow:0 22px 60px rgba(0,0,0,0.55);
+        }
+
+        .section h2{
+            font-size:1.6rem;
+            margin-bottom:14px;
+            background:linear-gradient(90deg,#46f0ff,#ff9f6b);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+
+        .section p,
+        .section li{
+            font-size:0.98rem;
+            color:rgba(235,238,255,0.9);
+        }
+
+        .section ul{
+            list-style:none;
+            margin-top:8px;
+        }
+
+        .section li{
+            margin-top:4px;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            margin-top:14px;
+            background:rgba(0,0,0,0.12);
+            border-radius:18px;
+            overflow:hidden;
+        }
+
+        th,td{
+            padding:14px 16px;
+            border-bottom:1px solid rgba(255,255,255,0.12);
+            text-align:left;
+            font-size:0.96rem;
+        }
+
+        th{
+            background:linear-gradient(90deg,rgba(0,212,255,0.25),rgba(255,107,157,0.18));
+        }
+
+        tr:last-child td{border-bottom:none;}
+
+        tr:hover td{
+            background:rgba(255,255,255,0.06);
+        }
+
+        @media(max-width:768px){
+            h1{font-size:2.1rem;}
+            .header{padding:24px 18px 30px;}
+            .section{padding:24px 18px;}
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <h1>Scatter Diagram Correlation Types</h1>
+        <p class="subtitle">Visual analysis of relationships between paired variables using polished glassmorphism UI</p>
+    </header>
+
+    <!-- CORRELATION CARDS -->
+    <section class="correlation-grid">
+
+        <article class="card" data-type="strong-positive">
+            <div class="card-header">
+                <div class="card-title">Strong Positive Correlation</div>
+                <div class="accent-line"></div>
+            </div>
+            <div class="chart-shell">
+                <svg class="scatter" viewBox="0 0 380 230"></svg>
+            </div>
+            <p class="example">Example: Motorcycle speed vs number of accidents – as speed increases, accident rate increases sharply.</p>
+        </article>
+
+        <article class="card" data-type="strong-negative">
+            <div class="card-header">
+                <div class="card-title">Strong Negative Correlation</div>
+                <div class="accent-line"></div>
+            </div>
+            <div class="chart-shell">
+                <svg class="scatter" viewBox="0 0 380 230"></svg>
+            </div>
+            <p class="example">Example: Machine maintenance time vs breakdowns – more maintenance leads to fewer failures.</p>
+        </article>
+
+        <article class="card" data-type="weak-positive">
+            <div class="card-header">
+                <div class="card-title">Weak Positive Correlation</div>
+                <div class="accent-line"></div>
+            </div>
+            <div class="chart-shell">
+                <svg class="scatter" viewBox="0 0 380 230"></svg>
+            </div>
+            <p class="example">Example: Advertising spend vs sales – general upward trend, but with high scatter.</p>
+        </article>
+
+        <article class="card" data-type="weak-negative">
+            <div class="card-header">
+                <div class="card-title">Weak Negative Correlation</div>
+                <div class="accent-line"></div>
+            </div>
+            <div class="chart-shell">
+                <svg class="scatter" viewBox="0 0 380 230"></svg>
+            </div>
+            <p class="example">Example: Price discount vs competitor sales – small downward trend with a lot of variation.</p>
+        </article>
+
+        <article class="card" data-type="no-correlation">
+            <div class="card-header">
+                <div class="card-title">No / Zero Correlation</div>
+                <div class="accent-line"></div>
+            </div>
+            <div class="chart-shell">
+                <svg class="scatter" viewBox="0 0 380 230"></svg>
+            </div>
+            <p class="example">Example: Shoe size vs exam marks – points are scattered with no visible pattern.</p>
+        </article>
+
+    </section>
+
+    <!-- APPLICATIONS -->
+    <section class="section">
+        <h2>Scatter Diagram – Uses & Benefits</h2>
+        <p>Scatter diagrams help evaluate the direction and strength of correlation between two quantitative variables for decision‑making in quality and statistics.[web:2][web:3]</p>
+        <ul>
+            <li>• Quality control: Relate process inputs (temperature, pressure, speed) to defect rates or output quality.[web:3]</li>
+            <li>• Engineering: Study stress vs strain or load vs displacement relationships.[web:3][web:11]</li>
+            <li>• Business & healthcare: Explore links such as marketing spend vs sales or patient age vs recovery time.[web:4][web:18]</li>
+        </ul>
+    </section>
+
+    <!-- SCATTER vs FISHBONE -->
+    <section class="section">
+        <h2>Scatter Diagram vs Fishbone Diagram</h2>
+        <p>Scatter and fishbone diagrams are both used in root‑cause and quality work but focus on different aspects of the problem.[web:3][web:21]</p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Aspect</th>
+                <th>Scatter Diagram</th>
+                <th>Fishbone Diagram</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Primary purpose</td>
+                <td>Show strength and direction of correlation between two variables.</td>
+                <td>Organize and categorize possible causes of a specific effect or problem.</td>
+            </tr>
+            <tr>
+                <td>Correlation shown?</td>
+                <td>Yes – pattern may be strong positive, strong negative, weak, or none.[web:9]</td>
+                <td>No – displays hypotheses about causes without numerical correlation.</td>
+            </tr>
+            <tr>
+                <td>Data type</td>
+                <td>Quantitative paired data (X, Y measurements).[web:3]</td>
+                <td>Qualitative ideas from brainstorming and experience.[web:3]</td>
+            </tr>
+            <tr>
+                <td>Typical output</td>
+                <td>Scatter of points with visible trend and possible line of best fit.[web:11][web:14]</td>
+                <td>“Fishbone” diagram listing grouped causes such as Man, Machine, Method, Material.</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+
+<!-- D3 LIBRARY -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<script>
+    // Sample data for each correlation type
+    const correlationData = {
+        "strong-positive": [
+            {x:10,y:20},{x:20,y:40},{x:30,y:65},{x:40,y:90},
+            {x:50,y:115},{x:60,y:140},{x:70,y:165},{x:80,y:190}
+        ],
+        "strong-negative": [
+            {x:10,y:195},{x:20,y:175},{x:30,y:150},{x:40,y:125},
+            {x:50,y:100},{x:60,y:75},{x:70,y:50},{x:80,y:30}
+        ],
+        "weak-positive": [
+            {x:10,y:40},{x:20,y:55},{x:30,y:52},{x:40,y:63},
+            {x:50,y:67},{x:60,y:72},{x:70,y:70},{x:80,y:78}
+        ],
+        "weak-negative": [
+            {x:10,y:80},{x:20,y:77},{x:30,y:74},{x:40,y:71},
+            {x:50,y:69},{x:60,y:66},{x:70,y:64},{x:80,y:61}
+        ],
+        "no-correlation": [
+            {x:10,y:40},{x:20,y:90},{x:30,y:30},{x:40,y:110},
+            {x:50,y:50},{x:60,y:80},{x:70,y:60},{x:80,y:45}
+        ]
+    };
+
+    const cards = document.querySelectorAll(".card");
+    cards.forEach(card => {
+        const type = card.dataset.type;
+        const svgEl = card.querySelector("svg.scatter");
+        drawScatter(svgEl, correlationData[type], type);
+    });
+
+    function drawScatter(svgElement, data, type){
+        const svg = d3.select(svgElement);
+        const width = +svg.attr("viewBox").split(" ")[2];
+        const height = +svg.attr("viewBox").split(" ")[3];
+
+        const margin = {top:18,right:18,bottom:40,left:44};
+        const w = width - margin.left - margin.right;
+        const h = height - margin.top - margin.bottom;
+
+        svg.selectAll("*").remove();
+
+        const x = d3.scaleLinear().domain([0,100]).range([0,w]);
+        const y = d3.scaleLinear().domain([0,210]).range([h,0]);
+
+        const g = svg.append("g")
+            .attr("transform",`translate(${margin.left},${margin.top})`);
+
+        // grid
+        g.selectAll(".grid-x")
+            .data(x.ticks(6))
+            .enter().append("line")
+            .attr("class","grid-line")
+            .attr("x1",d=>x(d))
+            .attr("x2",d=>x(d))
+            .attr("y1",0)
+            .attr("y2",h);
+
+        g.selectAll(".grid-y")
+            .data(y.ticks(5))
+            .enter().append("line")
+            .attr("class","grid-line")
+            .attr("x1",0)
+            .attr("x2",w)
+            .attr("y1",d=>y(d))
+            .attr("y2",d=>y(d));
+
+        // axes
+        g.append("g")
+            .attr("class","axis")
+            .attr("transform",`translate(0,${h})`)
+            .call(d3.axisBottom(x).ticks(5));
+
+        g.append("g")
+            .attr("class","axis")
+            .call(d3.axisLeft(y).ticks(5));
+
+        // decide color class
+        let cls = "none";
+        if(type === "strong-positive" || type === "weak-positive") cls = "positive";
+        if(type === "strong-negative" || type === "weak-negative") cls = "negative";
+        if(type === "weak-positive" || type === "weak-negative") cls = "weak";
+
+        // points
+        g.selectAll("circle")
+            .data(data)
+            .enter().append("circle")
+            .attr("class","point "+cls)
+            .attr("cx",d=>x(d.x))
+            .attr("cy",d=>y(d.y))
+            .attr("r",5.2);
+    }
+</script>
+</body>
+</html>

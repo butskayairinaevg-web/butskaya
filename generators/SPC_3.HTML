@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SPC-3 – Variation in Quality Control (Full Notes)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-main: #02030a;
+      --bg-panel: #050712;
+      --gold: #facc15;
+      --gold-strong: #f59e0b;
+      --gold-soft: rgba(250, 204, 21, 0.16);
+      --gold-border: rgba(250, 204, 21, 0.8);
+      --text-main: #fefce8;
+      --text-soft: #e5e7eb;
+      --text-muted: #9ca3af;
+      --text-muted-dark: #6b7280;
+      --card-border: rgba(55, 65, 81, 0.9);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-pill: 999px;
+      --shadow-strong: 0 28px 90px rgba(0, 0, 0, 0.95);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, #020617 0, #000 50%, #000 100%);
+      color: var(--text-main);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 22px 10px 30px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 1260px;
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 20px;
+      background:
+        radial-gradient(circle at 0 0, rgba(250, 204, 21, 0.16), transparent 55%),
+        radial-gradient(circle at 100% 0, rgba(245, 158, 11, 0.22), transparent 55%),
+        rgba(0, 0, 0, 0.95);
+      border-radius: 30px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      padding: 18px 18px 22px;
+      box-shadow: var(--shadow-strong);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app-shell::before {
+      content: "";
+      position: absolute;
+      inset: -150px;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(250, 204, 21, 0.38), transparent 55%),
+        radial-gradient(circle at 90% 0%, rgba(245, 158, 11, 0.26), transparent 55%);
+      opacity: 0.7;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .app-inner {
+      position: relative;
+      z-index: 1;
+      display: contents;
+    }
+
+    /* SIDEBAR – GOLD GLASS */
+    .sidebar {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .sidebar-glass {
+      position: sticky;
+      top: 10px;
+      padding: 16px 14px 14px;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 0 0, rgba(250, 204, 21, 0.16), transparent 60%),
+        rgba(10, 10, 10, 0.85);
+      border: 1px solid var(--gold-border);
+      box-shadow:
+        0 0 0 1px rgba(15, 23, 42, 0.9),
+        0 22px 60px rgba(250, 204, 21, 0.45);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      max-height: calc(100vh - 40px);
+      overflow: auto;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .logo-wrap {
+      width: 42px;
+      height: 42px;
+      border-radius: 16px;
+      padding: 2px;
+      background:
+        conic-gradient(from 150deg, #facc15, #f97316, #22c55e, #facc15);
+      box-shadow: 0 12px 40px rgba(245, 158, 11, 0.9);
+    }
+
+    .logo-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 14px;
+      background: radial-gradient(circle at 20% 0%, #020617, #000 75%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Merriweather", serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .sidebar-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sidebar-title {
+      font-family: "Merriweather", serif;
+      font-size: 15px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .sidebar-sub {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .sidebar-chip {
+      margin-top: 2px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      padding: 5px 9px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(250, 204, 21, 0.7);
+      background: linear-gradient(to right, rgba(15, 23, 42, 0.9), rgba(24, 24, 27, 0.95));
+      color: var(--text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sidebar-chip-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.4);
+    }
+
+    .sidebar-label {
+      margin-top: 10px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-muted-dark);
+    }
+
+    .sidebar-nav {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-item {
+      border-radius: 16px;
+      padding: 7px 9px;
+      background: radial-gradient(circle at 0 0, rgba(250, 204, 21, 0.08), transparent 55%);
+      border: 1px solid rgba(148, 163, 184, 0.65);
+      color: var(--text-soft);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      transition:
+        background 0.18s ease-out,
+        border-color 0.18s ease-out,
+        transform 0.16s ease-out,
+        box-shadow 0.16s ease-out,
+        color 0.16s ease-out;
+      text-align: left;
+    }
+
+    .nav-item-main {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .nav-item-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .nav-item-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .nav-item-pill {
+      font-size: 9px;
+      padding: 3px 7px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-soft);
+      white-space: nowrap;
+    }
+
+    .nav-item:hover {
+      border-color: var(--gold-border);
+      box-shadow:
+        0 0 0 1px rgba(250, 204, 21, 0.4),
+        0 18px 45px rgba(250, 204, 21, 0.35);
+      transform: translateY(-1px);
+      color: var(--gold);
+    }
+
+    .nav-item.active {
+      border-color: var(--gold-border);
+      background:
+        linear-gradient(to right, rgba(250, 204, 21, 0.18), rgba(0, 0, 0, 0.9));
+      box-shadow:
+        0 0 0 1px rgba(250, 204, 21, 0.6),
+        0 20px 60px rgba(250, 204, 21, 0.55);
+    }
+
+    .sidebar-footer-note {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* MAIN CONTENT */
+    .content {
+      position: relative;
+      z-index: 1;
+      background: radial-gradient(circle at 0 0, rgba(250, 204, 21, 0.08), transparent 65%),
+                  radial-gradient(circle at 100% 0, rgba(15, 23, 42, 0.9), transparent 65%),
+                  rgba(5, 7, 18, 0.98);
+      border-radius: 24px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      padding: 18px 18px 20px;
+      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.9);
+      overflow: hidden;
+    }
+
+    .content-inner {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    .content-header {
+      margin-bottom: 18px;
+      border-bottom: 1px solid rgba(55, 65, 81, 0.9);
+      padding-bottom: 14px;
+    }
+
+    .content-kicker {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted-dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .content-kicker-line {
+      width: 46px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold));
+    }
+
+    h1 {
+      font-family: "Merriweather", serif;
+      font-size: 26px;
+      line-height: 1.3;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .subtitle {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--text-soft);
+      max-width: 820px;
+    }
+
+    .tag-row {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: rgba(15, 23, 42, 0.96);
+      color: var(--text-soft);
+    }
+
+    .tag.gold {
+      border-color: var(--gold-border);
+      background: rgba(250, 204, 21, 0.14);
+      color: var(--gold-strong);
+    }
+
+    /* SECTIONS / CARDS */
+    section.topic {
+      margin-bottom: 22px;
+      padding: 18px 18px 16px;
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle at 0 0, rgba(250, 204, 21, 0.08), transparent 60%),
+                  rgba(5, 7, 18, 0.98);
+      border: 1px solid var(--card-border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    section.topic::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 12px;
+      bottom: 12px;
+      width: 3px;
+      border-radius: 999px;
+      background: linear-gradient(to bottom, var(--gold-strong), var(--gold));
+    }
+
+    section.topic h2 {
+      font-family: "Merriweather", serif;
+      font-size: 22px;
+      margin-bottom: 6px;
+      padding-left: 8px;
+    }
+
+    .topic-tagline {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      padding-left: 8px;
+    }
+
+    section.topic p {
+      font-size: 15px;
+      line-height: 1.9;
+      color: var(--text-soft);
+      margin-bottom: 8px;
+      padding-left: 8px;
+    }
+
+    section.topic strong {
+      color: var(--text-main);
+    }
+
+    section.topic ul,
+    section.topic ol {
+      font-size: 15px;
+      line-height: 1.9;
+      color: var(--text-soft);
+      padding-left: 30px;
+      margin-bottom: 6px;
+    }
+
+    section.topic li {
+      margin-bottom: 4px;
+    }
+
+    section.topic h3 {
+      font-family: "Merriweather", serif;
+      font-size: 18px;
+      margin: 10px 0 6px;
+      padding-left: 8px;
+      color: var(--gold);
+    }
+
+    .example-box {
+      margin-top: 6px;
+      margin-left: 8px;
+      padding: 10px 11px;
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--gold-border);
+      background: rgba(15, 23, 42, 0.96);
+      font-size: 14px;
+      color: var(--text-soft);
+    }
+
+    /* TABLE */
+    .table-shell {
+      margin: 10px 0 6px 8px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid rgba(55, 65, 81, 0.95);
+      background: rgba(6, 8, 20, 0.98);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    thead {
+      background: linear-gradient(90deg, rgba(246,196,83,0.55), rgba(246,196,83,0.18));
+    }
+
+    th, td {
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(31,41,55,0.96);
+      text-align: left;
+    }
+
+    th {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #1f2937;
+      font-weight: 600;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:nth-child(odd) {
+      background: rgba(10,12,25,0.98);
+    }
+
+    tbody tr:nth-child(even) {
+      background: rgba(15,23,42,0.96);
+    }
+
+    /* FADE ANIMATION */
+    .fade-section {
+      opacity: 0;
+      transform: translateY(16px);
+      transition:
+        opacity 0.6s ease-out,
+        transform 0.6s ease-out,
+        box-shadow 0.4s ease-out;
+    }
+
+    .fade-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+      box-shadow: 0 20px 55px rgba(0, 0, 0, 0.6);
+    }
+
+    footer {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    @media (max-width: 960px) {
+      .app-shell {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 16px 12px 20px;
+      }
+
+      .sidebar-glass {
+        position: static;
+        max-height: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .content {
+        padding: 14px 10px 16px;
+      }
+
+      section.topic {
+        padding: 14px 12px 12px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      section.topic h2 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="app-inner">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="sidebar-glass">
+          <div class="sidebar-header">
+            <div class="logo-wrap">
+              <div class="logo-inner">V</div>
+            </div>
+            <div class="sidebar-title-block">
+              <div class="sidebar-title">SPC-3 Variation</div>
+              <div class="sidebar-sub">Common &amp; Special Causes • Full Notes</div>
+            </div>
+          </div>
+
+          <div class="sidebar-chip">
+            <span class="sidebar-chip-dot"></span>
+            GOLD GLASS • STUDY MODE
+          </div>
+
+          <div class="sidebar-label">Main Sections</div>
+          <div class="sidebar-nav">
+            <button class="nav-item active" data-target="sec1">
+              <div class="nav-item-main">
+                <div class="nav-item-title">1. What is Variation?</div>
+                <div class="nav-item-sub">Basic definition</div>
+              </div>
+              <span class="nav-item-pill">Intro</span>
+            </button>
+            <button class="nav-item" data-target="sec2">
+              <div class="nav-item-main">
+                <div class="nav-item-title">2. Variability</div>
+                <div class="nav-item-sub">Meaning &amp; nature</div>
+              </div>
+              <span class="nav-item-pill">Basics</span>
+            </button>
+            <button class="nav-item" data-target="sec3">
+              <div class="nav-item-main">
+                <div class="nav-item-title">3. Why Variation Occurs</div>
+                <div class="nav-item-sub">5M + E</div>
+              </div>
+              <span class="nav-item-pill">Causes</span>
+            </button>
+            <button class="nav-item" data-target="sec4">
+              <div class="nav-item-main">
+                <div class="nav-item-title">4. Product Level Types</div>
+                <div class="nav-item-sub">Overview</div>
+              </div>
+              <span class="nav-item-pill">Product</span>
+            </button>
+            <button class="nav-item" data-target="sec5">
+              <div class="nav-item-main">
+                <div class="nav-item-title">5. Common Cause (Product)</div>
+                <div class="nav-item-sub">Inherent / natural</div>
+              </div>
+              <span class="nav-item-pill">Common</span>
+            </button>
+            <button class="nav-item" data-target="sec6">
+              <div class="nav-item-main">
+                <div class="nav-item-title">6. Special Cause (Product)</div>
+                <div class="nav-item-sub">Assignable</div>
+              </div>
+              <span class="nav-item-pill">Special</span>
+            </button>
+            <button class="nav-item" data-target="sec7">
+              <div class="nav-item-main">
+                <div class="nav-item-title">7. Within-piece</div>
+                <div class="nav-item-sub">Inside same product</div>
+              </div>
+              <span class="nav-item-pill">Type 3</span>
+            </button>
+            <button class="nav-item" data-target="sec8">
+              <div class="nav-item-main">
+                <div class="nav-item-title">8. Piece-to-piece</div>
+                <div class="nav-item-sub">Between products</div>
+              </div>
+              <span class="nav-item-pill">Type 4</span>
+            </button>
+            <button class="nav-item" data-target="sec9">
+              <div class="nav-item-main">
+                <div class="nav-item-title">9. Time-to-time</div>
+                <div class="nav-item-sub">Over time / shifts</div>
+              </div>
+              <span class="nav-item-pill">Type 5</span>
+            </button>
+            <button class="nav-item" data-target="sec10">
+              <div class="nav-item-main">
+                <div class="nav-item-title">10. Practical Example</div>
+                <div class="nav-item-sub">Shaft diameters</div>
+              </div>
+              <span class="nav-item-pill">Example</span>
+            </button>
+            <button class="nav-item" data-target="sec11">
+              <div class="nav-item-main">
+                <div class="nav-item-title">11. Summary Table</div>
+                <div class="nav-item-sub">Types vs causes</div>
+              </div>
+              <span class="nav-item-pill">Table</span>
+            </button>
+            <button class="nav-item" data-target="sec12">
+              <div class="nav-item-main">
+                <div class="nav-item-title">12. Process Level Types</div>
+                <div class="nav-item-sub">Inherent / Assignable / Total</div>
+              </div>
+              <span class="nav-item-pill">Process</span>
+            </button>
+            <button class="nav-item" data-target="sec13">
+              <div class="nav-item-main">
+                <div class="nav-item-title">13. Inherent Process Variation</div>
+                <div class="nav-item-sub">Common cause (process)</div>
+              </div>
+              <span class="nav-item-pill">Inherent</span>
+            </button>
+            <button class="nav-item" data-target="sec14">
+              <div class="nav-item-main">
+                <div class="nav-item-title">14. Assignable Process Variation</div>
+                <div class="nav-item-sub">Special cause (process)</div>
+              </div>
+              <span class="nav-item-pill">Assignable</span>
+            </button>
+            <button class="nav-item" data-target="sec15">
+              <div class="nav-item-main">
+                <div class="nav-item-title">15. Special Cause Patterns</div>
+                <div class="nav-item-sub">Shift / Trend / Erratic / Cyclic</div>
+              </div>
+              <span class="nav-item-pill">Patterns</span>
+            </button>
+            <button class="nav-item" data-target="sec16">
+              <div class="nav-item-main">
+                <div class="nav-item-title">16. Extreme Variations</div>
+                <div class="nav-item-sub">Large abnormal changes</div>
+              </div>
+              <span class="nav-item-pill">Extreme</span>
+            </button>
+            <button class="nav-item" data-target="sec17">
+              <div class="nav-item-main">
+                <div class="nav-item-title">17. Erratic Fluctuations</div>
+                <div class="nav-item-sub">Unstable jumping data</div>
+              </div>
+              <span class="nav-item-pill">Erratic</span>
+            </button>
+            <button class="nav-item" data-target="sec18">
+              <div class="nav-item-main">
+                <div class="nav-item-title">18. Shifts</div>
+                <div class="nav-item-sub">Process jumps to new level</div>
+              </div>
+              <span class="nav-item-pill">Shift</span>
+            </button>
+            <button class="nav-item" data-target="sec19">
+              <div class="nav-item-main">
+                <div class="nav-item-title">19. Trends</div>
+                <div class="nav-item-sub">Gradual drift</div>
+              </div>
+              <span class="nav-item-pill">Trend</span>
+            </button>
+          </div>
+
+          <div class="sidebar-footer-note">
+            Use the sidebar to jump to any part of your notes. Perfect for revision and training.
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main class="content">
+        <div class="content-inner">
+          <header class="content-header">
+            <div class="content-kicker">
+              <div class="content-kicker-line"></div>
+              SPC-3 • VARIATION – FULL NOTES
+            </div>
+            <h1>What is Variation?</h1>
+            <p class="subtitle">
+              Variation and variability in quality control – including common &amp; special causes, product level and process level variation, with examples and detailed explanations.
+            </p>
+            <div class="tag-row">
+              <span class="tag gold">Variation</span>
+              <span class="tag gold">Common Cause</span>
+              <span class="tag gold">Special Cause</span>
+              <span class="tag">Product Level</span>
+              <span class="tag">Process Level</span>
+              <span class="tag">Control Chart Patterns</span>
+            </div>
+          </header>
+
+          <!-- 1 -->
+          <section id="sec1" class="topic fade-section">
+            <h2>1. What is Variation?</h2>
+            <div class="topic-tagline">Definition in simple words.</div>
+            <p>What is Variation?</p>
+            <p>Variation means the difference or deviation in a process, product, or service output from its expected or target value.</p>
+            <p>In simple words, no two products are exactly alike even if made under the same conditions.</p>
+          </section>
+
+          <!-- 2 -->
+          <section id="sec2" class="topic fade-section">
+            <h2>2. Variability</h2>
+            <div class="topic-tagline">Basic understanding of variability.</div>
+            <p>Variability</p>
+            <ul>
+              <li>Meaning: No two things are exactly the same.</li>
+              <li>Nature itself shows variability → size, colour, weight, shape, performance, etc.</li>
+              <li>In manufacturing: Every product made will have small differences, even under the same conditions.</li>
+              <li>Example: If we make 100 bolts of 10 mm, not all will be exactly 10.000 mm. Some may be 9.98, some 10.02 mm.</li>
+            </ul>
+          </section>
+
+          <!-- 3 -->
+          <section id="sec3" class="topic fade-section">
+            <h2>3. 🏭 Why Variation Occurs?</h2>
+            <div class="topic-tagline">Main sources (5M + E).</div>
+            <p>🏭 Why Variation Occurs? </p>
+            <p>Because every process is affected by several factors such as:</p>
+            <ul>
+              <li>Material properties</li>
+              <li>Machine condition</li>
+              <li>Man </li>
+              <li>Method </li>
+              <li>Environment </li>
+            </ul>
+          </section>
+
+          <!-- 4 -->
+          <section id="sec4" class="topic fade-section">
+            <h2>4. 🌳 Types of Variation ( Product Lavel ) – Overview</h2>
+            <div class="topic-tagline">Product level variation – detailed in next sections.</div>
+            <p>🌳 Types of Variation ( Product Lavel)</p>
+            <p>Below are the main types of variation at product level. Each type is explained in separate sections.</p>
+          </section>
+
+          <!-- 5 -->
+          <section id="sec5" class="topic fade-section">
+            <h2>5. Common Cause Variation (Product Level)</h2>
+            <div class="topic-tagline">Inherent / natural variation.</div>
+            <p>1. Common Cause Variation </p>
+            <p>Also called: Inherent / Natural Variation</p>
+            <p>These are natural variations that are always present in the process.</p>
+            <p>They come from normal and routine causes.</p>
+            <p>The process is stable but not perfect.</p>
+            <p>Examples:</p>
+            <ul>
+              <li>Small temperature fluctuation in the workshop</li>
+              <li>Slight difference in raw material hardness</li>
+              <li>Minor difference in measurement by same operator</li>
+            </ul>
+          </section>
+
+          <!-- 6 -->
+          <section id="sec6" class="topic fade-section">
+            <h2>6. Special Cause Variation (Product Level)</h2>
+            <div class="topic-tagline">Assignable cause variation.</div>
+            <p>2 Special Cause Variation </p>
+            <p>Also called: Assignable Cause Variation</p>
+            <p>These variations occur due to specific or identifiable reasons.</p>
+            <p>They are not part of the normal process and must be found and eliminated.</p>
+            <p>Examples:</p>
+            <ul>
+              <li>Wrong machine setting</li>
+              <li>Tool wear or breakage</li>
+              <li>Power failure</li>
+              <li>Wrong raw material batch</li>
+            </ul>
+          </section>
+
+          <!-- 7 -->
+          <section id="sec7" class="topic fade-section">
+            <h2>7. Within-piece Variation</h2>
+            <div class="topic-tagline">Differences inside a single product.</div>
+            <p>3. Within-piece Variation </p>
+            <p>Differences found within a single product.</p>
+            <div class="example-box">
+              Example:<br>
+              The thickness of a metal plate is 5 mm at one end and 5.2 mm at the other end.
+            </div>
+          </section>
+
+          <!-- 8 -->
+          <section id="sec8" class="topic fade-section">
+            <h2>8. Piece-to-piece Variation</h2>
+            <div class="topic-tagline">Differences between products.</div>
+            <p>4 Piece-to-piece Variation </p>
+            <p>Differences between different products made one after another under the same conditions.</p>
+            <div class="example-box">
+              Example:<br>
+              First shaft diameter = 20.00 mm, next = 20.05 mm.
+            </div>
+          </section>
+
+          <!-- 9 -->
+          <section id="sec9" class="topic fade-section">
+            <h2>9. Time-to-time Variation</h2>
+            <div class="topic-tagline">Shift-wise / time-wise differences.</div>
+            <p>5.Time-to-time Variation </p>
+            <p>Differences observed at different times (e.g., shift to shift, morning vs evening).</p>
+            <div class="example-box">
+              Example:<br>
+              Morning shift produces smooth surface, night shift rough surface.
+            </div>
+          </section>
+
+          <!-- 10 -->
+          <section id="sec10" class="topic fade-section">
+            <h2>10. ⚙️ Practical Example</h2>
+            <div class="topic-tagline">Shaft diameter inspection data.</div>
+            <p>⚙️ Practical Example</p>
+            <p>Let’s take an example of shaft diameter inspection:</p>
+            <div class="table-shell">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Shaft No.</th>
+                    <th>Diameter (mm)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>20.00</td></tr>
+                  <tr><td>2</td><td>20.02</td></tr>
+                  <tr><td>3</td><td>20.05</td></tr>
+                  <tr><td>4</td><td>20.00</td></tr>
+                  <tr><td>5</td><td>20.04</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>➡ The small differences (0.00 to 0.05) are Common Cause Variation.</p>
+            <p>But if one shaft shows 19.50 mm, that is Special Cause Variation — maybe due to tool wear or operator error.</p>
+          </section>
+
+          <!-- 11 -->
+          <section id="sec11" class="topic fade-section">
+            <h2>11. 📊 Summary Table</h2>
+            <div class="topic-tagline">Comparison of different types of variation.</div>
+            <p>📊 Summary Table</p>
+            <div class="table-shell">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Type of Variation</th>
+                    <th>Cause</th>
+                    <th>Process Stability</th>
+                    <th>Example</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Common Cause</td>
+                    <td>Normal process factors</td>
+                    <td>Stable</td>
+                    <td>Temperature change, minor material difference</td>
+                  </tr>
+                  <tr>
+                    <td>Special Cause</td>
+                    <td>Specific reason</td>
+                    <td>Unstable</td>
+                    <td>Tool wear, operator mistake</td>
+                  </tr>
+                  <tr>
+                    <td>Within-piece</td>
+                    <td>Inside same product</td>
+                    <td>-</td>
+                    <td>Thickness difference in one sheet</td>
+                  </tr>
+                  <tr>
+                    <td>Piece-to-piece</td>
+                    <td>Between products</td>
+                    <td>-</td>
+                    <td>Diameter difference between two parts</td>
+                  </tr>
+                  <tr>
+                    <td>Time-to-time</td>
+                    <td>Over time</td>
+                    <td>-</td>
+                    <td>Shift-wise difference</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- 12 -->
+          <section id="sec12" class="topic fade-section">
+            <h2>12. 🌳 Types of Variation ( Process Lavel )</h2>
+            <div class="topic-tagline">Process level variation – three main types.</div>
+            <p>🌳 Types of Variation ( Process Lavel)</p>
+            <p>There are three types of process variation present in the manufacturing process:</p>
+            <ul>
+              <li>1. Inherent (Common Cause) Process Variation<br>→ Normal, unavoidable fluctuation in the process.</li>
+              <li>2. Assignable (Special Cause) Process Variation<br>→ Specific, identifiable abnormal reason causing instability.</li>
+              <li>3. Total Process Variation<br>→ Combined effect of inherent + assignable variations.</li>
+            </ul>
+          </section>
+
+          <!-- 13 -->
+          <section id="sec13" class="topic fade-section">
+            <h2>13. Inherent (Common Cause) Process Variation</h2>
+            <div class="topic-tagline">Also called common cause variation.</div>
+            <p>1. Inherent (Common Cause) Process Variation</p>
+            <p>• Definition:  it is also called Common Cause Variation. This is the natural or unavoidable variability that exists in any manufacturing or service process — even when the process is operating correctly and consistently.</p>
+            <p>🔹 Types of Variation:</p>
+            <p>1. Common Cause Variation </p>
+            <p>o These are the natural fluctuations that are always present in a stable process.</p>
+            <p>o Example: Minor temperature changes, machine vibration, slight differences in raw material properties.</p>
+            <p>Common cause (Chance causes) :</p>
+            <ul>
+              <li>• Common causes are always present on the process.</li>
+              <li>• Sources of variations present in process is stable over the time.</li>
+              <li>• Process is said to be under statistical control.</li>
+              <li>• Voice of process is predictable.</li>
+              <li>• Output of process is predictable.</li>
+              <li>• Local action required to control process variation.</li>
+            </ul>
+            <p>A control chart having a Common cause will have the following characteristics:</p>
+            <ul>
+              <li>• Very few points will be near to the control limits.</li>
+              <li>• Most of the points will lie near to the central line.</li>
+            </ul>
+          </section>
+
+          <!-- 14 -->
+          <section id="sec14" class="topic fade-section">
+            <h2>14. Assignable (Special Cause) Process Variation</h2>
+            <div class="topic-tagline">Specific identifiable abnormal reasons.</div>
+            <p>2. Assignable (Special Cause) Process Variation Definition: </p>
+            <p>Unexpected changes in a process that happen because of unusual or outside factors, which are not normally part of the process. These occur due to specific identifiable reasons, not normally part of the process.</p>
+            <p>• Example: Tool breakage, operator error, incorrect material batch.</p>
+            <p>👉 Example: Machine breakdown, wrong material used, or operator mistake.</p>
+            <ul>
+              <li>• Special causes do not always happen in the process.</li>
+              <li>• When they occur, the process is not under statistical control.</li>
+              <li>• the process output becomes unpredictable.</li>
+              <li>• the process is not stable over time.</li>
+              <li>•   Sudden big changes (erratic fluctuations or shifts) can be seen in the process.</li>
+              <li>•   Management action is required to find and remove the cause.</li>
+            </ul>
+          </section>
+
+          <!-- 15 -->
+          <section id="sec15" class="topic fade-section">
+            <h2>15. Types of Special Causes (Control Chart Patterns)</h2>
+            <div class="topic-tagline">Shift, trend, erratic, cyclic patterns.</div>
+            <p>Types of Special Causes</p>
+            <ul>
+              <li>1. Shift<br>
+              o When several consecutive points on a control chart move above or below the central line, indicating a sudden change in the process.<br>
+              o Cause: Machine setting change, raw material change, environment change.</li>
+              <li>2. Trend (Indication of Trend)<br>
+              o When points gradually increase or decrease over time, showing a slow shift in the process.<br>
+              o Cause: Tool wear, gradual temperature change, operator habit.</li>
+              <li>3. Erratic Fluctuations <br>
+              o Random, unpredictable spikes or drops in process output.<br>
+              o Cause: Power failure, material defect, human error, machine malfunction.</li>
+              <li>4. Cyclic Patterns (Extreme Variations)<br>
+              o Repeating patterns at regular intervals in the process output.<br>
+              o Cause: Seasonal changes, machine vibration, batch process timing.</li>
+            </ul>
+            <p>.</p>
+            <p>Type of Special Causes of Variation</p>
+            <ul>
+              <li>1. Extreme Variations</li>
+              <li>2. Erratic Fluctuations</li>
+              <li>3. Shifts</li>
+              <li>4. Indication of Trend</li>
+            </ul>
+          </section>
+
+          <!-- 16 -->
+          <section id="sec16" class="topic fade-section">
+            <h2>16. Extreme Variations</h2>
+            <div class="topic-tagline">Large, abnormal changes beyond normal range.</div>
+            <p>Extreme Variations:  </p>
+            <p>Extreme variations are large, abnormal changes or deviations in a process or measurement that go far beyond the normal or expected range.</p>
+            <p>Explanation:</p>
+            <p>In a controlled process, variation should remain within upper and lower control limits. When data points go outside these limits or show very high peaks and low dips, it indicates extreme variation — usually caused by serious process issues or external factors.</p>
+            <p>Example:</p>
+            <p>If the normal diameter of a shaft is 10.00 ± 0.05 mm, and suddenly readings like 9.70 mm or 10.30 mm appear, these are extreme variations.</p>
+            <p>Possible Causes:</p>
+            <ul>
+              <li>1. Tool breakage or wear</li>
+              <li>2. Machine malfunction</li>
+              <li>3. Wrong raw material or setup</li>
+              <li>4. Operator mistake</li>
+              <li>5. Environmental change (temperature, pressure, humidity, etc.)</li>
+            </ul>
+            <p>Effects:</p>
+            <ul>
+              <li>• Product goes out of specification</li>
+              <li>• Increased rejection and rework</li>
+              <li>• Process instability</li>
+              <li>• Quality control failure</li>
+            </ul>
+            <p>Solutions:</p>
+            <ul>
+              <li>• Immediately stop the process and investigate the root cause</li>
+              <li>• Check machine and tool condition</li>
+              <li>• Verify raw material and setup parameters</li>
+              <li>• Implement corrective and preventive actions (CAPA)</li>
+            </ul>
+          </section>
+
+          <!-- 17 -->
+          <section id="sec17" class="topic fade-section">
+            <h2>17. Erratic Fluctuations</h2>
+            <div class="topic-tagline">Irregular, unpredictable changes.</div>
+            <p>Erratic Fluctuations </p>
+            <p>🔹 Meaning (अर्थ):</p>
+            <p>Erratic fluctuations refer to irregular, unpredictable, and inconsistent changes in a process, measurement, or data pattern.</p>
+            <p>🔹 In Quality Control :</p>
+            <p>In SPC (Statistical Process Control), erratic fluctuations indicate that the process is not stable and may be affected by special causes (like machine malfunction, wrong material, operator error, etc.).</p>
+            <p>🔹 Example :</p>
+            <p>Suppose during inspection, the diameter readings of a shaft are:</p>
+            <p>10.00, 10.02, 10.05, 9.85, 10.20, 9.90</p>
+            <p>→ These values show erratic fluctuations because the data jumps up and down irregularly.</p>
+            <p>🔹 Causes:</p>
+            <ul>
+              <li>1. Machine vibration or instability</li>
+              <li>2. Operator inconsistency</li>
+              <li>3. Raw material variation</li>
+              <li>4. Temperature or environmental change</li>
+              <li>5. Improper tool or fixture condition</li>
+            </ul>
+            <p>🔹 Effect:</p>
+            <ul>
+              <li>• Poor product quality</li>
+              <li>• Process out of control</li>
+              <li>• High rejection or rework rate</li>
+            </ul>
+          </section>
+
+          <!-- 18 -->
+          <section id="sec18" class="topic fade-section">
+            <h2>18. Shifts</h2>
+            <div class="topic-tagline">Sudden movement of process mean to new level.</div>
+            <p>Shifts</p>
+            <p>Definition:</p>
+            <p>A shift occurs when the entire process output suddenly moves from one average level to another, while still remaining stable around the new level. It indicates a sudden and permanent change in the process mean (average).</p>
+            <p>Explanation:</p>
+            <p>In a control chart, a shift appears as a group of consecutive points all above or below the central line (mean). This means something in the process has changed — such as a machine setting, material batch, or measurement system.</p>
+            <p>Example:</p>
+            <p>If the average diameter of a part was consistently around 10.00 mm, and then suddenly all values start to center around 10.10 mm, this is a shift in the process.</p>
+            <p>Possible Causes:</p>
+            <ul>
+              <li>1. Change in machine setting or calibration</li>
+              <li>2. New operator or method introduced</li>
+              <li>3. Change in raw material batch or supplier</li>
+              <li>4. Environmental change (temperature, humidity, etc.)</li>
+              <li>5. Tool replacement or wear adjustment</li>
+            </ul>
+            <p>Effects:</p>
+            <ul>
+              <li>• Process mean moves away from target</li>
+              <li>• Possible product nonconformance</li>
+              <li>• Reduced process capability</li>
+              <li>• Incorrect conclusions if shift is unnoticed</li>
+            </ul>
+            <p>Solutions:</p>
+            <ul>
+              <li>• Identify and correct the reason for the shift</li>
+              <li>• Review calibration and setup parameters</li>
+              <li>• Ensure process standardization</li>
+              <li>• Monitor the control chart regularly</li>
+            </ul>
+          </section>
+
+          <!-- 19 -->
+          <section id="sec19" class="topic fade-section">
+            <h2>19. Trends</h2>
+            <div class="topic-tagline">Gradual continuous movement in one direction.</div>
+            <p>Trends</p>
+            <p>Definition:</p>
+            <p>A trend is a gradual, continuous movement of process data in one direction — either upward or downward — over time. It shows that the process is slowly changing rather than remaining stable.</p>
+            <p>Explanation:</p>
+            <p>In a control chart, a trend appears as a series of consecutive points that consistently increase or decrease. This indicates a progressive drift in the process, often due to wear, fatigue, or environmental influence.</p>
+            <p>Example:</p>
+            <p>If the measured diameter of a part slowly increases from 10.00 → 10.02 → 10.04 → 10.06 → 10.08 mm, it shows an upward trend — possibly due to tool wear or thermal expansion.</p>
+            <p>Possible Causes:</p>
+            <ul>
+              <li>1. Tool wear or machine aging</li>
+              <li>2. Gradual change in temperature or pressure</li>
+              <li>3. Material property changes over time</li>
+              <li>4. Progressive operator fatigue</li>
+              <li>5. Improper maintenance or lubrication schedule</li>
+            </ul>
+            <p>Effects:</p>
+            <ul>
+              <li>• Process drifts out of control limits</li>
+              <li>• Product dimensions gradually move out of tolerance</li>
+              <li>• Increased scrap or rework over time</li>
+              <li>• Reduced process reliability</li>
+            </ul>
+            <p>Solutions:</p>
+            <ul>
+              <li>• Regular tool and machine maintenance</li>
+              <li>• Continuous monitoring using control charts</li>
+              <li>• Periodic recalibration of instruments</li>
+              <li>• Implement preventive measures to stop drift early</li>
+            </ul>
+          </section>
+
+          <footer>
+            SPC-3 • Variation – Common &amp; Special Causes • Gold Glass Study UI
+          </footer>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // Sidebar nav click -> smooth scroll
+    const navItems = document.querySelectorAll(".nav-item");
+    const sections = Array.from(document.querySelectorAll("section.topic"));
+
+    navItems.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const targetId = btn.getAttribute("data-target");
+        const section = document.getElementById(targetId);
+        if (section) {
+          section.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+    });
+
+    // IntersectionObserver for fade + active nav
+    const observer = new IntersectionObserver(
+      (entries) => {
+        let bestEntry = null;
+
+        entries.forEach((entry) => {
+          const section = entry.target;
+          if (entry.isIntersecting) {
+            section.classList.add("visible");
+          }
+          if (!bestEntry || entry.intersectionRatio > bestEntry.intersectionRatio) {
+            bestEntry = entry;
+          }
+        });
+
+        if (bestEntry) {
+          const id = bestEntry.target.id;
+          navItems.forEach((btn) => {
+            btn.classList.toggle("active", btn.getAttribute("data-target") === id);
+          });
+        }
+      },
+      {
+        root: null,
+        threshold: 0.35,
+      }
+    );
+
+    sections.forEach((sec) => {
+      observer.observe(sec);
+    });
+  </script>
+</body>
+</html>

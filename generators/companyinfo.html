@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>COMPANY INFORMATION</title>
+<style>
+  body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#e9f1f4;
+  }
+  .layout{
+    display:flex;
+    min-height:100vh;
+  }
+  .sidebar{
+    width:240px;
+    background:#0e4e7c;
+    color:white;
+    padding:20px 0;
+  }
+  .sidebar h2{
+    text-align:center;
+    font-size:18px;
+    margin-bottom:20px;
+  }
+  .nav a{
+    display:block;
+    padding:12px 20px;
+    color:white;
+    text-decoration:none;
+    font-size:14px;
+  }
+  .nav a:hover{
+    background:#0c3f65;
+  }
+  .content{
+    flex:1;
+    padding:20px;
+  }
+  .logo{
+    display:flex;
+    align-items:center;
+    margin-bottom:10px;
+    font-size:22px;
+    font-weight:bold;
+    color:#0e4e7c;
+  }
+  .subtitle{
+    font-size:12px;
+    color:#555;
+    margin-bottom:15px;
+  }
+  table{
+    width:50%;
+    border-collapse:collapse;
+    font-size:12px;
+    background:white;
+    box-shadow:0 0 8px rgba(0,0,0,0.1);
+  }
+  td{
+    border:1px solid #9bb7c5;
+    padding:6px 8px;
+    background:#f2fbff;
+  }
+  td label{
+    font-weight:bold;
+  }
+  td input{
+    width:100%;
+    padding:4px;
+    border:1px solid #aac6d6;
+    font-size:12px;
+    background:#fff;
+  }
+  .btn-box{
+    margin-top:15px;
+  }
+  button{
+    background:#0e4e7c;
+    color:white;
+    padding:10px 18px;
+    border:none;
+    border-radius:4px;
+    font-size:14px;
+    cursor:pointer;
+  }
+  button:hover{
+    background:#0c3f65;
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <div class="sidebar">
+    <h2>Navigation</h2>
+    <div class="nav">
+      <a href="#basic">Basic Details</a>
+      <a href="#supplier">Supplier Details</a>
+      <a href="#location">Location</a>
+      <a href="#codes">Codes</a>
+      <a href="#abccompany">ABC COMPANY Details</a>
+    </div>
+  </div>
+
+  <div class="content">
+    <h1 style="font-size:20px; color:#0e4e7c; margin-bottom:10px;">COMPANY INFORMATION</h1>
+    <div class="subtitle">For Ease of Use with the forms, enter all relevant information here and then avoid having to retype it.</div>
+
+    <table id="basic">
+      <tr><td><label>Supplier Part No</label></td><td><input type="text"></td></tr>
+      <tr><td><label>Cust Part No</label></td><td><input type="text"></td></tr>
+      <tr><td><label>Part Name</label></td><td><input type="text"></td></tr>
+      <tr><td><label>Drawing Number</label></td><td><input type="text"></td></tr>
+      <tr><td><label>Rev Level</label></td><td><input type="text"></td></tr>
+      <tr><td><label>Rev Date</label></td><td><input type="date"></td></tr>
+      <tr><td><label>Part Weight (kg)</label></td><td><input type="text"></td></tr>
+      <tr><td><label>Application</label></td><td><input type="text"></td></tr>
+    </table>
+
+    <br id="supplier"><br>
+    <table>
+      <tr><td><label>Supplier Name</label></td><td><input type="text"></td></tr>
+      <tr><td><label>Supplier Address</label></td><td><input type="text"></td></tr>
+    </table>
+
+    <br id="location"><br>
+    <table>
+      <tr><td><label>City</label></td><td><input type="text"></td></tr>
+      <tr><td><label>Region</label></td><td><input type="text"></td></tr>
+      <tr><td><label>Country</label></td><td><input type="text"></td></tr>
+      <tr><td><label>Zip</label></td><td><input type="text"></td></tr>
+    </table>
+
+    <br id="codes"><br>
+    <table>
+      <tr><td><label>Supplier Code</label></td><td><input type="text"></td></tr>
+      <tr><td><label>Auth. Rep</label></td><td><input type="text"></td></tr>
+      <tr><td><label>Ph Number</label></td><td><input type="text"></td></tr>
+      <tr><td><label>Fax Number</label></td><td><input type="text"></td></tr>
+    </table>
+
+    <br id="abccompany"><br>
+    <table>
+      <tr><td><label>Company Name</label></td><td><input type="text" value=""></td></tr>
+      <tr><td><label>Buyer</label></td><td><input type="text"></td></tr>
+      <tr><td><label>Buyer Code</label></td><td><input type="text"></td></tr>
+      <tr><td><label>Lab/Insp Facility</label></td><td><input type="text"></td></tr>
+    </table>
+
+    <div class="btn-box">
+      <button id="downloadPDF" onclick="window.print()">Download PDF</button>
+    </div>
+    <div style="margin-top: 20px; text-align: center;">
+      <a href="../../../../Documents/лендинг_Ирина_Буцкая.html" style="color: #0e4e7c; font-size: 0.85rem;">← Назад к Ирине Буцкой</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

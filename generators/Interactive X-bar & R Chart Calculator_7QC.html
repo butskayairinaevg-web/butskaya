@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive X-bar & R Chart Calculator</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1400px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #2c3e50; }
+        h2 { color: #34495e; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .input-section { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        input, select { padding: 8px; margin: 3px; border: 1px solid #ddd; border-radius: 4px; width: 80px; }
+        button { background: #3498db; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #2980b9; }
+        .results { background: #d4edda; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #bdc3c7; padding: 8px; text-align: center; font-size: 0.9em; }
+        th { background: #3498db; color: white; }
+        .formula { font-family: monospace; background: #ebf3fd; padding: 15px; border-left: 5px solid #3498db; margin: 10px 0; }
+        .charts-row { display: flex; gap: 20px; flex-wrap: wrap; }
+        .chart-container { flex: 1; min-width: 400px; }
+        #chartCanvas, #rChartCanvas { border: 1px solid #ddd; margin: 20px 0; background: white; }
+        .constants-table { background: #fff3cd; }
+        .out-of-control { background: #ffebee !important; color: #c62828; }
+        
+        /* Simple Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Interactive X-bar & R Chart Calculator</h1>
+        <p>Enter measurement data for repair times, dimensions, or weights. Auto-calculates limits using AIAG constants. [web:1][web:2]</p>
+
+        <div class="input-section">
+            <h2>X-bar & R Chart Calculator</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; margin-bottom: 20px;">
+                <div>
+                    <label>Subgroups (k):</label><br>
+                    <input type="number" id="numSubgroups" value="20" min="5" max="50" onchange="resetData()">
+                </div>
+                <div>
+                    <label>Sample Size (n):</label><br>
+                    <input type="number" id="sampleSize" value="5" min="2" max="10" onchange="resetData()">
+                </div>
+                <button onclick="calculateXbarR()">🔄 Calculate Limits</button>
+                <button onclick="addRandomData()">🎲 Add Sample Data</button>
+                <button onclick="clearData()">🗑️ Clear All</button>
+            </div>
+            
+            <div id="dataTableContainer">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>Subgroup</th>
+                            <th id="measHeader">Meas 1</th>
+                            <th id="measHeader2">Meas 2</th>
+                            <th id="measHeader3">-</th>
+                            <th id="measHeader4">-</th>
+                            <th id="measHeader5">-</th>
+                            <th>X-bar</th>
+                            <th>R</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataBody">
+                        <tr id="row1">
+                            <td>1</td>
+                            <td><input type="number" step="0.01" value="10.2"></td>
+                            <td><input type="number" step="0.01" value="10.1"></td>
+                            <td><input type="number" step="0.01" value="10.3"></td>
+                            <td><input type="number" step="0.01" value="10.0"></td>
+                            <td><input type="number" step="0.01" value="10.4"></td>
+                            <td id="xbar1">-</td>
+                            <td id="r1">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="resultsSection" style="display: none;">
+            <div class="charts-row">
+                <div class="chart-container">
+                    <h3>X-bar Chart</h3>
+                    <canvas id="chartCanvas" width="600" height="400"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>R Chart</h3>
+                    <canvas id="rChartCanvas" width="600" height="400"></canvas>
+                </div>
+            </div>
+
+            <div class="results">
+                <h3>Control Limits</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                    <div class="formula">
+                        <strong>X-bar Chart:</strong><br>
+                        CL: <span id="xbarCL">-</span><br>
+                        UCL: <span id="xbarUCL">-</span><br>
+                        LCL: <span id="xbarLCL">-</span>
+                    </div>
+                    <div class="formula">
+                        <strong>R Chart:</strong><br>
+                        CL: <span id="rCL">-</span><br>
+                        UCL: <span id="rUCL">-</span><br>
+                        LCL: <span id="rLCL">-</span>
+                    </div>
+                </div>
+                <div class="formula">
+                    Constants Used: A₂=<span id="A2">-</span>, D₃=<span id="D3">-</span>, D₄=<span id="D4">-</span> [AIAG Manual]
+                </div>
+            </div>
+        </div>
+
+        <div class="input-section constants-table">
+            <h3>AIAG Control Chart Constants (n=2-10)</h3>
+            <table id="constantsTable">
+                <thead>
+                    <tr><th>n</th><th>A₂</th><th>D₃</th><th>D₄</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>2</td><td>1.880</td><td>0</td><td>3.267</td></tr>
+                    <tr><td>3</td><td>1.023</td><td>0</td><td>2.574</td></tr>
+                    <tr><td>4</td><td>0.729</td><td>0</td><td>2.282</td></tr>
+                    <tr><td>5</td><td>0.577</td><td>0</td><td>2.114</td></tr>
+                    <tr><td>6</td><td>0.483</td><td>0.030</td><td>2.004</td></tr>
+                    <tr><td>7</td><td>0.419</td><td>0.076</td><td>1.924</td></tr>
+                    <tr><td>8</td><td>0.373</td><td>0.136</td><td>1.864</td></tr>
+                    <tr><td>9</td><td>0.337</td><td>0.184</td><td>1.816</td></tr>
+                    <tr><td>10</td><td>0.308</td><td>0.223</td><td>1.777</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="footer">
+
+    </div>
+
+    <script>
+        let dataRows = [[10.2, 10.1, 10.3, 10.0, 10.4]];
+        const constants = {
+            2: {A2: 1.880, D3: 0, D4: 3.267},
+            3: {A2: 1.023, D3: 0, D4: 2.574},
+            4: {A2: 0.729, D3: 0, D4: 2.282},
+            5: {A2: 0.577, D3: 0, D4: 2.114},
+            6: {A2: 0.483, D3: 0.030, D4: 2.004},
+            7: {A2: 0.419, D3: 0.076, D4: 1.924},
+            8: {A2: 0.373, D3: 0.136, D4: 1.864},
+            9: {A2: 0.337, D3: 0.184, D4: 1.816},
+            10: {A2: 0.308, D3: 0.223, D4: 1.777}
+        };
+
+        function resetData() {
+            const k = parseInt(document.getElementById('numSubgroups').value);
+            const n = parseInt(document.getElementById('sampleSize').value);
+            dataRows = [];
+            for(let i = 0; i < k; i++) {
+                dataRows.push(Array(n).fill(10));
+            }
+            renderTable();
+        }
+
+        function renderTable() {
+            const n = parseInt(document.getElementById('sampleSize').value);
+            const tbody = document.getElementById('dataBody');
+            tbody.innerHTML = '';
+            
+            for(let i = 2; i <= 6; i++) {
+                const header = document.getElementById(`measHeader${i}`);
+                if(header) header.textContent = i <= n ? `Meas ${i-1}` : '';
+            }
+
+            dataRows.forEach((row, rowIndex) => {
+                const tr = document.createElement('tr');
+                let rowHTML = `<td>${rowIndex + 1}</td>`;
+                
+                row.forEach((val, colIndex) => {
+                    rowHTML += `<td><input type="number" step="0.01" value="${val}" onchange="updateRow(${rowIndex}, this.value, ${colIndex})"></td>`;
+                });
+                
+                for(let i = row.length; i < 5; i++) {
+                    rowHTML += '<td></td>';
+                }
+                
+                rowHTML += `<td id="xbar${rowIndex + 1}">-</td><td id="r${rowIndex + 1}">-</td>`;
+                tr.innerHTML = rowHTML;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateRow(rowIndex, value, colIndex) {
+            dataRows[rowIndex][colIndex] = parseFloat(value) || 0;
+            calculateRowStats(rowIndex);
+        }
+
+        function calculateRowStats(rowIndex) {
+            const row = dataRows[rowIndex];
+            const xbarCell = document.getElementById(`xbar${rowIndex + 1}`);
+            const rCell = document.getElementById(`r${rowIndex + 1}`);
+            
+            const avg = row.reduce((a, b) => a + b, 0) / row.length;
+            const maxVal = Math.max(...row);
+            const minVal = Math.min(...row);
+            const range = maxVal - minVal;
+            
+            xbarCell.textContent = avg.toFixed(3);
+            rCell.textContent = range.toFixed(3);
+        }
+
+        function calculateXbarR() {
+            const n = parseInt(document.getElementById('sampleSize').value);
+            const consts = constants[n];
+            
+            const xbars = dataRows.map(row => row.reduce((a, b) => a + b, 0) / n);
+            const ranges = dataRows.map(row => Math.max(...row) - Math.min(...row));
+            
+            const xbarCL = xbars.reduce((a, b) => a + b, 0) / xbars.length;
+            const rCL = ranges.reduce((a, b) => a + b, 0) / ranges.length;
+            
+            const xbarUCL = xbarCL + consts.A2 * rCL;
+            const xbarLCL = xbarCL - consts.A2 * rCL;
+            const rUCL = consts.D4 * rCL;
+            const rLCL = Math.max(0, consts.D3 * rCL);
+
+            document.getElementById('xbarCL').textContent = xbarCL.toFixed(3);
+            document.getElementById('xbarUCL').textContent = xbarUCL.toFixed(3);
+            document.getElementById('xbarLCL').textContent = xbarLCL.toFixed(3);
+            document.getElementById('rCL').textContent = rCL.toFixed(3);
+            document.getElementById('rUCL').textContent = rUCL.toFixed(3);
+            document.getElementById('rLCL').textContent = rLCL.toFixed(3);
+            document.getElementById('A2').textContent = consts.A2;
+            document.getElementById('D3').textContent = consts.D3;
+            document.getElementById('D4').textContent = consts.D4;
+
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            drawChart('chartCanvas', xbars, xbarCL, xbarUCL, xbarLCL, 'X-bar Chart');
+            drawChart('rChartCanvas', ranges, rCL, rUCL, rLCL, 'R Chart');
+        }
+
+        function drawChart(canvasId, data, center, ucl, lcl, title) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const padding = 60;
+            const chartWidth = canvas.width - 2 * padding;
+            const chartHeight = canvas.height - 2 * padding;
+            const maxVal = Math.max(...data, ucl) * 1.05;
+            const minVal = Math.min(...data, lcl) * 0.95;
+
+            ctx.strokeStyle = '#eee';
+            ctx.lineWidth = 1;
+            for(let i = 0; i <= 10; i++) {
+                const y = padding + (chartHeight * i / 10);
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(canvas.width - padding, y);
+                ctx.stroke();
+            }
+
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+
+            const drawLine = (val, color, label) => {
+                const y = padding + chartHeight * (1 - (val - minVal) / (maxVal - minVal));
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 3;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(canvas.width - padding, y);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.fillStyle = color;
+                ctx.font = 'bold 12px Arial';
+                ctx.fillText(label, canvas.width - 80, y - 5);
+            };
+            
+            drawLine(ucl, '#e74c3c', 'UCL');
+            drawLine(center, '#27ae60', 'CL');
+            drawLine(lcl, '#e74c3c', 'LCL');
+
+            ctx.fillStyle = '#3498db';
+            ctx.strokeStyle = '#2980b9';
+            data.forEach((val, i) => {
+                const x = padding + (i / (data.length - 1)) * chartWidth;
+                const y = padding + chartHeight * (1 - (val - minVal) / (maxVal - minVal));
+                ctx.beginPath();
+                ctx.arc(x, y, 8, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.stroke();
+                
+                if(i > 0) {
+                    const prevX = padding + ((i-1) / (data.length - 1)) * chartWidth;
+                    const prevY = padding + chartHeight * (1 - (data[i-1] - minVal) / (maxVal - minVal));
+                    ctx.beginPath();
+                    ctx.moveTo(prevX, prevY);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                }
+            });
+
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = 'bold 18px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(title, canvas.width / 2, 30);
+            ctx.textAlign = 'left';
+        }
+
+        function addRandomData() {
+            const n = parseInt(document.getElementById('sampleSize').value);
+            const k = parseInt(document.getElementById('numSubgroups').value);
+            const mean = 10;
+            const std = 0.5;
+            
+            dataRows = [];
+            for(let i = 0; i < k; i++) {
+                const row = [];
+                for(let j = 0; j < n; j++) {
+                    row.push(mean + (Math.random() - 0.5) * std * 4);
+                }
+                dataRows.push(row);
+            }
+            renderTable();
+        }
+
+        function clearData() {
+            document.getElementById('resultsSection').style.display = 'none';
+            resetData();
+        }
+
+        renderTable();
+    </script>
+</body>
+</html>

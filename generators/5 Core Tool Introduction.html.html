@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>5 Core Tools of Quality — Quality Learning</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#fbfbfd; --card:#ffffff; --muted:#6b7280; --accent:#FF8F8F; --accent-2:#ffb0c9; --glass:rgba(255,255,255,0.6);
+      --shadow: 0 8px 24px rgba(16,24,40,0.06);
+    }
+    [data-theme="dark"]{ --bg:#0b0f14; --card:#0f1619; --muted:#98a2b3; --accent:#FF8F8F; --glass:rgba(255,255,255,0.03); --shadow: 0 10px 30px rgba(0,0,0,0.6);} 
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:'Open Sans',system-ui,Arial;color:var(--muted);background:var(--bg);transition:background .45s ease,color .45s ease}
+
+    /* layout */
+    .wrap{display:grid;grid-template-columns:300px 1fr;min-height:100vh}
+    @media (max-width:900px){.wrap{grid-template-columns:1fr}}
+
+    /* sidebar */
+    .sidebar{position:sticky;top:0;height:100vh;padding:20px;background:linear-gradient(180deg,var(--glass),transparent);backdrop-filter:blur(6px);border-right:1px solid rgba(0,0,0,0.04)}
+    .brand{display:flex;gap:12px;align-items:center;margin-bottom:18px}
+    .logo{width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;color:white;font-weight:700;font-family:'Poppins'}
+    .sitename{font-weight:700;color:var(--muted)}
+    .desc{font-size:13px;color:var(--muted)}
+
+    .left-controls{display:flex;align-items:center;justify-content:space-between;margin:12px 0}
+    .switch{display:flex;align-items:center;gap:10px}
+    .switch-btn{width:46px;height:28px;border-radius:999px;background:linear-gradient(90deg,#ececec,#f7f7f7);padding:4px;position:relative;cursor:pointer;border:1px solid rgba(0,0,0,0.04)}
+    .switch-dot{width:20px;height:20px;border-radius:50%;background:white;position:absolute;left:4px;top:4px;transition:transform .35s cubic-bezier(.2,.9,.2,1),background .35s}
+    [data-theme="dark"] .switch-btn{background:linear-gradient(90deg,#222,#333);border-color:rgba(255,255,255,0.04)}
+    [data-theme="dark"] .switch-dot{transform:translateX(18px);background:#ffd44d}
+
+    .toc{margin-top:10px}
+    .toc a{display:block;padding:10px;border-radius:8px;color:var(--muted);text-decoration:none;margin-bottom:6px;font-weight:600}
+    .toc a.active{background:var(--card);box-shadow:var(--shadow);color:var(--accent);}
+    .toc a:hover{transform:translateX(6px);transition:transform .18s}
+
+    /* top progress */
+    header{position:fixed;left:300px;right:0;top:0;height:6px;z-index:60;background:transparent}
+    @media (max-width:900px){header{left:0}}
+    .progress{height:6px;width:0;border-radius:6px;background:linear-gradient(90deg,var(--accent),var(--accent-2));box-shadow:0 6px 20px rgba(255,143,143,0.14)}
+
+    /* main content */
+    main{padding:32px 48px;max-width:980px;margin-left:0}
+    @media(min-width:901px){main{margin-left:20px}}
+
+    .banner{border-radius:14px;padding:28px;background:linear-gradient(120deg,var(--accent),var(--accent-2));color:white;margin-bottom:22px;overflow:hidden;position:relative}
+    .banner h1{font-family:'Poppins';margin:0;font-size:26px;letter-spacing:.2px}
+    .banner p{margin:8px 0 0 0;opacity:.95}
+    .banner::after{content:"";position:absolute;right:-60px;top:-40px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.06);transform:rotate(30deg);animation:float 6s ease-in-out infinite}
+    @keyframes float{0%{transform:translateY(0) rotate(0)}50%{transform:translateY(-8px) rotate(12deg)}100%{transform:translateY(0) rotate(0)}}
+
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-bottom:20px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+
+    .card{background:var(--card);border-radius:12px;padding:18px;box-shadow:var(--shadow);transition:transform .28s ease,box-shadow .28s ease}
+    .card:hover{transform:translateY(-8px);box-shadow:0 18px 36px rgba(16,24,40,0.12)}
+    .card h3{margin:0 0 8px 0;color:var(--accent);font-family:'Poppins'}
+    .card p{margin:0;color:var(--muted)}
+
+    .table-wrap{overflow:auto}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:12px;border-bottom:1px solid rgba(0,0,0,0.06);text-align:left}
+    th{font-weight:700;color:var(--accent)}
+
+    footer{margin-top:28px;padding:18px;text-align:center;color:var(--muted);font-size:14px}
+    footer a{color:var(--accent);text-decoration:none}
+
+    /* reveal animation helpers */
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.9,.2,1)}
+    .reveal.show{opacity:1;transform:none}
+
+  </style>
+</head>
+<body data-theme="light">
+  <div class="wrap">
+
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">QL</div>
+        <div>
+          <div class="sitename">Quality Learning</div>
+          <div class="desc">5 Core Tools — IATF / AIAG</div>
+        </div>
+      </div>
+
+      <div class="left-controls">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div style="font-size:13px;color:var(--muted)">Theme</div>
+          <div class="switch" id="leftSwitch">
+            <div class="switch-btn" role="button" tabindex="0" aria-pressed="false">
+              <div class="switch-dot"></div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--muted)">Menu</div>
+      </div>
+
+      <nav class="toc" id="toc">
+        <a href="#intro">Introduction</a>
+        <a href="#definition">Definition</a>
+        <a href="#tools">The 5 Core Tools</a>
+        <a href="#usage">Industry Usage</a>
+        <a href="#notes">Notes</a>
+      </nav>
+
+    </aside>
+
+    <main>
+      <header><div class="progress" id="progressBar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div></header>
+
+      <section class="banner">
+        <h1>🎯 5 Core Tools of Quality</h1>
+        <p style="opacity:.95">The backbone of manufacturing excellence — APQP, PPAP, FMEA, MSA & SPC (Aligned with IATF 16949 / AIAG).</p>
+      </section>
+
+      <article>
+        <section id="intro" class="card reveal">
+          <h2 style="margin-top:0;color:var(--accent);font-family:'Poppins'">Introduction</h2>
+          <p>These five tools are core methodologies used to plan, validate, measure, control and continuously improve product and process quality — originally from the automotive supply chain but now widely adopted across sectors.</p>
+        </section>
+
+        <section id="definition" class="card reveal">
+          <h2 style="color:var(--accent);font-family:'Poppins'">Definition</h2>
+          <p>The <strong>5 Core Tools of Quality</strong> are standardized methods developed mainly for the automotive industry (AIAG & IATF 16949) to ensure product and process quality. They provide a structured approach for advanced quality planning and control.</p>
+        </section>
+
+        <section id="tools" class="reveal">
+          <div class="grid">
+            <div class="card">
+              <h3>APQP</h3>
+              <p><strong>Advanced Product Quality Planning</strong> — structured process to define and establish steps necessary to ensure a product satisfies the customer.</p>
+            </div>
+            <div class="card">
+              <h3>PPAP</h3>
+              <p><strong>Production Part Approval Process</strong> — ensures engineering design and product specifications are met before full production.</p>
+            </div>
+            <div class="card">
+              <h3>FMEA</h3>
+              <p><strong>Failure Mode & Effects Analysis</strong> — systematic method for identifying potential failure modes and their effects to prioritize mitigation.</p>
+            </div>
+            <div class="card">
+              <h3>MSA</h3>
+              <p><strong>Measurement Systems Analysis</strong> — evaluates the measurement system (gauge R&R, bias, linearity) to ensure data quality.</p>
+            </div>
+            <div class="card">
+              <h3>SPC</h3>
+              <p><strong>Statistical Process Control</strong> — uses statistical methods (control charts) to monitor and control processes.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="usage" class="card reveal">
+          <h2 style="color:var(--accent);font-family:'Poppins'">Applications in Industry</h2>
+          <p>Although they originated in automotive supply chains, these tools are used across aerospace, defense, medical devices, pharmaceuticals and general manufacturing to improve reliability, compliance and customer satisfaction.</p>
+        </section>
+
+        <section id="notes" class="card reveal">
+          <h2 style="color:var(--accent);font-family:'Poppins'">Notes</h2>
+          <ul>
+            <li>These tools are part of IATF 16949 expectations for supplier quality systems.</li>
+            <li>Implementation requires cross-functional teams and documented evidence.</li>
+            <li>Training and regular audits help sustain effectiveness.</li>
+          </ul>
+        </section>
+
+        <div class="table-wrap reveal card">
+          <h2 style="color:var(--accent);font-family:'Poppins'">Quick Reference — 5 Core Tools</h2>
+          <table>
+            <thead>
+              <tr><th>Tool</th><th>Short Form</th><th>Primary Use</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Advanced Product Quality Planning</td><td>APQP</td><td>Product development & launch readiness</td></tr>
+              <tr><td>Production Part Approval Process</td><td>PPAP</td><td>Part approval & supplier validation</td></tr>
+              <tr><td>Failure Mode & Effects Analysis</td><td>FMEA</td><td>Risk analysis & mitigation</td></tr>
+              <tr><td>Measurement Systems Analysis</td><td>MSA</td><td>Assess measurement system capability</td></tr>
+              <tr><td>Statistical Process Control</td><td>SPC</td><td>Process monitoring & control</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <footer>
+          © 2025 Quality Learning
+        </footer>
+
+      </article>
+    </main>
+  </div>
+
+  <script>
+    // theme persistence & toggle (left switch)
+    const body = document.body;
+    const leftSwitchBtn = document.querySelector('.switch-btn');
+    if(localStorage.getItem('ql-theme') === 'dark'){ body.setAttribute('data-theme','dark'); }
+    leftSwitchBtn.addEventListener('click', toggleTheme);
+    leftSwitchBtn.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' ') toggleTheme(); });
+    function toggleTheme(){ const isDark = body.getAttribute('data-theme') === 'dark'; if(isDark){ body.removeAttribute('data-theme'); localStorage.setItem('ql-theme','light'); } else{ body.setAttribute('data-theme','dark'); localStorage.setItem('ql-theme','dark'); } leftSwitchBtn.setAttribute('aria-pressed', String(!isDark)); }
+
+    // smooth scroll + active toc
+    const tocLinks = Array.from(document.querySelectorAll('#toc a'));
+    const sections = tocLinks.map(a => document.querySelector(a.getAttribute('href')));
+    tocLinks.forEach(link=>{ link.addEventListener('click', e=>{ e.preventDefault(); document.querySelector(link.getAttribute('href')).scrollIntoView({behavior:'smooth',block:'start'}); }); });
+
+    function onScroll(){ const fromTop = window.scrollY + 140; sections.forEach((sec,i)=>{ const link = tocLinks[i]; if(!sec) return; if(sec.offsetTop <= fromTop && sec.offsetTop + sec.offsetHeight > fromTop){ link.classList.add('active'); } else link.classList.remove('active'); });
+      // progress
+      const progress = document.getElementById('progressBar'); const scrolled = window.scrollY; const docHeight = document.documentElement.scrollHeight - window.innerHeight; const pct = docHeight > 0 ? (scrolled / docHeight) * 100 : 0; progress.style.width = pct + '%'; progress.setAttribute('aria-valuenow', Math.round(pct)); }
+    window.addEventListener('scroll', onScroll); window.addEventListener('resize', onScroll); onScroll();
+
+    // reveal on intersection
+    const reveals = document.querySelectorAll('.reveal, .card');
+    const io = new IntersectionObserver(entries =>{ entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); } }); }, {threshold:0.12});
+    reveals.forEach(r=>io.observe(r));
+  </script>
+</body>
+</html>

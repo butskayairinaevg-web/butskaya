@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive p & np Chart Calculator</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #2c3e50; }
+        h2 { color: #34495e; border-bottom: 2px solid #e74c3c; padding-bottom: 10px; }
+        .input-section { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        input, select { padding: 10px; margin: 5px; border: 1px solid #ddd; border-radius: 4px; width: 100px; }
+        button { background: #e74c3c; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #c0392b; }
+        .results { background: #d4edda; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #bdc3c7; padding: 12px; text-align: center; }
+        th { background: #e74c3c; color: white; }
+        .formula { font-family: monospace; background: #fdf2f2; padding: 15px; border-left: 5px solid #e74c3c; margin: 10px 0; }
+        #chartCanvas { border: 1px solid #ddd; margin: 20px 0; background: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧮 Interactive p & np Chart Calculator</h1>
+        <p>Enter your defectives and sample sizes below to auto-calculate control limits and generate charts. [web:1][web:3]</p>
+
+        <!-- p Chart Input -->
+        <div class="input-section">
+            <h2>p Chart Calculator (Variable Sample Size)</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
+                <div>
+                    <label>Number of Samples (k):</label><br>
+                    <input type="number" id="pNumSamples" value="20" min="5" max="50">
+                </div>
+                <div>
+                    <label>Avg Sample Size (n):</label><br>
+                    <input type="number" id="pAvgN" value="100" min="10">
+                </div>
+                <div>
+                    <label>Total Defectives:</label><br>
+                    <input type="number" id="pTotalDefectives" value="25" min="0">
+                </div>
+                <button onclick="calculatePChart()">Calculate p Chart</button>
+                <button onclick="addPDataRow()">Add Data Row</button>
+            </div>
+            
+            <div id="pDataTable" style="margin-top: 20px;">
+                <table>
+                    <thead>
+                        <tr><th>Sample</th><th>Sample Size (nᵢ)</th><th>Defectives (dᵢ)</th><th>pᵢ = dᵢ/nᵢ</th></tr>
+                    </thead>
+                    <tbody id="pDataBody">
+                        <tr><td>1</td><td><input type="number" value="100" onchange="updatePChart()"></td><td><input type="number" value="2" onchange="updatePChart()"></td><td id="p1">-</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="pResults" class="results" style="display: none;">
+            <h3>p Chart Results</h3>
+            <div class="formula">
+                <strong>Centerline:</strong> \(\overline{p} = <span id="pCenterline">-</span>\)<br>
+                <strong>UCL:</strong> <span id="pUCL">-</span><br>
+                <strong>LCL:</strong> <span id="pLCL">-</span>
+            </div>
+            <canvas id="pChartCanvas" width="800" height="400"></canvas>
+        </div>
+
+        <hr style="margin: 40px 0;">
+
+        <!-- np Chart Input -->
+        <div class="input-section">
+            <h2>np Chart Calculator (Constant Sample Size)</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
+                <div>
+                    <label>Sample Size (n):</label><br>
+                    <input type="number" id="npSampleSize" value="100" min="10">
+                </div>
+                <div>
+                    <label>Number of Samples (k):</label><br>
+                    <input type="number" id="npNumSamples" value="20" min="5">
+                </div>
+                <div>
+                    <label>Total Defectives:</label><br>
+                    <input type="number" id="npTotalDefectives" value="20" min="0">
+                </div>
+                <button onclick="calculateNPChart()">Calculate np Chart</button>
+            </div>
+        </div>
+
+        <div id="npResults" class="results" style="display: none;">
+            <h3>np Chart Results</h3>
+            <div class="formula">
+                <strong>Centerline:</strong> \(\overline{np} = <span id="npCenterline">-</span>\)<br>
+                <strong>UCL:</strong> <span id="npUCL">-</span><br>
+                <strong>LCL:</strong> <span id="npLCL">-</span>
+            </div>
+            <canvas id="npChartCanvas" width="800" height="400"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let pData = [{n: 100, d: 2}];
+
+        function addPDataRow() {
+            const tbody = document.getElementById('pDataBody');
+            const rowNum = tbody.children.length + 1;
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${rowNum}</td>
+                <td><input type="number" value="100" onchange="updatePChart()" style="width: 80px;"></td>
+                <td><input type="number" value="1" onchange="updatePChart()" style="width: 80px;"></td>
+                <td id="p${rowNum}">-</td>
+            `;
+            tbody.appendChild(newRow);
+            updatePChart();
+        }
+
+        function updatePChart() {
+            pData = [];
+            const inputsN = document.querySelectorAll('#pDataBody input:nth-child(2)');
+            const inputsD = document.querySelectorAll('#pDataBody input:nth-child(3)');
+            inputsN.forEach((input, i) => {
+                pData.push({n: parseInt(input.value) || 0, d: parseInt(inputsD[i].value) || 0});
+            });
+            calculatePChart();
+        }
+
+        function calculatePChart() {
+            const totalDefectives = pData.reduce((sum, row) => sum + row.d, 0);
+            const totalInspected = pData.reduce((sum, row) => sum + row.n, 0);
+            const pBar = totalInspected > 0 ? totalDefectives / totalInspected : 0;
+            const avgN = totalInspected / pData.length;
+            
+            const stdDev = Math.sqrt(pBar * (1 - pBar) / avgN);
+            const UCL = Math.max(0, pBar + 3 * stdDev);
+            const LCL = Math.max(0, pBar - 3 * stdDev);
+
+            document.getElementById('pCenterline').textContent = pBar.toFixed(4);
+            document.getElementById('pUCL').textContent = UCL.toFixed(4);
+            document.getElementById('pLCL').textContent = LCL.toFixed(4);
+            document.getElementById('pResults').style.display = 'block';
+
+            // Update p_i values
+            pData.forEach((row, i) => {
+                const pVal = row.n > 0 ? (row.d / row.n).toFixed(4) : 0;
+                document.getElementById(`p${i+1}`).textContent = pVal;
+            });
+
+            drawChart('pChartCanvas', pData.map(row => row.d/row.n), pBar, UCL, LCL, 'p Chart');
+        }
+
+        function calculateNPChart() {
+            const n = parseInt(document.getElementById('npSampleSize').value);
+            const k = parseInt(document.getElementById('npNumSamples').value);
+            const totalDefectives = parseInt(document.getElementById('npTotalDefectives').value);
+            
+            const npBar = totalDefectives / k;
+            const pBar = npBar / n;
+            const stdDev = Math.sqrt(npBar * (1 - pBar));
+            const UCL = Math.max(0, npBar + 3 * stdDev);
+            const LCL = Math.max(0, npBar - 3 * stdDev);
+
+            document.getElementById('npCenterline').textContent = npBar.toFixed(2);
+            document.getElementById('npUCL').textContent = UCL.toFixed(2);
+            document.getElementById('npLCL').textContent = LCL.toFixed(2);
+            document.getElementById('npResults').style.display = 'block';
+
+            // Generate sample np data
+            const npData = [];
+            for(let i = 0; i < k; i++) {
+                npData.push(npBar + (Math.random()-0.5)*npBar*2);
+            }
+            drawChart('npChartCanvas', npData, npBar, UCL, LCL, 'np Chart');
+        }
+
+        function drawChart(canvasId, data, center, ucl, lcl, title) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const padding = 50;
+            const chartWidth = canvas.width - 2*padding;
+            const chartHeight = canvas.height - 2*padding;
+            const maxVal = Math.max(...data, ucl) * 1.1;
+            const minVal = 0;
+
+            // Draw axes
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+
+            // Draw control limits
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 2;
+            // UCL
+            ctx.beginPath();
+            ctx.moveTo(padding, padding + chartHeight * (1 - ucl/maxVal));
+            ctx.lineTo(canvas.width - padding, padding + chartHeight * (1 - ucl/maxVal));
+            ctx.stroke();
+            // Center
+            ctx.strokeStyle = '#3498db';
+            ctx.beginPath();
+            ctx.moveTo(padding, padding + chartHeight * (1 - center/maxVal));
+            ctx.lineTo(canvas.width - padding, padding + chartHeight * (1 - center/maxVal));
+            ctx.stroke();
+            // LCL
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding + chartHeight * (1 - lcl/maxVal));
+            ctx.lineTo(canvas.width - padding, padding + chartHeight * (1 - lcl/maxVal));
+            ctx.stroke();
+
+            // Draw data points
+            ctx.fillStyle = '#27ae60';
+            data.forEach((val, i) => {
+                const x = padding + (i / (data.length-1)) * chartWidth;
+                const y = padding + chartHeight * (1 - val/maxVal);
+                ctx.beginPath();
+                ctx.arc(x, y, 6, 0, 2*Math.PI);
+                ctx.fill();
+            });
+
+            // Labels
+            ctx.fillStyle = '#000';
+            ctx.font = '14px Arial';
+            ctx.fillText(title, padding, 30);
+            ctx.fillText('UCL', canvas.width/2 - 20, padding + chartHeight * (1 - ucl/maxVal) - 5);
+            ctx.fillText('CL', canvas.width/2 - 15, padding + chartHeight * (1 - center/maxVal) - 5);
+            ctx.fillText('LCL', canvas.width/2 - 20, padding + chartHeight * (1 - lcl/maxVal) + 20);
+        }
+    </script>
+</body>
+</html>

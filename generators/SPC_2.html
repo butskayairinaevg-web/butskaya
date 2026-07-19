@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Process Capability – Cp & Cpk Gold Glass Theory</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-main: #02030a;
+      --bg-panel: #050712;
+      --gold: #facc15;
+      --gold-strong: #f59e0b;
+      --gold-soft: rgba(250, 204, 21, 0.16);
+      --gold-glass: rgba(250, 204, 21, 0.16);
+      --gold-border: rgba(250, 204, 21, 0.8);
+      --text-main: #fefce8;
+      --text-soft: #e5e7eb;
+      --text-muted: #9ca3af;
+      --text-muted-dark: #6b7280;
+      --card-border: rgba(55, 65, 81, 0.9);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-pill: 999px;
+      --shadow-strong: 0 28px 90px rgba(0, 0, 0, 0.95);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, #020617 0, #000 50%, #000 100%);
+      color: var(--text-main);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 22px 10px 30px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 1260px;
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 20px;
+      background:
+        radial-gradient(circle at 0 0, rgba(250, 204, 21, 0.16), transparent 55%),
+        radial-gradient(circle at 100% 0, rgba(245, 158, 11, 0.22), transparent 55%),
+        rgba(0, 0, 0, 0.95);
+      border-radius: 30px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      padding: 18px 18px 22px;
+      box-shadow: var(--shadow-strong);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app-shell::before {
+      content: "";
+      position: absolute;
+      inset: -150px;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(250, 204, 21, 0.38), transparent 55%),
+        radial-gradient(circle at 90% 0%, rgba(245, 158, 11, 0.26), transparent 55%);
+      opacity: 0.7;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .app-inner {
+      position: relative;
+      z-index: 1;
+      display: contents;
+    }
+
+    /* SIDEBAR – PREMIUM GOLD GLASS */
+    .sidebar {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .sidebar-glass {
+      position: sticky;
+      top: 10px;
+      padding: 16px 14px 14px;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 0 0, rgba(250, 204, 21, 0.16), transparent 60%),
+        rgba(10, 10, 10, 0.85);
+      border: 1px solid var(--gold-border);
+      box-shadow:
+        0 0 0 1px rgba(15, 23, 42, 0.9),
+        0 22px 60px rgba(250, 204, 21, 0.45);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .logo-wrap {
+      width: 42px;
+      height: 42px;
+      border-radius: 16px;
+      padding: 2px;
+      background:
+        conic-gradient(from 150deg, #facc15, #f97316, #22c55e, #facc15);
+      box-shadow: 0 12px 40px rgba(245, 158, 11, 0.9);
+    }
+
+    .logo-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 14px;
+      background: radial-gradient(circle at 20% 0%, #020617, #000 75%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Merriweather", serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .sidebar-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .sidebar-title {
+      font-family: "Merriweather", serif;
+      font-size: 15px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .sidebar-sub {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .sidebar-chip {
+      margin-top: 2px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      padding: 5px 9px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(250, 204, 21, 0.7);
+      background: linear-gradient(to right, rgba(15, 23, 42, 0.9), rgba(24, 24, 27, 0.95));
+      color: var(--text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sidebar-chip-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.4);
+    }
+
+    .sidebar-label {
+      margin-top: 10px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-muted-dark);
+    }
+
+    .sidebar-nav {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-item {
+      border-radius: 16px;
+      padding: 8px 9px;
+      background: radial-gradient(circle at 0 0, rgba(250, 204, 21, 0.08), transparent 55%);
+      border: 1px solid rgba(148, 163, 184, 0.65);
+      color: var(--text-soft);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      transition:
+        background 0.18s ease-out,
+        border-color 0.18s ease-out,
+        transform 0.16s ease-out,
+        box-shadow 0.16s ease-out,
+        color 0.16s ease-out;
+    }
+
+    .nav-item-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .nav-item-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .nav-item-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .nav-item-pill {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-soft);
+      white-space: nowrap;
+    }
+
+    .nav-item:hover {
+      border-color: var(--gold-border);
+      box-shadow:
+        0 0 0 1px rgba(250, 204, 21, 0.4),
+        0 18px 45px rgba(250, 204, 21, 0.35);
+      transform: translateY(-1px);
+      color: var(--gold);
+    }
+
+    .nav-item.active {
+      border-color: var(--gold-border);
+      background:
+        linear-gradient(to right, rgba(250, 204, 21, 0.18), rgba(0, 0, 0, 0.9));
+      box-shadow:
+        0 0 0 1px rgba(250, 204, 21, 0.6),
+        0 20px 60px rgba(250, 204, 21, 0.55);
+    }
+
+    .sidebar-footer-note {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* MAIN CONTENT */
+    .content {
+      position: relative;
+      z-index: 1;
+      background: radial-gradient(circle at 0 0, rgba(250, 204, 21, 0.08), transparent 65%),
+                  radial-gradient(circle at 100% 0, rgba(15, 23, 42, 0.9), transparent 65%),
+                  rgba(5, 7, 18, 0.98);
+      border-radius: 24px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      padding: 18px 18px 20px;
+      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.9);
+      overflow: hidden;
+    }
+
+    .content-inner {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    .content-header {
+      margin-bottom: 18px;
+      border-bottom: 1px solid rgba(55, 65, 81, 0.9);
+      padding-bottom: 14px;
+    }
+
+    .content-kicker {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted-dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .content-kicker-line {
+      width: 46px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold));
+    }
+
+    h1 {
+      font-family: "Merriweather", serif;
+      font-size: 26px;
+      line-height: 1.3;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .subtitle {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--text-soft);
+      max-width: 820px;
+    }
+
+    .tag-row {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: rgba(15, 23, 42, 0.96);
+      color: var(--text-soft);
+    }
+
+    .tag.gold {
+      border-color: var(--gold-border);
+      background: rgba(250, 204, 21, 0.14);
+      color: var(--gold-strong);
+    }
+
+    /* SECTIONS / CARDS */
+    section.topic {
+      margin-bottom: 22px;
+      padding: 18px 18px 16px;
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle at 0 0, rgba(250, 204, 21, 0.08), transparent 60%),
+                  rgba(5, 7, 18, 0.98);
+      border: 1px solid var(--card-border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    section.topic::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 12px;
+      bottom: 12px;
+      width: 3px;
+      border-radius: 999px;
+      background: linear-gradient(to bottom, var(--gold-strong), var(--gold));
+    }
+
+    section.topic h2 {
+      font-family: "Merriweather", serif;
+      font-size: 22px;
+      margin-bottom: 6px;
+      padding-left: 8px;
+    }
+
+    .topic-tagline {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      padding-left: 8px;
+    }
+
+    section.topic p {
+      font-size: 15px;
+      line-height: 1.9;
+      color: var(--text-soft);
+      margin-bottom: 8px;
+      padding-left: 8px;
+    }
+
+    section.topic strong {
+      color: var(--text-main);
+    }
+
+    section.topic ul,
+    section.topic ol {
+      font-size: 15px;
+      line-height: 1.9;
+      color: var(--text-soft);
+      padding-left: 30px;
+      margin-bottom: 6px;
+    }
+
+    section.topic li {
+      margin-bottom: 4px;
+    }
+
+    section.topic h3 {
+      font-family: "Merriweather", serif;
+      font-size: 18px;
+      margin: 10px 0 6px;
+      padding-left: 8px;
+      color: var(--gold);
+    }
+
+    /* NOTE BOX */
+    .note-box {
+      margin-top: 8px;
+      margin-left: 8px;
+      border-radius: var(--radius-md);
+      border: 1px dashed rgba(148, 163, 184, 0.8);
+      background: linear-gradient(
+        135deg,
+        rgba(15, 23, 42, 0.98),
+        rgba(6, 8, 20, 0.98)
+      );
+      padding: 10px 11px;
+      display: flex;
+      gap: 9px;
+      font-size: 14px;
+    }
+
+    .note-icon {
+      font-size: 18px;
+      line-height: 1.2;
+      margin-top: 1px;
+    }
+
+    .note-text {
+      color: var(--text-soft);
+    }
+
+    /* FORMULA & DEF BOXES */
+    .formula-box {
+      margin: 8px 0 10px 8px;
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--gold-border);
+      background:
+        linear-gradient(135deg, rgba(250, 204, 21, 0.14), rgba(15, 23, 42, 0.98));
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.7),
+        0 10px 30px rgba(250, 204, 21, 0.35);
+      font-size: 14px;
+      font-family: "Inter", system-ui, sans-serif;
+    }
+
+    .formula-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-muted-dark);
+    }
+
+    .formula-text {
+      color: var(--text-main);
+    }
+
+    .def-grid {
+      margin: 4px 0 10px 8px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 8px;
+    }
+
+    .def-item {
+      border-radius: 14px;
+      padding: 8px 9px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: radial-gradient(circle at 0 0, rgba(250, 204, 21, 0.08), transparent 55%),
+                  rgba(10, 12, 25, 0.98);
+      font-size: 13px;
+    }
+
+    .def-label {
+      font-family: "Merriweather", serif;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 3px;
+    }
+
+    .def-text {
+      color: var(--text-muted);
+    }
+
+    /* TABLES */
+    .table-shell {
+      margin: 10px 0 6px 8px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(55, 65, 81, 0.95);
+      background: rgba(6, 8, 20, 0.98);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead {
+      background: linear-gradient(90deg, rgba(24, 24, 27, 1), rgba(55, 65, 81, 0.95));
+    }
+
+    th,
+    td {
+      padding: 7px 10px;
+      border-bottom: 1px solid rgba(31, 41, 55, 0.96);
+      text-align: left;
+    }
+
+    th {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-family: "Inter", system-ui, sans-serif;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:nth-child(odd) {
+      background: rgba(10, 12, 25, 0.98);
+    }
+
+    tbody tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.96);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      font-size: 11px;
+    }
+
+    .pill-good {
+      background: rgba(22, 163, 74, 0.18);
+      border-color: rgba(34, 197, 94, 0.9);
+      color: #bbf7d0;
+    }
+
+    .pill-risk {
+      background: rgba(248, 113, 113, 0.18);
+      border-color: rgba(248, 113, 113, 0.9);
+      color: #fecaca;
+    }
+
+    .pill-warn {
+      background: rgba(234, 179, 8, 0.18);
+      border-color: rgba(234, 179, 8, 0.9);
+      color: #fef3c7;
+    }
+
+    .pill-neutral {
+      background: rgba(55, 65, 81, 0.95);
+      border-color: rgba(75, 85, 99, 0.9);
+      color: var(--text-soft);
+    }
+
+    footer {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    /* ANIMATIONS */
+    .fade-section {
+      opacity: 0;
+      transform: translateY(16px);
+      transition:
+        opacity 0.6s ease-out,
+        transform 0.6s ease-out,
+        box-shadow 0.4s ease-out;
+    }
+
+    .fade-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+      box-shadow: 0 20px 55px rgba(0, 0, 0, 0.6);
+    }
+
+    @media (max-width: 960px) {
+      .app-shell {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 16px 12px 20px;
+      }
+
+      .sidebar-glass {
+        position: static;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .content {
+        padding: 14px 10px 16px;
+      }
+
+      section.topic {
+        padding: 14px 12px 12px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      section.topic h2 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="app-inner">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="sidebar-glass">
+          <div class="sidebar-header">
+            <div class="logo-wrap">
+              <div class="logo-inner">Cp</div>
+            </div>
+            <div class="sidebar-title-block">
+              <div class="sidebar-title">Process Capability</div>
+              <div class="sidebar-sub">Cp, Cpk, Pp &amp; SPC Theory</div>
+            </div>
+          </div>
+
+          <div class="sidebar-chip">
+            <span class="sidebar-chip-dot"></span>
+            GOLD GLASS • SPC-2
+          </div>
+
+          <div class="sidebar-label">Topics</div>
+          <div class="sidebar-nav">
+            <button class="nav-item active" data-target="intro">
+              <div class="nav-item-main">
+                <div class="nav-item-title">1. Introduction</div>
+                <div class="nav-item-sub">What is a Process Capability Index?</div>
+              </div>
+              <span class="nav-item-pill">Intro</span>
+            </button>
+
+            <button class="nav-item" data-target="cp">
+              <div class="nav-item-main">
+                <div class="nav-item-title">2. Cp – Process Potential</div>
+                <div class="nav-item-sub">Spread vs spec width</div>
+              </div>
+              <span class="nav-item-pill">Cp</span>
+            </button>
+
+            <button class="nav-item" data-target="cpk">
+              <div class="nav-item-main">
+                <div class="nav-item-title">3. Cpk – Process Capability</div>
+                <div class="nav-item-sub">Spread + centering</div>
+              </div>
+              <span class="nav-item-pill">Cpk</span>
+            </button>
+
+            <button class="nav-item" data-target="interp">
+              <div class="nav-item-main">
+                <div class="nav-item-title">4. Interpretation</div>
+                <div class="nav-item-sub">Cp &amp; Cpk meaning</div>
+              </div>
+              <span class="nav-item-pill">Rules</span>
+            </button>
+
+            <button class="nav-item" data-target="hist">
+              <div class="nav-item-main">
+                <div class="nav-item-title">5. Histograms</div>
+                <div class="nav-item-sub">Ideal, shifted, wide, truncated</div>
+              </div>
+              <span class="nav-item-pill">Visual</span>
+            </button>
+
+            <button class="nav-item" data-target="compare">
+              <div class="nav-item-main">
+                <div class="nav-item-title">6. Cp vs Cpk vs Pp</div>
+                <div class="nav-item-sub">NPD vs production</div>
+              </div>
+              <span class="nav-item-pill">Compare</span>
+            </button>
+
+            <button class="nav-item" data-target="matrix">
+              <div class="nav-item-main">
+                <div class="nav-item-title">7. PCA Matrix</div>
+                <div class="nav-item-sub">Decision guide</div>
+              </div>
+              <span class="nav-item-pill">Matrix</span>
+            </button>
+
+            <button class="nav-item" data-target="conclusion">
+              <div class="nav-item-main">
+                <div class="nav-item-title">8. Conclusion</div>
+                <div class="nav-item-sub">Key takeaways</div>
+              </div>
+              <span class="nav-item-pill">Summary</span>
+            </button>
+
+            <button class="nav-item" data-target="spc3">
+              <div class="nav-item-main">
+                <div class="nav-item-title">9. SPC-3 Preview</div>
+                <div class="nav-item-sub">Special causes / types of variation</div>
+              </div>
+              <span class="nav-item-pill">Next</span>
+            </button>
+          </div>
+
+          <div class="sidebar-footer-note">
+            Use this sidebar to jump directly to any topic. Ideal for training or quick revision.
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main class="content">
+        <div class="content-inner">
+          <header class="content-header">
+            <div class="content-kicker">
+              <div class="content-kicker-line"></div>
+              PROCESS CAPABILITY • THEORY
+            </div>
+            <h1>Process Capability Indices: Cp and Cpk</h1>
+            <p class="subtitle">
+              A Process Capability Index tells us how well a process is performing with respect
+              to the specification limits set by the customer. It checks whether the process can
+              consistently produce products within tolerance limits.
+            </p>
+            <div class="tag-row">
+              <span class="tag gold">Cp – Process Potential</span>
+              <span class="tag gold">Cpk – Actual Capability</span>
+              <span class="tag">Histograms &amp; Control Charts</span>
+              <span class="tag">Six Sigma – Variation Reduction</span>
+            </div>
+          </header>
+
+          <!-- 1 INTRO -->
+          <section class="topic fade-section" id="intro">
+            <h2>1. Process Capability – Overview</h2>
+            <div class="topic-tagline">What is a Process Capability Index?</div>
+            <p>
+              A <strong>Process Capability Index</strong> tells us how well a process is
+              performing with respect to the <strong>specification limits (LSL &amp; USL)</strong>
+              set by the customer. It checks whether the process can
+              <strong>consistently produce products within tolerance limits</strong>.
+            </p>
+            <p>In process capability analysis:</p>
+            <ul>
+              <li>
+                <strong>Histogram</strong> and <strong>Control Charts</strong> are two of the
+                basic <strong>7 QC Tools</strong> used in process capability analysis.
+              </li>
+              <li>
+                <strong>Six Sigma Methodology</strong> is used to improve process capability by
+                <strong>reducing process variation</strong>.
+              </li>
+            </ul>
+            <div class="note-box">
+              <div class="note-icon">✅</div>
+              <div class="note-text">
+                <strong>Key idea:</strong> Capability is not only about the average value; it is
+                about the <strong>entire distribution</strong> of data staying within spec limits
+                over time.
+              </div>
+            </div>
+          </section>
+
+          <!-- 2 Cp -->
+          <section class="topic fade-section" id="cp">
+            <h2>2. Process Potential Index (Cp)</h2>
+            <div class="topic-tagline">Cp measures potential capability – spread only.</div>
+            <p>
+              <strong>Cp</strong> measures the <strong>potential capability</strong> of the
+              process. It compares the <strong>total specification width</strong> to the
+              <strong>natural spread of the process (6σ)</strong>, assuming the process mean (μ)
+              is perfectly centered between the specification limits. Cp only accounts for
+              <strong>process variation</strong>.
+            </p>
+
+            <div class="formula-box">
+              <span class="formula-label">Formula</span>
+              <span class="formula-text">
+                C<sub>p</sub> = (USL − LSL) / 6σ
+              </span>
+            </div>
+
+            <div class="def-grid">
+              <div class="def-item">
+                <div class="def-label">USL</div>
+                <div class="def-text">Upper Specification Limit</div>
+              </div>
+              <div class="def-item">
+                <div class="def-label">LSL</div>
+                <div class="def-text">Lower Specification Limit</div>
+              </div>
+              <div class="def-item">
+                <div class="def-label">σ (Sigma)</div>
+                <div class="def-text">Standard Deviation – process spread</div>
+              </div>
+            </div>
+
+            <div class="table-shell">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Cp value</th>
+                    <th>Interpretation</th>
+                    <th>Focus</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>&lt; 1.0</td>
+                    <td>Process variation is larger than specifications – Not capable.</td>
+                    <td><span class="pill pill-risk">Reduce variation</span></td>
+                  </tr>
+                  <tr>
+                    <td>= 1.0</td>
+                    <td>Process just meets customer requirement / specifications.</td>
+                    <td><span class="pill pill-neutral">Good potential, but tight</span></td>
+                  </tr>
+                  <tr>
+                    <td>&gt; 1.0</td>
+                    <td>Process variation is smaller than specifications – Capable.</td>
+                    <td><span class="pill pill-good">Good potential</span></td>
+                  </tr>
+                  <tr>
+                    <td>≥ 1.33</td>
+                    <td>Generally accepted minimum for a highly capable process.</td>
+                    <td><span class="pill pill-good">Excellent potential</span></td>
+                  </tr>
+                  <tr>
+                    <td>Higher Cp</td>
+                    <td>Better potential capability.</td>
+                    <td><span class="pill pill-good">More robust process</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="note-box">
+              <div class="note-icon">ℹ️</div>
+              <div class="note-text">
+                <strong>Remember:</strong> Cp assumes the process mean is perfectly centered.
+                A high Cp alone can be misleading if the mean has shifted toward one spec limit.
+              </div>
+            </div>
+          </section>
+
+          <!-- 3 Cpk -->
+          <section class="topic fade-section" id="cpk">
+            <h2>3. Process Performance Index (Cpk)</h2>
+            <div class="topic-tagline">Cpk measures actual capability – spread + centering.</div>
+            <p>
+              <strong>Cpk</strong> measures the <strong>actual capability</strong> of the process
+              by considering both:
+            </p>
+            <ul>
+              <li>Process variation (spread, σ)</li>
+              <li>Shift of the process mean (μ) from the target</li>
+            </ul>
+            <p>
+              Cpk is the <strong>minimum</strong> of the capability for the upper and lower
+              limits. It reflects the side where the process is closest to the specification
+              limit.
+            </p>
+
+            <div class="formula-box">
+              <span class="formula-label">Formula</span>
+              <span class="formula-text">
+                C<sub>pk</sub> = min [ (USL − μ) / 3σ , (μ − LSL) / 3σ ]
+              </span>
+            </div>
+
+            <p>
+              Here μ (Mu) is the <strong>process mean</strong>. The minimum value indicates the
+              <strong>σ-distance from the mean to the nearest specification limit</strong>.
+            </p>
+
+            <div class="table-shell">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Condition</th>
+                    <th>Implication</th>
+                    <th>Required action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Cpk &lt; 1.0</td>
+                    <td>Process is not capable; will produce defects.</td>
+                    <td><span class="pill pill-risk">Improve centering and/or reduce variation</span></td>
+                  </tr>
+                  <tr>
+                    <td>Cpk ≥ 1.33</td>
+                    <td>Process is highly capable and well-centered.</td>
+                    <td><span class="pill pill-good">Maintain process control</span></td>
+                  </tr>
+                  <tr>
+                    <td>Cpk = Cp</td>
+                    <td>Process is capable and effectively centered between LSL &amp; USL.</td>
+                    <td><span class="pill pill-neutral">Focus on maintaining control</span></td>
+                  </tr>
+                  <tr>
+                    <td>Cpk &lt; Cp</td>
+                    <td>Process mean is off-center.</td>
+                    <td><span class="pill pill-warn">Shift the process mean (μ) to the centre</span></td>
+                  </tr>
+                  <tr>
+                    <td>Cpk ≥ 2.0</td>
+                    <td>World-class capability.</td>
+                    <td><span class="pill pill-good">Benchmark / best-in-class process</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="note-box">
+              <div class="note-icon">📌</div>
+              <div class="note-text">
+                <strong>Cpk – Process Capability Index:</strong>
+                It is a statistical index that measures the actual capability of a process.
+                It considers both process variation (spread) and process centering (mean shift)
+                with respect to specification limits.
+                <ul style="margin-top:4px;">
+                  <li>Cpk &lt; 1.0 → Process not capable (produces defects).</li>
+                  <li>Cpk = 1.0 → Process is just capable (meets limits).</li>
+                  <li>Cpk &gt; 1.0 → Process is capable (good quality).</li>
+                  <li>Cpk ≥ 1.33 → Generally accepted as industry standard.</li>
+                  <li>Cpk ≥ 2.0 → World-class capability.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="note-box">
+              <div class="note-icon">💡</div>
+              <div class="note-text">
+                <ul style="margin-bottom:0;">
+                  <li><strong>Cp</strong> measures only spread (variation).</li>
+                  <li><strong>Cpk</strong> measures spread + centering (how close mean is to target).</li>
+                  <li><strong>Always Cpk ≤ Cp</strong> – if the mean is off-center, Cpk decreases.</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4 Interpretation -->
+          <section class="topic fade-section" id="interp">
+            <h2>4. Interpretation of Cp and Cpk</h2>
+            <div class="topic-tagline">Capable vs not capable – what the numbers mean.</div>
+
+            <h3>4.1 Cp (Process Capability)</h3>
+            <ul>
+              <li>
+                <strong>Cp &gt; 1</strong>:
+                <ul>
+                  <li>Process spread is small.</li>
+                  <li>All products fall within the specification limits.</li>
+                  <li>Process is quite capable of meeting specifications.</li>
+                </ul>
+              </li>
+              <li>
+                <strong>Cp = 1</strong>:
+                <ul>
+                  <li>Process spread exactly fits within specification limits.</li>
+                  <li>Process is just capable of meeting specifications.</li>
+                </ul>
+              </li>
+              <li>
+                <strong>Cp &lt; 1</strong>:
+                <ul>
+                  <li>Process spread is large.</li>
+                  <li>Many products fall outside specification limits.</li>
+                  <li>Process is incapable of meeting specifications.</li>
+                </ul>
+              </li>
+            </ul>
+
+            <h3>4.2 Cpk (Process Capability Index)</h3>
+            <ul>
+              <li>
+                <strong>Cp = Cpk</strong>:
+                <ul>
+                  <li>Process mean is exactly at the center – well-centered process.</li>
+                </ul>
+              </li>
+              <li>
+                <strong>Cpk &lt; 1</strong>:
+                <ul>
+                  <li>Process mean is shifted from the target.</li>
+                  <li>Defects will be produced.</li>
+                  <li>Process is not capable.</li>
+                </ul>
+              </li>
+              <li>
+                <strong>Cpk &gt; 1</strong>:
+                <ul>
+                  <li>Process mean may be slightly shifted,</li>
+                  <li>But the process is still capable of meeting design specifications.</li>
+                </ul>
+              </li>
+            </ul>
+          </section>
+
+          <!-- 5 Histograms -->
+          <section class="topic fade-section" id="hist">
+            <h2>5. Interpretation of Process Capability Histograms</h2>
+            <div class="topic-tagline">Visual interpretation of Cp/Cpk and variation.</div>
+            <p>
+              A <strong>process capability histogram</strong> shows the frequency distribution of
+              measured data compared with specification limits (LSL &amp; USL). It helps
+              visualise whether the process is capable, centered and stable.
+            </p>
+
+            <h3>Common Cases</h3>
+            <ul>
+              <li>
+                <strong>1. Normal / Ideal Process</strong>
+                <ul>
+                  <li>Histogram is centered at the mean / nominal.</li>
+                  <li>Spread is small, leaving enough space to LSL and USL.</li>
+                  <li>Even if the process drifts slightly, defects are unlikely.</li>
+                  <li>✅ Best condition.</li>
+                </ul>
+              </li>
+              <li>
+                <strong>2. Shifted Process</strong>
+                <ul>
+                  <li>Histogram is shifted toward LSL or USL.</li>
+                  <li>A small additional shift can cause defects on one side.</li>
+                  <li>Cpk will be lower than Cp (indicating off-center process).</li>
+                </ul>
+              </li>
+              <li>
+                <strong>3. Large Process Spread</strong>
+                <ul>
+                  <li>Histogram is too wide (variation is high).</li>
+                  <li>Even if it is centered, many data points cross LSL/USL.</li>
+                  <li><strong>Cp &lt; 1</strong> → Process is not capable.</li>
+                </ul>
+              </li>
+              <li>
+                <strong>4. Truncated Distribution</strong>
+                <ul>
+                  <li>Histogram appears “cut-off” at one or both ends.</li>
+                  <li>Indicates defective parts may have been removed (manual inspection / segregation).</li>
+                  <li>Can give a false impression of process capability.</li>
+                </ul>
+              </li>
+            </ul>
+
+            <p><strong>Cp and Cpk in Histograms:</strong></p>
+            <ul>
+              <li>Cp compares the process spread (6σ) with the specification width.</li>
+              <li>Cpk considers both spread and centering.</li>
+              <li>Cp = Cpk → Process is well-centered.</li>
+              <li>Cpk &lt; Cp → Process is shifted → more risk of defects.</li>
+            </ul>
+
+            <div class="note-box">
+              <div class="note-icon">🔎</div>
+              <div class="note-text">
+                <strong>Key Point:</strong> Process capability histograms + Cp/Cpk values
+                together give a complete picture:
+                <ul style="margin-top:4px;">
+                  <li>Cp ≥ 1.33 and Cpk ≈ Cp → Good, capable and centered process.</li>
+                  <li>Cp &lt; 1 or Cpk ≪ Cp → Process needs improvement (reduce variation or re-center).</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- 6 Cp vs Cpk vs Pp -->
+          <section class="topic fade-section" id="compare">
+            <h2>6. Cp and Cpk Difference + Pp</h2>
+            <div class="topic-tagline">Potential vs actual capability, and NPD performance.</div>
+            <p>
+              Cp and Cpk both measure process capability, but they focus on different aspects.
+              Pp is used during <strong>New Product Development (NPD)</strong>.
+            </p>
+
+            <div class="table-shell">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Aspect</th>
+                    <th>Cp (Process Capability)</th>
+                    <th>Cpk (Process Capability Index)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Meaning</td>
+                    <td>Measures potential capability if the process is perfectly centered.</td>
+                    <td>Measures actual capability, considering how well the mean is centered.</td>
+                  </tr>
+                  <tr>
+                    <td>Focus</td>
+                    <td>Only considers spread (variation) of the process.</td>
+                    <td>Considers both spread and centering of the process.</td>
+                  </tr>
+                  <tr>
+                    <td>Assumption</td>
+                    <td>Assumes process mean is exactly in the middle of specification limits.</td>
+                    <td>No assumption — uses actual process mean.</td>
+                  </tr>
+                  <tr>
+                    <td>Interpretation</td>
+                    <td>Shows process potential if it were perfectly centered.</td>
+                    <td>Shows real-world performance of the process.</td>
+                  </tr>
+                  <tr>
+                    <td>When to Use</td>
+                    <td>Early stages – to see if variation is small enough for specs.</td>
+                    <td>During production – to check if process is actually within specs.</td>
+                  </tr>
+                  <tr>
+                    <td>Key Limitation</td>
+                    <td>Can be misleading if mean is shifted.</td>
+                    <td>More realistic as it accounts for mean shift.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>Cp Value – Normal Production Run vs NPD Stage</h3>
+            <p>
+              Cp value should be <strong>≥ 1.33</strong> during the
+              <strong>normal production process</strong>.
+            </p>
+            <p>
+              The recommended value of <strong>Process Performance Capability – Pp</strong> is
+              <strong>≥ 1.67</strong> during the <strong>New Product Development (NPD) stage</strong>.
+            </p>
+
+            <div class="table-shell">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Metric</th>
+                    <th>Stage</th>
+                    <th>Recommended value</th>
+                    <th>Meaning</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Cp (Process Capability)</td>
+                    <td>Normal Production Run</td>
+                    <td>≥ 1.33</td>
+                    <td>
+                      <span class="pill pill-good">
+                        Ensures the process is consistently producing within specification
+                        limits with enough margin for natural variation.
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Pp (Process Performance Capability)</td>
+                    <td>New Product Development (NPD) Stage</td>
+                    <td>≥ 1.67</td>
+                    <td>
+                      <span class="pill pill-neutral">
+                        Since data during NPD is limited and may include more variability, a
+                        higher value is recommended to ensure a robust process before mass
+                        production.
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="note-box">
+              <div class="note-icon">✅</div>
+              <div class="note-text">
+                <strong>Key Point:</strong>
+                <ul style="margin-top:4px;">
+                  <li>Pp is used during NPD / prototype runs because it considers short-term performance with limited data.</li>
+                  <li>Once the process stabilizes, Cp/Cpk are used for ongoing production capability.</li>
+                  <li>A higher Pp (≥ 1.67) is expected in NPD to build confidence before ramping up.</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- 7 PCA Matrix -->
+          <section class="topic fade-section" id="matrix">
+            <h2>7. Cp and Cpk – Process Capability Analysis (PCA)</h2>
+            <div class="topic-tagline">Quick decision matrix for Cp &amp; Cpk values.</div>
+            <p>
+              This is a Process Capability Analysis (PCA) guide that evaluates a process based
+              on Cp and Cpk values:
+            </p>
+
+            <div class="table-shell">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Cp</th>
+                    <th>Cpk</th>
+                    <th>Interpretation / Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>√</td>
+                    <td>√</td>
+                    <td>
+                      Process is capable. Continue production. Process is near the target.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>√</td>
+                    <td>X</td>
+                    <td>
+                      Process is potentially capable (variation is low), but mean is off-center.<br />
+                      Action: adjust process to bring Cpk closer to Cp / target.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>X</td>
+                    <td>X</td>
+                    <td>
+                      Process is not capable. Management action required for improvement.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>Key Points:</strong></p>
+            <ol>
+              <li>
+                Cp measures <strong>potential</strong>: low variation may exist, but doesn’t
+                account for mean shift.
+              </li>
+              <li>
+                Cpk measures <strong>actual performance</strong>: tells if the process is
+                centred within spec limits.
+              </li>
+              <li>
+                Ideal scenario: <strong>Cp ≈ Cpk and both ≥ 1.33</strong> (or higher for
+                critical products).
+              </li>
+              <li>
+                Red flag: <strong>Cp ≥ 1.33 but Cpk &lt; 1.33</strong> → process spread is OK,
+                but centering needs correction.
+              </li>
+            </ol>
+          </section>
+
+          <!-- 8 Conclusion -->
+          <section class="topic fade-section" id="conclusion">
+            <h2>8. Conclusion</h2>
+            <div class="topic-tagline">Cp for potential, Cpk for reality.</div>
+            <p>
+              <strong>Cp and Cpk</strong> are crucial metrics in process capability analysis,
+              each of which provides distinct perspectives on process performance.
+            </p>
+            <ul>
+              <li>
+                <strong>Cp</strong> measures <strong>potential capability</strong> under ideal
+                conditions (perfect centering).
+              </li>
+              <li>
+                <strong>Cpk</strong> offers a <strong>practical assessment</strong> by
+                accounting for both spread and mean shift.
+              </li>
+            </ul>
+            <p>
+              By understanding and using these metrics effectively, and combining them with
+              <strong>histograms, control charts and SPC</strong>, you can improve process
+              quality and overall performance.
+            </p>
+
+            <div class="note-box">
+              <div class="note-icon">🎯</div>
+              <div class="note-text">
+                <strong>Simple practical rule:</strong><br/>
+                Aim for <strong>Cp ≥ 1.33</strong> and <strong>Cpk ≈ Cp</strong>.<br/>
+                If Cp is good but Cpk is low → focus on centering.<br/>
+                If both Cp and Cpk are low → first reduce variation, then re-center.
+              </div>
+            </div>
+          </section>
+
+          <!-- 9 SPC-3 -->
+          <section class="topic fade-section" id="spc3">
+            <h2>9. SPC-3 – Special Causes of Variation (Preview)</h2>
+            <div class="topic-tagline">Special causes • Assignable causes • Types of variations.</div>
+            <p>
+              The next SPC topic is <strong>SPC-3 – Special Causes of Variation</strong>,
+              also called <strong>Assignable causes</strong>. These are unusual variations
+              that can be traced to specific reasons, unlike normal random variation.
+            </p>
+            <p>Broadly, variations in a process are classified as:</p>
+            <ul>
+              <li><strong>Common causes</strong> – natural, random variation built into the process.</li>
+              <li><strong>Special (assignable) causes</strong> – specific, identifiable sources of variation.</li>
+            </ul>
+            <p>
+              Understanding these causes is essential for correct use of control charts and
+              effective process control.
+            </p>
+
+            <div class="note-box">
+              <div class="note-icon">➡️</div>
+              <div class="note-text">
+                Next step after Cp and Cpk: study <strong>SPC-3 – Special / Assignable causes</strong>,
+                their detection on control charts, and how to remove them to stabilise the process.
+              </div>
+            </div>
+          </section>
+
+          <footer>
+            Cp &amp; Cpk Process Capability Theory • Black + Gold Glass UI • SPC-3 continues next
+          </footer>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // Smooth scroll + active nav + section fade animations
+    const navItems = document.querySelectorAll(".nav-item");
+    const sections = Array.from(document.querySelectorAll("section.topic"));
+
+    navItems.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const targetId = btn.getAttribute("data-target");
+        const section = document.getElementById(targetId);
+        if (section) {
+          section.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+    });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        let bestEntry = null;
+
+        entries.forEach((entry) => {
+          const section = entry.target;
+          if (entry.isIntersecting) {
+            section.classList.add("visible");
+          }
+          if (!bestEntry || entry.intersectionRatio > bestEntry.intersectionRatio) {
+            bestEntry = entry;
+          }
+        });
+
+        if (bestEntry) {
+          const id = bestEntry.target.id;
+          navItems.forEach((btn) => {
+            btn.classList.toggle("active", btn.getAttribute("data-target") === id);
+          });
+        }
+      },
+      {
+        root: null,
+        threshold: 0.35,
+      }
+    );
+
+    sections.forEach((sec) => {
+      observer.observe(sec);
+    });
+  </script>
+</body>
+</html>

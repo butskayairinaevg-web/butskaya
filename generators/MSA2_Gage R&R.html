@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)file:///C:/Users/Rakesh/OneDrive/Desktop/ggg.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Gage R&amp;R – Black Gold Premium UI (Stable)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="./Gage R&amp;R – Black Gold Premium UI (Stable)_files/css2" rel="stylesheet">
+
+<style>
+/* ----------------------------------------------------
+  BLACK & GOLD THEME VARIABLES
+----------------------------------------------------- */
+:root {
+  --bg-dark: #050505;
+  --bg-card: #101010;
+  --bg-frame: #090909;
+  --gold: #d4af37;
+  --text-main: #f9fafb;
+  --text-muted: #cbd5f5;
+  --shadow-big: 0 25px 60px rgba(0,0,0,0.85);
+}
+
+/* ----------------------------------------------------
+  GLOBAL BASE + SCROLLBAR
+----------------------------------------------------- */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  background:
+    radial-gradient(circle at top left, rgba(212,175,55,0.16), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(212,175,55,0.12), transparent 60%),
+    var(--bg-dark);
+  font-family:"Poppins",sans-serif;
+  color:var(--text-main);
+  padding:80px 20px 24px;
+  overflow-x:hidden;
+}
+
+/* Scrollbar */
+body::-webkit-scrollbar{ width:10px; }
+body::-webkit-scrollbar-track{ background:#111; }
+body::-webkit-scrollbar-thumb{
+  background:var(--gold);
+  border-radius:20px;
+  box-shadow:0 0 14px rgba(212,175,55,0.95);
+}
+body::-webkit-scrollbar-thumb:hover{ background:#ffe27a; }
+
+/* ----------------------------------------------------
+  FLOATING GOLD GLASS NAVBAR
+----------------------------------------------------- */
+.navbar {
+  position:fixed;
+  top:12px;
+  left:50%;
+  transform:translateX(-50%) translateY(-20px);
+  width:min(1100px, 100% - 32px);
+  padding:10px 16px;
+  border-radius:999px;
+  background:linear-gradient(135deg, rgba(12,12,12,0.92), rgba(24,24,24,0.96));
+  border:1px solid rgba(212,175,55,0.45);
+  box-shadow:0 14px 40px rgba(0,0,0,0.85), 0 0 18px rgba(212,175,55,0.65);
+  backdrop-filter:blur(14px);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  z-index:50;
+  opacity:0;
+  transition:transform 0.5s ease, opacity 0.5s ease, box-shadow 0.3s ease, padding 0.3s ease;
+}
+
+.navbar.show {
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+.navbar.scrolled{
+  padding:7px 16px;
+  box-shadow:0 18px 45px rgba(0,0,0,0.95), 0 0 24px rgba(212,175,55,0.85);
+}
+
+.nav-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.nav-logo-dot{
+  width:28px;
+  height:28px;
+  border-radius:999px;
+  background:radial-gradient(circle, #fffbe6, #d4af37);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:15px;
+  font-weight:700;
+  color:#111;
+  box-shadow:0 0 0 2px rgba(255,248,220,0.9),0 0 22px rgba(212,175,55,0.95);
+}
+
+.nav-title{
+  font-size:14px;
+  font-weight:600;
+  color:var(--gold);
+}
+
+.nav-right{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+.nav-link{
+  font-size:11px;
+  padding:5px 9px;
+  border-radius:999px;
+  border:1px solid rgba(212,175,55,0.35);
+  color:var(--text-muted);
+  background:rgba(10,10,10,0.9);
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.nav-link:hover{
+  background:var(--gold);
+  color:#111;
+  box-shadow:0 0 14px rgba(212,175,55,0.9);
+}
+
+@media(max-width:720px){
+  .nav-title{display:none;}
+  .navbar{padding-inline:10px;}
+}
+
+/* ----------------------------------------------------
+  PAGE FRAME
+----------------------------------------------------- */
+.frame{
+  max-width:1180px;
+  margin:auto;
+  background:radial-gradient(circle at top, #151515, #050505 60%);
+  border-radius:22px;
+  border:1px solid rgba(212,175,55,0.35);
+  box-shadow:var(--shadow-big);
+  overflow:hidden;
+  position:relative;
+  z-index:5;
+}
+
+/* moving gold line on top of frame */
+.frame::before{
+  content:"";
+  position:absolute;
+  top:0; left:0; right:0;
+  height:3px;
+  background:linear-gradient(90deg,#b8860b,#ffd700,#fff6b0,#d4af37,#b8860b);
+  background-size:280% 100%;
+  animation:goldline 7s linear infinite;
+}
+@keyframes goldline{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+/* ----------------------------------------------------
+  LEFT FIXED INDEX
+----------------------------------------------------- */
+.index-box{
+  position:fixed;
+  top:50%;
+  left:20px;
+  transform:translateY(-50%);
+  background:#080808;
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid rgba(212,175,55,0.3);
+  box-shadow:0 20px 45px rgba(0,0,0,0.9);
+  width:155px;
+  z-index:40;
+  backdrop-filter:blur(10px);
+}
+
+.index-title{
+  font-size:13px;
+  font-weight:600;
+  color:var(--gold);
+  margin-bottom:8px;
+  text-align:center;
+}
+
+.index-item{
+  font-size:11px;
+  padding:5px 8px;
+  margin:4px 0;
+  border-radius:9px;
+  cursor:pointer;
+  transition:0.2s;
+  color:var(--text-muted);
+  border:1px solid rgba(212,175,55,0.18);
+}
+
+.index-item:hover{
+  background:var(--gold);
+  color:#111;
+  box-shadow:0 0 14px rgba(212,175,55,0.9);
+  transform:translateX(4px);
+}
+
+@media(max-width:960px){
+  .index-box{display:none;}
+}
+
+/* ----------------------------------------------------
+  HERO SECTION
+----------------------------------------------------- */
+.hero{
+  padding:28px 26px 20px;
+  position:relative;
+}
+
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:-20%;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(212,175,55,0.28), transparent 55%),
+    radial-gradient(circle at 100% 10%, rgba(255,215,0,0.2), transparent 55%);
+  opacity:0.45;
+  pointer-events:none;
+}
+
+.hero-inner{
+  position:relative;
+  z-index:1;
+}
+
+.hero-title{
+  font-size:40px;
+  font-weight:800;
+  color:var(--gold);
+  text-shadow:0 0 25px rgba(212,175,55,0.95);
+  margin-bottom:10px;
+}
+
+.hero-sub{
+  font-size:16px;
+  color:var(--text-muted);
+  max-width:840px;
+  line-height:1.7;
+}
+
+/* ----------------------------------------------------
+  CARDS
+----------------------------------------------------- */
+.card{
+  background:radial-gradient(circle at top, #1a1a1a, #050505 65%);
+  padding:22px 25px;
+  margin:22px;
+  border-radius:16px;
+  border:1px solid rgba(212,175,55,0.25);
+  box-shadow:0 18px 50px rgba(0,0,0,0.9);
+  position:relative;
+  overflow:hidden;
+  opacity:0;
+  transform:translateY(40px) scale(0.95);
+  transition:0.8s cubic-bezier(0.19,1,0.22,1);
+}
+
+.card.show{
+  opacity:1;
+  transform:translateY(0) scale(1);
+}
+
+.card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  padding:2px;
+  background:linear-gradient(135deg,#f5d36d,#ad8a18,#fce9a6,#d4af37);
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+  mask-composite:exclude;
+  opacity:0.16;
+  transition:0.35s ease;
+}
+
+.card:hover::before{
+  opacity:0.5;
+}
+
+.card:hover{
+  box-shadow:0 28px 70px rgba(0,0,0,0.95),0 0 32px rgba(212,175,55,0.7);
+}
+
+.card-label{
+  font-size:13px;
+  letter-spacing:2px;
+  margin-bottom:8px;
+  color:#ffe08a;
+}
+
+.card h2{
+  font-size:30px;
+  margin-bottom:8px;
+  color:var(--gold);
+  text-shadow:0 0 14px rgba(212,175,55,0.75);
+}
+
+/* Lists */
+.card ul, .card ol{
+  margin-left:24px;
+  font-size:15px;
+  color:var(--text-main);
+}
+.card li{
+  margin-bottom:6px;
+}
+
+/* Note box */
+.note-box{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:10px;
+  background:rgba(212,175,55,0.06);
+  border:1px solid rgba(212,175,55,0.55);
+  font-size:13px;
+  color:#ffe9a8;
+}
+
+/* TABLE */
+.table-wrapper{
+  overflow-x:auto;
+  margin-top:10px;
+  border:1px solid rgba(212,175,55,0.3);
+  border-radius:12px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  color:#f9fafb;
+  min-width:760px;
+}
+th{
+  background:#111111;
+  padding:9px;
+  border-bottom:1px solid rgba(212,175,55,0.5);
+  font-size:13px;
+}
+td{
+  padding:9px;
+  border-bottom:1px solid #262626;
+  font-size:13px;
+}
+tr:nth-child(even) td{
+  background:#151515;
+}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  body{padding:80px 10px 18px;}
+  .card{margin-inline:14px;}
+  .hero{padding-inline:18px;}
+  .hero-title{font-size:32px;}
+}
+</style>
+<style>
+.gold-ripple{
+  position:absolute;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:radial-gradient(circle,#ffe9b0,#d4af37,transparent 70%);
+  pointer-events:none;
+  transform:translate(-50%,-50%);
+  animation:rippleGold 1.2s ease-out forwards;
+  z-index:99999;
+}
+@keyframes rippleGold{
+  0%{transform:translate(-50%,-50%) scale(1);opacity:1;}
+  100%{transform:translate(-50%,-50%) scale(40);opacity:0;}
+}</style><style>
+@keyframes goldFloat {
+  0%{ transform:translateY(0); opacity:.8; }
+  50%{ transform:translateY(-30px); opacity:.5; }
+  100%{ transform:translateY(0); opacity:.8; }
+}</style><style>
+@keyframes spinRays{
+  0%{transform:rotate(0deg);}
+  100%{transform:rotate(360deg);}
+}</style><style>
+@keyframes orbFloat{
+  0%{transform:translateY(0) scale(1);}
+  50%{transform:translateY(-35px) translateX(20px) scale(1.1);}
+  100%{transform:translateY(0) scale(1);}
+}</style><style>
+@keyframes scan{
+  0%{transform:translateY(-120%);}
+  100%{transform:translateY(120%);}
+}</style></head>
+
+<body>
+
+<!-- FLOATING NAVBAR -->
+<div class="navbar show scrolled" id="navbar">
+  <div class="nav-left">
+    <div class="nav-logo-dot">GR</div>
+    <div class="nav-title">Gage R&amp;R · Black &amp; Gold Notes</div>
+  </div>
+  <div class="nav-right">
+    <button class="nav-link" onclick="goTo(&#39;sec1&#39;)" style="transform: translate(0px, 0px);">Definition</button>
+    <button class="nav-link" onclick="goTo(&#39;sec2&#39;)" style="transform: translate(0px, 0px);">Purpose</button>
+    <button class="nav-link" onclick="goTo(&#39;sec3&#39;)">Focus</button>
+    <button class="nav-link" onclick="goTo(&#39;sec4&#39;)" style="transform: translate(0px, 0px);">Types</button>
+    <button class="nav-link" onclick="goTo(&#39;sec5&#39;)" style="transform: translate(0px, 0px);">Why GRR</button>
+    <button class="nav-link" onclick="goTo(&#39;sec6&#39;)" style="transform: translate(0px, 0px);">Components</button>
+    <button class="nav-link" onclick="goTo(&#39;sec9&#39;)">Procedure</button>
+    <button class="nav-link" onclick="goTo(&#39;sec11&#39;)">Attribute GRR</button>
+  </div>
+</div>
+
+<!-- LEFT INDEX -->
+<div class="index-box">
+  <div class="index-title">INDEX</div>
+  <div class="index-item" onclick="goTo(&#39;sec1&#39;)" style="transform: translate(0px, 0px);">1. Definition</div>
+  <div class="index-item" onclick="goTo(&#39;sec2&#39;)" style="transform: translate(0px, 0px);">2. Purpose</div>
+  <div class="index-item" onclick="goTo(&#39;sec3&#39;)" style="transform: translate(0px, 0px);">3. Focus of GRR</div>
+  <div class="index-item" onclick="goTo(&#39;sec4&#39;)" style="transform: translate(0px, 0px);">4. Types of Study</div>
+  <div class="index-item" onclick="goTo(&#39;sec5&#39;)" style="transform: translate(0px, 0px);">5. Why GRR</div>
+  <div class="index-item" onclick="goTo(&#39;sec6&#39;)" style="transform: translate(0px, 0px);">6. Components</div>
+  <div class="index-item" onclick="goTo(&#39;sec7&#39;)" style="transform: translate(0px, 0px);">7. Contribution</div>
+  <div class="index-item" onclick="goTo(&#39;sec8&#39;)" style="transform: translate(0px, 0px);">8. Benefits</div>
+  <div class="index-item" onclick="goTo(&#39;sec9&#39;)" style="transform: translate(0px, 0px);">9. Procedure</div>
+  <div class="index-item" onclick="goTo(&#39;sec10&#39;)" style="transform: translate(0px, 0px);">10. Criteria</div>
+  <div class="index-item" onclick="goTo(&#39;sec11&#39;)" style="transform: translate(0px, 0px);">11. Attribute GRR</div>
+  <div class="index-item" onclick="goTo(&#39;sec12&#39;)" style="transform: translate(0px, 0px);">12. Sample Sheet</div>
+  <div class="index-item" onclick="goTo(&#39;sec14&#39;)" style="transform: translate(0px, 0px);">14. Summary</div>
+</div>
+
+<div class="frame">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1 class="hero-title">Gage R&amp;R – Black &amp; Gold Premium Notes</h1>
+      <p class="hero-sub">
+        Royal black base with golden highlights and smooth layout — perfect for professional
+        understanding and presentation of Gage R&amp;R (Repeatability &amp; Reproducibility)
+        as a key MSA tool.
+      </p>
+    </div>
+  </section>
+
+  <!-- CONTENT CARDS – FULL NOTES -->
+  <section id="sec1" class="card show" style="transform: rotateX(0deg) rotateY(0deg) scale(1);">
+    <div class="card-label">01 · DEFINITION</div>
+    <h2>1. Definition</h2>
+    <ul>
+      <li>Gage R&amp;R is the combined estimate of Repeatability and Reproducibility errors in a measurement system.</li>
+      <li>It helps determine how much variation comes from the measurement system itself.</li>
+    </ul>
+  </section>
+
+  <section id="sec2" class="card show" style="transform: rotateX(0deg) rotateY(0deg) scale(1);">
+    <div class="card-label">02 · PURPOSE</div>
+    <h2>2. Purpose</h2>
+    <ul>
+      <li>To check whether the measurement system is capable (acceptable) or not.</li>
+      <li>To ensure that collected measurement data is reliable for decision-making.</li>
+    </ul>
+  </section>
+
+  <section id="sec3" class="card show" style="transform: rotateX(0deg) rotateY(0deg) scale(1);">
+    <div class="card-label">03 · FOCUS OF GRR</div>
+    <h2>3. Focus of GRR</h2>
+    <ul>
+      <li>Repeatability → Variation when the same operator measures the same part multiple times with the same gage.</li>
+      <li>Reproducibility → Variation when different operators measure the same part with the same gage.</li>
+      <li>Together, they represent the precision of the measurement system.</li>
+    </ul>
+  </section>
+
+  <section id="sec4" class="card show" style="transform: rotateX(0deg) rotateY(0deg) scale(1);">
+    <div class="card-label">04 · TYPES OF STUDY</div>
+    <h2>4. Types of Gage R&amp;R Studies</h2>
+    <p><b>1. Variable Gage R&amp;R Study</b></p>
+    <ul>
+      <li>Based on continuous data (e.g., length, width, diameter, thickness, weight).</li>
+      <li>Methods: Average &amp; Range Method, ANOVA Method.</li>
+    </ul>
+    <p><b>2. Attribute Gage R&amp;R Study</b></p>
+    <ul>
+      <li>Based on discrete data (e.g., Go/No-Go, OK/Not OK, Pass/Fail, visual inspection).</li>
+      <li>More subjective, depends on inspector’s judgement.</li>
+    </ul>
+  </section>
+
+  <section id="sec5" class="card show" style="transform: rotateX(0deg) rotateY(0deg) scale(1);">
+    <div class="card-label">05 · WHY GRR</div>
+    <h2>5. Why Conduct Gage R&amp;R Study?</h2>
+    <ul>
+      <li>Variation is natural in manufacturing; every measurement system also adds variation.</li>
+      <li>Gage R&amp;R study helps to:
+        <ul>
+          <li>Quantify measurement system variation.</li>
+          <li>Identify sources of error (equipment or operator).</li>
+          <li>Improve data reliability.</li>
+          <li>Support tools like SPC, MSA, FMEA, and Six Sigma.</li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+
+  <section id="sec6" class="card show" style="transform: rotateX(0deg) rotateY(0deg) scale(1);">
+    <div class="card-label">06 · COMPONENTS</div>
+    <h2>6. Components of a Measurement System</h2>
+    <ul>
+      <li>Personnel (operator/appraiser)</li>
+      <li>Equipment/Gage/Instrument</li>
+      <li>Methods and Procedures</li>
+      <li>Environment (temperature, humidity, vibration, lighting, etc.)</li>
+      <li>Software used for measurement data</li>
+    </ul>
+  </section>
+
+  <section id="sec7" class="card show" style="transform: rotateX(0deg) rotateY(0deg) scale(1);">
+    <div class="card-label">07 · GAUGE CONTRIBUTION</div>
+    <h2>7. Gage R&amp;R Contribution</h2>
+    <ul>
+      <li>Total Variation = Process Variation + Measurement System Variation</li>
+      <li>Gage R&amp;R tells how much of the total variation is due to:
+        <ul>
+          <li>Repeatability (equipment variation)</li>
+          <li>Reproducibility (appraiser variation)</li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+
+  <section id="sec8" class="card show" style="transform: rotateX(0deg) rotateY(0deg) scale(1);">
+    <div class="card-label">08 · BENEFITS</div>
+    <h2>8. Benefits of Gage R&amp;R Study</h2>
+    <ul>
+      <li>Predicts % of error in the measurement system.</li>
+      <li>Identifies main sources of error.</li>
+      <li>Improves measurement data quality.</li>
+      <li>Reduces wrong decision-making.</li>
+      <li>Supports quality improvement tools.</li>
+    </ul>
+  </section>
+
+  <section id="sec9" class="card">
+    <div class="card-label">09 · PROCEDURE</div>
+    <h2>9. Step-by-Step Procedure for Conducting a Gage R&amp;R Study</h2>
+    <p><b>Preparation</b></p>
+    <ul>
+      <li>Select the measurement equipment for study.</li>
+      <li>Ensure calibration is up to date.</li>
+    </ul>
+    <p><b>Procedure</b></p>
+    <ol>
+      <li><b>Select Appraisers</b>
+        <ul><li>Choose 2–3 normal users of the gage.</li></ul>
+      </li>
+      <li><b>Select Parts</b>
+        <ul><li>Choose 10 or more parts representing the full range of process variation.</li></ul>
+      </li>
+      <li><b>Number the Parts</b>
+        <ul>
+          <li>Label parts (P1, P2, …, Pn).</li>
+          <li>Keep numbers hidden from appraisers to avoid bias.</li>
+        </ul>
+      </li>
+      <li><b>First Measurement Round</b>
+        <ul><li>Appraiser A measures all parts in random order. Record results.</li></ul>
+      </li>
+      <li><b>Other Appraisers</b>
+        <ul><li>Appraiser B and C repeat the same process, without seeing others’ results.</li></ul>
+      </li>
+      <li><b>Repeat Measurements</b>
+        <ul><li>Each appraiser measures all parts 2–3 times in different random orders.</li></ul>
+      </li>
+      <li><b>Record and Organize Data</b>
+        <ul>
+          <li>Enter results in Gage R&amp;R data sheet.</li>
+          <li>Calculate averages and ranges for each appraiser.</li>
+        </ul>
+      </li>
+      <li><b>Calculate Variations</b>
+        <ul>
+          <li>Repeatability = within appraiser variation.</li>
+          <li>Reproducibility = between appraiser variation.</li>
+          <li>Gage R&amp;R = Repeatability + Reproducibility.</li>
+          <li>Part Variation = natural variation among selected parts.</li>
+          <li>Total Variation = √ (Gage R&amp;R² + Part Variation²).</li>
+          <li>ndc (Number of Distinct Categories) = (Part Variation ÷ Gage R&amp;R) × 1.41</li>
+        </ul>
+      </li>
+      <li><b>Analyze Results</b>
+        <ul>
+          <li>Use Average &amp; Range charts to check consistency.</li>
+          <li>Review %Gage R&amp;R and ndc values to judge acceptability.</li>
+        </ul>
+      </li>
+    </ol>
+    <div class="note-box">
+      Strong measurement system → <b>low %Gage R&amp;R (≤ 10%)</b> and <b>high ndc (≥ 5)</b>.
+    </div>
+  </section>
+
+  <section id="sec10" class="card">
+    <div class="card-label">10 · ACCEPTANCE CRITERIA</div>
+    <h2>10. Acceptance Criteria</h2>
+    <p><b>%Gage R&amp;R (of Total Variation)</b></p>
+    <ul>
+      <li>≤ 10% – Acceptable (Good system)</li>
+      <li>10–30% – Marginal (May need improvement)</li>
+      <li>≥ 30% – Not acceptable (Needs improvement)</li>
+    </ul>
+    <p>Good measurement system should also have <b>ndc ≥ 5 distinct categories</b>.</p>
+  </section>
+
+  <section id="sec11" class="card">
+    <div class="card-label">11 · ATTRIBUTE GRR</div>
+    <h2>11. Attribute Gage R&amp;R Study</h2>
+    <ul>
+      <li>Used for attribute (discrete) data such as Go/No-Go, OK/Not OK, Pass/Fail, or visual inspection.</li>
+      <li>Appraisers inspect the same parts multiple times.</li>
+      <li>Agreement is measured in 3 ways:
+        <ol>
+          <li>Appraiser vs Standard – Operator vs known reference value.</li>
+          <li>Appraiser vs Appraiser – Consistency between operators.</li>
+          <li>Appraiser vs Self – Operator consistency on repeated trials.</li>
+        </ol>
+      </li>
+    </ul>
+    <p><b>Acceptance Criteria for Attribute Gage R&amp;R</b></p>
+    <ul>
+      <li>≥ 90% agreement – Acceptable</li>
+      <li>80–90% agreement – Marginal (training required)</li>
+      <li>&lt; 80% agreement – Not acceptable</li>
+    </ul>
+  </section>
+
+  <section id="sec12" class="card">
+    <div class="card-label">12 · SAMPLE DATA SHEET</div>
+    <h2>12. Sample Gage R&amp;R Data Sheet</h2>
+    <p><b>Setup:</b> Appraisers: A, B, C · Parts: 10 parts (P1–P10) · Trials: 2 per part per appraiser</p>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+        <tr>
+          <th>Part No.</th>
+          <th>A-Trial 1</th>
+          <th>A-Trial 2</th>
+          <th>B-Trial 1</th>
+          <th>B-Trial 2</th>
+          <th>C-Trial 1</th>
+          <th>C-Trial 2</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr><td>P1</td><td>10.01</td><td>10.03</td><td>10.00</td><td>10.02</td><td>10.05</td><td>10.04</td></tr>
+        <tr><td>P2</td><td>9.98</td><td>9.99</td><td>9.97</td><td>9.96</td><td>9.99</td><td>9.98</td></tr>
+        <tr><td>P3</td><td>10.10</td><td>10.11</td><td>10.09</td><td>10.08</td><td>10.12</td><td>10.11</td></tr>
+        <tr><td>P4</td><td>10.25</td><td>10.24</td><td>10.26</td><td>10.25</td><td>10.27</td><td>10.26</td></tr>
+        <tr><td>P5</td><td>9.85</td><td>9.87</td><td>9.86</td><td>9.88</td><td>9.84</td><td>9.86</td></tr>
+        <tr><td>P6</td><td>10.50</td><td>10.49</td><td>10.51</td><td>10.50</td><td>10.52</td><td>10.53</td></tr>
+        <tr><td>P7</td><td>10.75</td><td>10.76</td><td>10.74</td><td>10.73</td><td>10.77</td><td>10.76</td></tr>
+        <tr><td>P8</td><td>9.70</td><td>9.71</td><td>9.72</td><td>9.73</td><td>9.71</td><td>9.70</td></tr>
+        <tr><td>P9</td><td>10.35</td><td>10.36</td><td>10.34</td><td>10.35</td><td>10.36</td><td>10.37</td></tr>
+        <tr><td>P10</td><td>9.60</td><td>9.61</td><td>9.59</td><td>9.60</td><td>9.62</td><td>9.61</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="sec14" class="card">
+    <div class="card-label">14 · SUMMARY</div>
+    <h2>14. Summary</h2>
+    <ul>
+      <li>Variable Gage R&amp;R → continuous data (e.g., length, weight).</li>
+      <li>Attribute Gage R&amp;R → discrete data (e.g., OK/Not OK).</li>
+      <li>Purpose → quantify measurement error and improve reliability.</li>
+      <li>Acceptability → %Gage R&amp;R ≤ 10% good, ndc ≥ 5 good.</li>
+    </ul>
+    <div class="note-box">
+      In short: Gage R&amp;R is a powerful MSA tool that confirms whether your measurement system
+      is reliable enough to support critical quality decisions.
+    </div>
+  </section>
+
+</div>
+
+<!-- YAHAN PART 2 KA SCRIPT AAYEGA -->
+<script>
+/* Smooth scroll */
+function goTo(id){
+  const el = document.getElementById(id);
+  if(el){ el.scrollIntoView({ behavior:"smooth" }); }
+}
+
+/* Scroll reveal */
+const cards = document.querySelectorAll(".card");
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){ entry.target.classList.add("show"); }
+  });
+},{ threshold:0.15 });
+cards.forEach(c=>observer.observe(c));
+
+/* Navbar animation */
+const navbar = document.getElementById("navbar");
+window.addEventListener("load",()=> navbar.classList.add("show"));
+window.addEventListener("scroll",()=>{
+  navbar.classList.toggle("scrolled", window.scrollY>40);
+});
+
+/* 3D tilt for cards */
+cards.forEach(card=>{
+  card.addEventListener("mousemove", e=>{
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const tiltX = ((y - rect.height/2) / 18).toFixed(2);
+    const tiltY = ((x - rect.width/2) / -18).toFixed(2);
+    card.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.03)`;
+  });
+  card.addEventListener("mouseleave", ()=>{
+    card.style.transform = "rotateX(0deg) rotateY(0deg) scale(1)";
+  });
+});
+
+/* Ripple click */
+document.addEventListener("click", function(e){
+  let ripple = document.createElement("span");
+  ripple.className = "gold-ripple";
+  ripple.style.left = e.pageX + "px";
+  ripple.style.top = e.pageY + "px";
+  document.body.appendChild(ripple);
+  setTimeout(()=> ripple.remove(), 1200);
+});
+const rippleCSS = document.createElement("style");
+rippleCSS.innerHTML = `
+.gold-ripple{
+  position:absolute;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:radial-gradient(circle,#ffe9b0,#d4af37,transparent 70%);
+  pointer-events:none;
+  transform:translate(-50%,-50%);
+  animation:rippleGold 1.2s ease-out forwards;
+  z-index:99999;
+}
+@keyframes rippleGold{
+  0%{transform:translate(-50%,-50%) scale(1);opacity:1;}
+  100%{transform:translate(-50%,-50%) scale(40);opacity:0;}
+}`;
+document.head.appendChild(rippleCSS);
+
+/* Gold Particles (40 only) */
+const particleContainer = document.createElement("div");
+particleContainer.style.position = "fixed";
+particleContainer.style.inset = "0";
+particleContainer.style.zIndex = "0";
+particleContainer.style.pointerEvents = "none";
+document.body.appendChild(particleContainer);
+for(let i=0;i<40;i++){
+  let p=document.createElement("div");
+  let size=Math.random()*3+1;
+  p.style.position="absolute";
+  p.style.width=size+"px";
+  p.style.height=size+"px";
+  p.style.borderRadius="50%";
+  p.style.background="rgba(212,175,55,"+(Math.random()*0.7+0.2)+")";
+  p.style.boxShadow="0 0 6px rgba(212,175,55,0.9)";
+  p.style.top=Math.random()*100+"%";
+  p.style.left=Math.random()*100+"%";
+  p.style.animation=`goldFloat ${15+Math.random()*20}s linear infinite`;
+  particleContainer.appendChild(p);
+}
+const anim=document.createElement("style");
+anim.innerHTML=`
+@keyframes goldFloat {
+  0%{ transform:translateY(0); opacity:.8; }
+  50%{ transform:translateY(-30px); opacity:.5; }
+  100%{ transform:translateY(0); opacity:.8; }
+}`;
+document.head.appendChild(anim);
+
+/* Light rays */
+const rays=document.createElement("div");
+rays.style.position="fixed";
+rays.style.inset="0";
+rays.style.zIndex="1";
+rays.style.pointerEvents="none";
+rays.style.background="radial-gradient(circle,rgba(212,175,55,0.10),transparent 60%)";
+rays.style.animation="spinRays 22s linear infinite";
+document.body.appendChild(rays);
+const raysCSS=document.createElement("style");
+raysCSS.innerHTML=`
+@keyframes spinRays{
+  0%{transform:rotate(0deg);}
+  100%{transform:rotate(360deg);}
+}`;
+document.head.appendChild(raysCSS);
+
+/* Gold wipe page transition */
+const wipe=document.createElement("div");
+wipe.style.position="fixed";
+wipe.style.inset="0";
+wipe.style.background="linear-gradient(120deg,#b8860b,#ffd700,#fff2b0)";
+wipe.style.zIndex="99999";
+wipe.style.transform="translateY(0)";
+wipe.style.transition="transform 1.1s cubic-bezier(0.7,0,0.3,1)";
+document.body.appendChild(wipe);
+window.addEventListener("load",()=>{
+  setTimeout(()=> wipe.style.transform="translateY(-120%)",350);
+});
+
+/* Gold orbs (6 only) */
+const orbContainer=document.createElement("div");
+orbContainer.style.position="fixed";
+orbContainer.style.inset="0";
+orbContainer.style.zIndex="1";
+orbContainer.style.pointerEvents="none";
+document.body.appendChild(orbContainer);
+for(let i=0;i<6;i++){
+  let orb=document.createElement("div");
+  orb.className="orb";
+  let size=40+Math.random()*30;
+  orb.style.width=size+"px";
+  orb.style.height=size+"px";
+  orb.style.borderRadius="50%";
+  orb.style.position="absolute";
+  orb.style.left=Math.random()*100+"%";
+  orb.style.top=Math.random()*100+"%";
+  orb.style.background="radial-gradient(circle,#fff9d9,#d4af37,#8d741e)";
+  orb.style.boxShadow="0 0 25px rgba(212,175,55,0.7)";
+  orb.style.animation=`orbFloat ${10+Math.random()*12}s ease-in-out infinite`;
+  orbContainer.appendChild(orb);
+}
+const orbCSS=document.createElement("style");
+orbCSS.innerHTML=`
+@keyframes orbFloat{
+  0%{transform:translateY(0) scale(1);}
+  50%{transform:translateY(-35px) translateX(20px) scale(1.1);}
+  100%{transform:translateY(0) scale(1);}
+}`;
+document.head.appendChild(orbCSS);
+
+/* Magnetic hover */
+function magnetic(el){
+  el.addEventListener("mousemove", e=>{
+    const r=el.getBoundingClientRect();
+    const x=e.clientX - r.left - r.width/2;
+    const y=e.clientY - r.top - r.height/2;
+    el.style.transform=`translate(${x/8}px,${y/8}px)`;
+  });
+  el.addEventListener("mouseleave",()=> el.style.transform="translate(0,0)");
+}
+document.querySelectorAll(".nav-link,.index-item").forEach(magnetic);
+
+/* Voice reader */
+const voiceBtn=document.createElement("div");
+voiceBtn.innerHTML="🔊";
+voiceBtn.style.position="fixed";
+voiceBtn.style.bottom="25px";
+voiceBtn.style.right="25px";
+voiceBtn.style.fontSize="26px";
+voiceBtn.style.background="linear-gradient(135deg,#d4af37,#fff0b0)";
+voiceBtn.style.padding="12px 18px";
+voiceBtn.style.borderRadius="50%";
+voiceBtn.style.cursor="pointer";
+voiceBtn.style.boxShadow="0 0 18px rgba(212,175,55,0.9)";
+voiceBtn.style.zIndex="9999";
+document.body.appendChild(voiceBtn);
+voiceBtn.onclick=()=>{
+  let text=document.body.innerText;
+  let s=new SpeechSynthesisUtterance(text);
+  s.rate=0.95;
+  s.pitch=1;
+  s.volume=1;
+  speechSynthesis.speak(s);
+};
+
+/* AI helper */
+const aiToggle=document.createElement("div");
+aiToggle.id="aiToggle";
+aiToggle.innerHTML="🤖";
+aiToggle.style.position="fixed";
+aiToggle.style.bottom="26px";
+aiToggle.style.left="26px";
+aiToggle.style.width="46px";
+aiToggle.style.height="46px";
+aiToggle.style.borderRadius="50%";
+aiToggle.style.display="flex";
+aiToggle.style.alignItems="center";
+aiToggle.style.justifyContent="center";
+aiToggle.style.cursor="pointer";
+aiToggle.style.background="radial-gradient(circle,#fff9d0,#d4af37)";
+aiToggle.style.boxShadow="0 0 22px rgba(212,175,55,0.8)";
+aiToggle.style.zIndex="9999";
+document.body.appendChild(aiToggle);
+
+const aiBox=document.createElement("div");
+aiBox.id="aiBox";
+aiBox.style.position="fixed";
+aiBox.style.bottom="84px";
+aiBox.style.left="26px";
+aiBox.style.width="250px";
+aiBox.style.padding="12px";
+aiBox.style.borderRadius="16px";
+aiBox.style.display="none";
+aiBox.style.background="rgba(10,10,10,0.95)";
+aiBox.style.color="#fff";
+aiBox.style.border="1px solid rgba(212,175,55,0.4)";
+aiBox.style.boxShadow="0 18px 40px rgba(0,0,0,0.8)";
+aiBox.style.zIndex="9998";
+aiBox.innerHTML=`
+<b style="color:#ffeb9c">Gage R&R Helper</b><br><br>
+• %GRR ≤ 10% = Good<br>
+• ndc ≥ 5 = Good resolution<br>
+• GRR = Repeatability + Reproducibility<br>
+• Attribute GRR ≥ 90% agreement = Good<br>
+`;
+document.body.appendChild(aiBox);
+
+aiToggle.onclick=()=> aiBox.style.display = aiBox.style.display==="none" ? "block" : "none";
+
+/* Fingerprint unlock */
+const fp=document.createElement("div");
+fp.style.position="fixed";
+fp.style.inset="0";
+fp.style.background="rgba(0,0,0,0.95)";
+fp.style.display="flex";
+fp.style.alignItems="center";
+fp.style.justifyContent="center";
+fp.style.zIndex="100000";
+fp.innerHTML=`
+<div style="text-align:center;color:white;">
+  <div style="font-size:18px;margin-bottom:10px;color:#ffeaa0;">Secure Access</div>
+  <div id="fpscan" style="
+    width:90px;height:90px;margin:auto;
+    border-radius:50%;border:2px solid rgba(212,175,55,0.7);
+    box-shadow:0 0 22px rgba(212,175,55,0.9);
+    position:relative;overflow:hidden;cursor:pointer;">
+    <div style="
+      position:absolute;inset:12px;border-radius:50%;
+      border:2px solid rgba(255,230,160,0.8);"></div>
+    <div class="scanLine" style="
+      position:absolute;inset:-40%;
+      background:linear-gradient(120deg,transparent,rgba(255,255,255,0.5),transparent);
+      animation:scan 2s linear infinite;"></div>
+  </div>
+  <div style="font-size:12px;margin-top:10px;color:#ccc;">Tap fingerprint to unlock</div>
+</div>
+`;
+document.body.appendChild(fp);
+
+const scanCSS=document.createElement("style");
+scanCSS.innerHTML=`
+@keyframes scan{
+  0%{transform:translateY(-120%);}
+  100%{transform:translateY(120%);}
+}`;
+document.head.appendChild(scanCSS);
+
+document.getElementById("fpscan").onclick=()=>{
+  fp.style.opacity="0";
+  fp.style.transition="0.6s";
+  setTimeout(()=> fp.remove(),600);
+};
+</script><div style="position: fixed; inset: 0px; z-index: 0; pointer-events: none;"><div style="position: absolute; width: 1.3948px; height: 1.3948px; border-radius: 50%; background: rgba(212, 175, 55, 0.68); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 51.9997%; left: 84.9561%; animation: 16.6198s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 3.14666px; height: 3.14666px; border-radius: 50%; background: rgba(212, 175, 55, 0.58); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 54.424%; left: 2.36909%; animation: 25.7771s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 1.44438px; height: 1.44438px; border-radius: 50%; background: rgba(212, 175, 55, 0.663); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 94.3584%; left: 49.2049%; animation: 29.1893s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 2.73949px; height: 2.73949px; border-radius: 50%; background: rgba(212, 175, 55, 0.384); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 21.5614%; left: 53.6281%; animation: 28.8394s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 2.54943px; height: 2.54943px; border-radius: 50%; background: rgba(212, 175, 55, 0.43); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 23.7494%; left: 96.5315%; animation: 16.0517s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 2.92914px; height: 2.92914px; border-radius: 50%; background: rgba(212, 175, 55, 0.41); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 44.8277%; left: 97.2249%; animation: 27.2841s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 1.21722px; height: 1.21722px; border-radius: 50%; background: rgba(212, 175, 55, 0.32); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 40.2652%; left: 49.1007%; animation: 26.2939s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 3.7518px; height: 3.7518px; border-radius: 50%; background: rgba(212, 175, 55, 0.31); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 98.3318%; left: 90.4036%; animation: 31.5425s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 1.08602px; height: 1.08602px; border-radius: 50%; background: rgba(212, 175, 55, 0.39); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 91.5842%; left: 46.2318%; animation: 24.7295s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 3.5361px; height: 3.5361px; border-radius: 50%; background: rgba(212, 175, 55, 0.765); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 13.4231%; left: 19.4697%; animation: 31.0383s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 3.9222px; height: 3.9222px; border-radius: 50%; background: rgba(212, 175, 55, 0.87); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 80.149%; left: 35.4643%; animation: 26.8789s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 1.62052px; height: 1.62052px; border-radius: 50%; background: rgba(212, 175, 55, 0.52); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 78.7904%; left: 92.1831%; animation: 23.9766s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 1.59345px; height: 1.59345px; border-radius: 50%; background: rgba(212, 175, 55, 0.494); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 12.076%; left: 97.65%; animation: 33.6536s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 1.82737px; height: 1.82737px; border-radius: 50%; background: rgba(212, 175, 55, 0.463); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 65.9554%; left: 18.2434%; animation: 28.5784s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 3.27862px; height: 3.27862px; border-radius: 50%; background: rgba(212, 175, 55, 0.667); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 31.9985%; left: 72.6839%; animation: 20.9922s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 2.1504px; height: 2.1504px; border-radius: 50%; background: rgba(212, 175, 55, 0.373); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 28.8715%; left: 56.1664%; animation: 21.9918s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 1.51092px; height: 1.51092px; border-radius: 50%; background: rgba(212, 175, 55, 0.882); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 53.5953%; left: 42.8687%; animation: 18.5179s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 2.26674px; height: 2.26674px; border-radius: 50%; background: rgba(212, 175, 55, 0.647); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 80.0383%; left: 35.05%; animation: 28.3019s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 3.40416px; height: 3.40416px; border-radius: 50%; background: rgba(212, 175, 55, 0.42); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 56.2975%; left: 15.1865%; animation: 28.4865s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 2.40773px; height: 2.40773px; border-radius: 50%; background: rgba(212, 175, 55, 0.4); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 46.6387%; left: 30.2682%; animation: 34.9853s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 3.84923px; height: 3.84923px; border-radius: 50%; background: rgba(212, 175, 55, 0.235); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 73.0491%; left: 16.4813%; animation: 15.3675s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 2.14745px; height: 2.14745px; border-radius: 50%; background: rgba(212, 175, 55, 0.792); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 15.1072%; left: 4.67067%; animation: 20.575s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 3.4749px; height: 3.4749px; border-radius: 50%; background: rgba(212, 175, 55, 0.863); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 18.6764%; left: 29.2071%; animation: 23.7012s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 1.02752px; height: 1.02752px; border-radius: 50%; background: rgba(212, 175, 55, 0.875); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 11.9393%; left: 98.8583%; animation: 34.1805s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 2.11503px; height: 2.11503px; border-radius: 50%; background: rgba(212, 175, 55, 0.81); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 65.4394%; left: 62.4221%; animation: 32.5172s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 2.18558px; height: 2.18558px; border-radius: 50%; background: rgba(212, 175, 55, 0.882); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 46.5394%; left: 0.733667%; animation: 20.837s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 1.37372px; height: 1.37372px; border-radius: 50%; background: rgba(212, 175, 55, 0.227); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 60.2535%; left: 99.7232%; animation: 29.1825s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 3.4305px; height: 3.4305px; border-radius: 50%; background: rgba(212, 175, 55, 0.46); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 17.0728%; left: 37.7319%; animation: 17.5264s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 1.46406px; height: 1.46406px; border-radius: 50%; background: rgba(212, 175, 55, 0.71); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 19.6791%; left: 20.2787%; animation: 15.4625s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 3.49162px; height: 3.49162px; border-radius: 50%; background: rgba(212, 175, 55, 0.235); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 28.4518%; left: 95.4428%; animation: 27.4108s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 3.22129px; height: 3.22129px; border-radius: 50%; background: rgba(212, 175, 55, 0.49); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 44.5084%; left: 94.1202%; animation: 15.7945s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 1.57363px; height: 1.57363px; border-radius: 50%; background: rgba(212, 175, 55, 0.44); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 11.5227%; left: 16.1843%; animation: 34.979s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 2.10726px; height: 2.10726px; border-radius: 50%; background: rgba(212, 175, 55, 0.518); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 5.73644%; left: 81.2473%; animation: 15.4952s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 3.84993px; height: 3.84993px; border-radius: 50%; background: rgba(212, 175, 55, 0.624); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 51.2121%; left: 41.3005%; animation: 24.9338s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 3.38079px; height: 3.38079px; border-radius: 50%; background: rgba(212, 175, 55, 0.353); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 47.6001%; left: 64.2351%; animation: 25.2203s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 2.76871px; height: 2.76871px; border-radius: 50%; background: rgba(212, 175, 55, 0.83); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 96.8355%; left: 93.1889%; animation: 19.9806s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 1.46367px; height: 1.46367px; border-radius: 50%; background: rgba(212, 175, 55, 0.596); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 71.2032%; left: 59.7643%; animation: 19.1485s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 3.92597px; height: 3.92597px; border-radius: 50%; background: rgba(212, 175, 55, 0.765); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 9.84162%; left: 26.5841%; animation: 17.131s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 3.24847px; height: 3.24847px; border-radius: 50%; background: rgba(212, 175, 55, 0.43); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 75.1043%; left: 1.15346%; animation: 31.6904s linear 0s infinite normal none running goldFloat;"></div><div style="position: absolute; width: 1.03747px; height: 1.03747px; border-radius: 50%; background: rgba(212, 175, 55, 0.725); box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 6px; top: 31.0692%; left: 3.46457%; animation: 25.382s linear 0s infinite normal none running goldFloat;"></div></div><div style="position: fixed; inset: 0px; z-index: 1; pointer-events: none; background: radial-gradient(circle, rgba(212, 175, 55, 0.1), transparent 60%); animation: 22s linear 0s infinite normal none running spinRays;"></div><div style="position: fixed; inset: 0px; background: linear-gradient(120deg, rgb(184, 134, 11), rgb(255, 215, 0), rgb(255, 242, 176)); z-index: 99999; transform: translateY(-120%); transition: transform 1.1s cubic-bezier(0.7, 0, 0.3, 1);"></div><div style="position: fixed; inset: 0px; z-index: 1; pointer-events: none;"><div class="orb" style="width: 56.5658px; height: 56.5658px; border-radius: 50%; position: absolute; left: 86.5862%; top: 38.2143%; background: radial-gradient(circle, rgb(255, 249, 217), rgb(212, 175, 55), rgb(141, 116, 30)); box-shadow: rgba(212, 175, 55, 0.7) 0px 0px 25px; animation: 18.4065s ease-in-out 0s infinite normal none running orbFloat;"></div><div class="orb" style="width: 57.694px; height: 57.694px; border-radius: 50%; position: absolute; left: 69.8687%; top: 65.4453%; background: radial-gradient(circle, rgb(255, 249, 217), rgb(212, 175, 55), rgb(141, 116, 30)); box-shadow: rgba(212, 175, 55, 0.7) 0px 0px 25px; animation: 20.8604s ease-in-out 0s infinite normal none running orbFloat;"></div><div class="orb" style="width: 47.1975px; height: 47.1975px; border-radius: 50%; position: absolute; left: 12.5729%; top: 5.21305%; background: radial-gradient(circle, rgb(255, 249, 217), rgb(212, 175, 55), rgb(141, 116, 30)); box-shadow: rgba(212, 175, 55, 0.7) 0px 0px 25px; animation: 21.4705s ease-in-out 0s infinite normal none running orbFloat;"></div><div class="orb" style="width: 50.2726px; height: 50.2726px; border-radius: 50%; position: absolute; left: 19.1647%; top: 50.7323%; background: radial-gradient(circle, rgb(255, 249, 217), rgb(212, 175, 55), rgb(141, 116, 30)); box-shadow: rgba(212, 175, 55, 0.7) 0px 0px 25px; animation: 10.8503s ease-in-out 0s infinite normal none running orbFloat;"></div><div class="orb" style="width: 52.6981px; height: 52.6981px; border-radius: 50%; position: absolute; left: 78.984%; top: 73.701%; background: radial-gradient(circle, rgb(255, 249, 217), rgb(212, 175, 55), rgb(141, 116, 30)); box-shadow: rgba(212, 175, 55, 0.7) 0px 0px 25px; animation: 11.6611s ease-in-out 0s infinite normal none running orbFloat;"></div><div class="orb" style="width: 57.0774px; height: 57.0774px; border-radius: 50%; position: absolute; left: 90.4644%; top: 82.3014%; background: radial-gradient(circle, rgb(255, 249, 217), rgb(212, 175, 55), rgb(141, 116, 30)); box-shadow: rgba(212, 175, 55, 0.7) 0px 0px 25px; animation: 20.3563s ease-in-out 0s infinite normal none running orbFloat;"></div></div><div style="position: fixed; bottom: 25px; right: 25px; font-size: 26px; background: linear-gradient(135deg, rgb(212, 175, 55), rgb(255, 240, 176)); padding: 12px 18px; border-radius: 50%; cursor: pointer; box-shadow: rgba(212, 175, 55, 0.9) 0px 0px 18px; z-index: 9999;">🔊</div><div id="aiToggle" style="position: fixed; bottom: 26px; left: 26px; width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; background: radial-gradient(circle, rgb(255, 249, 208), rgb(212, 175, 55)); box-shadow: rgba(212, 175, 55, 0.8) 0px 0px 22px; z-index: 9999;">🤖</div><div id="aiBox" style="position: fixed; bottom: 84px; left: 26px; width: 250px; padding: 12px; border-radius: 16px; display: block; background: rgba(10, 10, 10, 0.95); color: rgb(255, 255, 255); border: 1px solid rgba(212, 175, 55, 0.4); box-shadow: rgba(0, 0, 0, 0.8) 0px 18px 40px; z-index: 9998;">
+<b style="color:#ffeb9c">Gage R&amp;R Helper</b><br><br>
+• %GRR ≤ 10% = Good<br>
+• ndc ≥ 5 = Good resolution<br>
+• GRR = Repeatability + Reproducibility<br>
+• Attribute GRR ≥ 90% agreement = Good<br>
+</div>
+
+
+
+</body></html>

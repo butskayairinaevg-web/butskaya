@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive c Chart Calculator</title>
+    <style>
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes chartGrow {
+            from { height: 0; opacity: 0; }
+            to { height: 500px; opacity: 1; }
+        }
+        @keyframes barRise {
+            from { height: 0; }
+            to { height: var(--height); }
+        }
+
+        * { box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 1200px; margin: 0 auto; 
+            padding: 20px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            overflow-x: hidden;
+        }
+        .container { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 20px; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            animation: fadeInUp 0.8s ease-out;
+        }
+        h1 { 
+            text-align: center; 
+            color: #2c3e50; 
+            margin-bottom: 10px;
+            animation: bounceIn 1s ease-out;
+        }
+        h2 { 
+            color: #34495e; 
+            border-bottom: 3px solid #e74c3c; 
+            padding-bottom: 15px;
+            animation: slideInLeft 0.6s ease-out;
+        }
+        .input-section { 
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            padding: 30px; 
+            border-radius: 15px; 
+            margin: 30px 0; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeInUp 0.7s ease-out forwards;
+        }
+        input, select { 
+            padding: 12px; 
+            margin: 5px; 
+            border: 2px solid #ddd; 
+            border-radius: 10px; 
+            width: 120px; 
+            transition: all 0.3s ease;
+            transform: scale(0.95);
+        }
+        input:focus, select:focus {
+            border-color: #e74c3c;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.3);
+            transform: scale(1.02);
+        }
+        button { 
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white; 
+            padding: 15px 30px; 
+            border: none; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            margin: 8px; 
+            font-weight: bold;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+        button:hover::before { left: 100%; }
+        button:hover { 
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(231, 76, 60, 0.4);
+        }
+        .results { 
+            background: linear-gradient(145deg, #d4edda, #c3e6cb);
+            padding: 30px; 
+            border-radius: 15px; 
+            margin: 30px 0; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 20px 0; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 15px; 
+            text-align: center; 
+            transition: all 0.3s ease;
+        }
+        th { 
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white; 
+            font-weight: bold;
+        }
+        tr:hover td { background: #f8f9fa; transform: scale(1.01); }
+        .formula { 
+            font-family: monospace; 
+            background: linear-gradient(145deg, #fdf2f2, #fce4e4);
+            padding: 20px; 
+            border-left: 6px solid #e74c3c; 
+            margin: 15px 0; 
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        #cChartCanvas { 
+            border: 3px solid #e74c3c; 
+            margin: 20px 0; 
+            background: white; 
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            animation: chartGrow 1s ease-out;
+        }
+        .footer { 
+            text-align: center; 
+            padding: 25px; 
+            color: #7f8c8d; 
+            font-size: 1em; 
+            border-top: 2px solid #eee; 
+            margin-top: 50px;
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            animation: fadeInUp 0.8s ease-out 0.5s both;
+        }
+        .loading { 
+            display: inline-block; 
+            width: 20px; 
+            height: 20px; 
+            border: 3px solid #f3f3f3; 
+            border-top: 3px solid #e74c3c; 
+            border-radius: 50%; 
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Interactive c Chart Calculator</h1>
+        <p>Count of defects per unit (chrome finish defects per faucet, scratches per valve assembly, casting defects per bathroom fitting). Constant sample size of 1 unit. [web:1][web:2]</p>
+
+        <div class="input-section">
+            <h2>c Chart Calculator (Defects per Unit)</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; margin-bottom: 25px;">
+                <div>
+                    <label>Number of Units (k):</label><br>
+                    <input type="number" id="numUnits" value="25" min="10" max="100" onchange="resetData()">
+                </div>
+                <button onclick="calculateCChart()">🔄 Calculate Limits <span class="loading" id="loadingSpinner" style="display:none;"></span></button>
+                <button onclick="addRandomData()">🎲 Sample Data</button>
+                <button onclick="clearData()">🗑️ Clear</button>
+            </div>
+            
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Unit #</th>
+                        <th>Defects Count (cᵢ)</th>
+                    </tr>
+                </thead>
+                <tbody id="dataBody">
+                    <tr><td>1</td><td><input type="number" value="3" onchange="updateCChart()" min="0"></td></tr>
+                    <tr><td>2</td><td><input type="number" value="2" onchange="updateCChart()" min="0"></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="resultsSection" style="display: none;">
+            <div style="text-align: center;">
+                <h3>c Chart - Defects per Unit</h3>
+                <canvas id="cChartCanvas" width="800" height="500"></canvas>
+            </div>
+
+            <div class="results">
+                <h3>✨ Control Limits & Analysis</h3>
+                <div class="formula">
+                    <strong>c Chart Formulas:</strong><br>
+                    \(\overline{c} =\) <span id="cCL">-</span><br>
+                    \(UCL_c = \overline{c} + 3\sqrt{\overline{c}} = <span id="cUCL">-</span>\)<br>
+                    \(LCL_c = \overline{c} - 3\sqrt{\overline{c}} = <span id="cLCL">-</span>\)
+                </div>
+                <div class="formula">
+                    <strong>🚀 Process Performance:</strong><br>
+                    Total Defects: <span id="totalDefects">-</span><br>
+                    Defect Rate: <span id="defectRate">-</span>/unit<br>
+                    <span id="stabilityMsg" style="font-weight: bold; font-size: 1.1em;">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+
+    </div>
+
+    <script>
+        let defectData = [3, 2];
+
+        function resetData() {
+            const n = parseInt(document.getElementById('numUnits').value);
+            defectData = Array(n).fill(2);
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('dataBody');
+            tbody.innerHTML = '';
+            
+            defectData.forEach((val, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${i+1}</td>
+                    <td><input type="number" value="${val}" min="0" onchange="updateData(${i}, this.value)" style="width: 80px;"></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateData(index, value) {
+            defectData[index] = parseInt(value) || 0;
+        }
+
+        function calculateCChart() {
+            document.getElementById('loadingSpinner').style.display = 'inline-block';
+            
+            setTimeout(() => {
+                const n = defectData.length;
+                if(n < 10) {
+                    alert('Need at least 10 units');
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                    return;
+                }
+                
+                const cbar = defectData.reduce((a, b) => a + b, 0) / n;
+                const stdDev = Math.sqrt(cbar);
+                const UCL = cbar + 3 * stdDev;
+                const LCL = Math.max(0, cbar - 3 * stdDev);
+                
+                const totalDefects = defectData.reduce((a, b) => a + b, 0);
+                const outOfControl = defectData.filter(c => c > UCL || c < LCL).length;
+                const stabilityMsg = outOfControl > 0 ? 
+                    `⚠️ ${outOfControl} points OUT OF CONTROL!` : 
+                    '✅ Process appears STABLE';
+
+                document.getElementById('cCL').textContent = cbar.toFixed(2);
+                document.getElementById('cUCL').textContent = UCL.toFixed(2);
+                document.getElementById('cLCL').textContent = LCL.toFixed(2);
+                document.getElementById('totalDefects').textContent = totalDefects;
+                document.getElementById('defectRate').textContent = `${cbar.toFixed(1)} defects/unit`;
+                document.getElementById('stabilityMsg').textContent = stabilityMsg;
+                document.getElementById('stabilityMsg').style.color = outOfControl > 0 ? '#e74c3c' : '#27ae60';
+
+                document.getElementById('resultsSection').style.display = 'block';
+                document.getElementById('loadingSpinner').style.display = 'none';
+                drawCChart();
+            }, 800);
+        }
+
+        function drawCChart() {
+            const canvas = document.getElementById('cChartCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const padding = 80;
+            const chartWidth = canvas.width - 2 * padding;
+            const chartHeight = canvas.height - 2 * padding;
+            const cbar = defectData.reduce((a, b) => a + b, 0) / defectData.length;
+            const stdDev = Math.sqrt(cbar);
+            const UCL = cbar + 3 * stdDev;
+            const LCL = Math.max(0, cbar - 3 * stdDev);
+            const maxVal = Math.max(...defectData, UCL) * 1.1;
+
+            // Animated grid
+            ctx.strokeStyle = '#f0f0f0';
+            ctx.lineWidth = 1;
+            for(let i = 0; i <= 10; i++) {
+                const y = padding + (chartHeight * i / 10);
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(canvas.width - padding, y);
+                ctx.stroke();
+            }
+
+            // Axes
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+
+            // Animated control limits
+            const drawAnimatedLine = (val, color, label, delay = 0) => {
+                setTimeout(() => {
+                    const y = padding + chartHeight * (1 - val / maxVal);
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 4;
+                    ctx.setLineDash([10, 5]);
+                    ctx.lineDashOffset = -10;
+                    ctx.beginPath();
+                    ctx.moveTo(padding, y);
+                    ctx.lineTo(canvas.width - padding, y);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    ctx.fillStyle = color;
+                    ctx.font = 'bold 16px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(label, canvas.width - 120, y - 15);
+                    ctx.textAlign = 'left';
+                }, delay);
+            };
+            
+            drawAnimatedLine(UCL, '#e74c3c', 'UCL', 200);
+            drawAnimatedLine(cbar, '#27ae60', 'CL', 400);
+            if(LCL > 0) drawAnimatedLine(LCL, '#e74c3c', 'LCL', 600);
+
+            // Animated bars
+            const barWidth = chartWidth / defectData.length * 0.8;
+            defectData.forEach((val, i) => {
+                setTimeout(() => {
+                    const x = padding + (i / defectData.length) * chartWidth + barWidth/2;
+                    const y = padding + chartHeight * (1 - val / maxVal);
+                    const height = chartHeight * (val / maxVal);
+                    
+                    ctx.fillStyle = val > UCL || val < LCL ? '#e74c3c' : '#3498db';
+                    ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                    ctx.shadowBlur = 15;
+                    ctx.shadowOffsetY = 5;
+                    ctx.fillRect(x - barWidth/2, y, barWidth, height);
+                    ctx.shadowBlur = 0;
+                    
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 14px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(val, x, y + height/2);
+                    ctx.textAlign = 'left';
+                }, 800 + i * 50);
+            });
+
+            // Title
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = 'bold 24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('c Chart - Defects per Unit 🚿', canvas.width / 2, 45);
+            ctx.textAlign = 'left';
+        }
+
+        function addRandomData() {
+            const n = parseInt(document.getElementById('numUnits').value);
+            const cbar = 2.5;
+            defectData = [];
+            
+            for(let i = 0; i < n; i++) {
+                const rand = Math.random();
+                let defects = 0;
+                let prob = Math.exp(-cbar);
+                while(rand > prob) {
+                    defects++;
+                    prob += Math.exp(-cbar) * Math.pow(cbar, defects) / factorial(defects);
+                }
+                defectData.push(defects);
+            }
+            renderTable();
+        }
+
+        function factorial(n) {
+            if(n <= 1) return 1;
+            return n * factorial(n-1);
+        }
+
+        function clearData() {
+            document.getElementById('resultsSection').style.display = 'none';
+            const n = parseInt(document.getElementById('numUnits').value);
+            defectData = Array(n).fill(2);
+            renderTable();
+        }
+
+        renderTable();
+    </script>
+</body>
+</html>

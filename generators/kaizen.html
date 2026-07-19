@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📘 Kaizen – Continuous Improvement</title>
+  <style>
+    /* ---------- Base Theme ---------- */
+    :root {
+      --bg: #f9f9f9;
+      --text: #222;
+      --card: #fff;
+      --accent: #0078d7;
+      --border: #ddd;
+      --scroll-bg: #ccc;
+      --scroll-fill: #0078d7;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --text: #e0e0e0;
+      --card: #1f1f1f;
+      --accent: #4dabf7;
+      --border: #333;
+      --scroll-bg: #333;
+      --scroll-fill: #4dabf7;
+    }
+
+    /* ---------- Global Styles ---------- */
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      transition: background 0.3s, color 0.3s;
+      overflow-x: hidden;
+    }
+
+    /* ---------- Scroll Progress Bar ---------- */
+    .progress-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: var(--scroll-bg);
+      z-index: 1000;
+    }
+
+    .progress-bar {
+      height: 6px;
+      width: 0%;
+      background: var(--scroll-fill);
+      transition: width 0.2s ease-out;
+    }
+
+    /* ---------- Header ---------- */
+    header {
+      background: var(--accent);
+      color: #fff;
+      text-align: center;
+      padding: 2rem 1rem 1.8rem;
+      position: relative;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      letter-spacing: 1px;
+    }
+
+    /* ---------- Toggle Button ---------- */
+    .toggle-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #fff;
+      color: var(--accent);
+      border: none;
+      border-radius: 25px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .toggle-btn:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* ---------- Layout ---------- */
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    h2 {
+      color: var(--accent);
+      border-left: 5px solid var(--accent);
+      padding-left: 0.6rem;
+      margin-top: 0;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 1rem;
+    }
+
+    ul li::before {
+      content: "• ";
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    .example {
+      background: var(--accent);
+      color: #fff;
+      padding: 1rem;
+      border-radius: 10px;
+      font-style: italic;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      padding: 1rem;
+      opacity: 0.8;
+    }
+
+    /* ---------- PDCA Circle ---------- */
+    .pdca {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .pdca-step {
+      background: var(--accent);
+      color: #fff;
+      padding: 1rem;
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+      transition: transform 0.3s;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .pdca-step:hover {
+      transform: scale(1.1);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.4rem;
+      }
+      .pdca-step {
+        width: 80px;
+        height: 80px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Scroll Progress Bar -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <header>
+    <h1>📘 Kaizen – Continuous Improvement</h1>
+    <button class="toggle-btn" id="themeToggle">🌙 Dark Mode</button>
+  </header>
+
+  <main>
+    <section>
+      <h2>1. Definition</h2>
+      <p>👉 <b>Kaizen</b> means “Change for the Better” or “Continuous Improvement.”<br>
+      It is a method where small, regular improvements are made in work, process, or daily life.<br>
+      Word “kaizen”, where “kai” = change “zen” = good, simply means “change for better”.</p>
+    </section>
+
+    <section>
+      <h2>2. Main Idea</h2>
+      <ul>
+        <li>Small steps → Big results</li>
+        <li>Improvement is never-ending</li>
+        <li>Everyone in the team contributes (from CEO to workers)</li>
+        <li>Focus on improving processes, not just product</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>3. Philosophy of Kaizen</h2>
+      <ul>
+        <li>Respect people → every idea is valuable</li>
+        <li>Everything can be improved → no process is perfect</li>
+        <li>Process = Important → good process gives good results</li>
+        <li>Teamwork & discipline → success is collective</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>4. Where Kaizen Is Used</h2>
+      <ul>
+        <li>Manufacturing (factories, assembly lines)</li>
+        <li>Healthcare (hospitals, patient care)</li>
+        <li>Software (development, testing)</li>
+        <li>Services (banks, logistics, customer support)</li>
+        <li>Personal Life (daily routines, study habits)</li>
+      </ul>
+      <p>👉 Kaizen is universal – useful everywhere.</p>
+    </section>
+
+    <section>
+      <h2>5. How Kaizen Works (Cycle)</h2>
+      <p>It uses PDCA cycle:</p>
+      <div class="pdca">
+        <div class="pdca-step">Plan</div>
+        <div class="pdca-step">Do</div>
+        <div class="pdca-step">Check</div>
+        <div class="pdca-step">Act</div>
+      </div>
+      <ul>
+        <li>1. Plan → Find problem & make plan</li>
+        <li>2. Do → Try solution</li>
+        <li>3. Check → See result</li>
+        <li>4. Act → Standardize if successful / improve more if not</li>
+      </ul>
+      <p>👉 Repeat this cycle again and again.</p>
+    </section>
+
+    <section>
+      <h2>6. Kaizen Tools</h2>
+      <ul>
+        <li>5S → Sort, Set, Shine, Standardize, Sustain</li>
+        <li>PDCA → Plan, Do, Check, Act</li>
+        <li>Kanban → Visual board for workflow</li>
+        <li>JIT (Just in Time) → Reduce waste, deliver on time</li>
+        <li>TQM (Total Quality Management) → Everyone responsible for quality</li>
+        <li>TPM (Total Productive Maintenance) → Care of machines & equipment</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>7. History</h2>
+      <ul>
+        <li>Origin: Japan after World War II</li>
+        <li>Company: Toyota started using it</li>
+        <li>Inspired by: American quality experts (Deming, Juran)</li>
+        <li>Spread: Now used worldwide in all industries</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>8. Key Takeaways</h2>
+      <ul>
+        <li>✔ Kaizen = Continuous Improvement</li>
+        <li>✔ Small changes every day → Big improvements over time</li>
+        <li>✔ Involves everyone in the organization</li>
+        <li>✔ Focus on process + people for better results</li>
+        <li>✔ Works in factories, offices, hospitals, IT, and daily life</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>📌 Simple Example</h2>
+      <div class="example">
+        <p>• In factory → Worker suggests rearranging tools → saves 10 minutes daily → big time saved in a year.<br>
+        • In personal life → You study 10 minutes extra daily → in a year you complete many extra topics.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Kaizen Learning</p>
+  </footer>
+
+  <script>
+    // 🌙 Theme Toggle
+    const toggleBtn = document.getElementById("themeToggle");
+    const body = document.body;
+
+    if (localStorage.getItem("theme") === "dark") {
+      body.classList.add("dark");
+      toggleBtn.textContent = "☀️ Light Mode";
+    }
+
+    toggleBtn.addEventListener("click", () => {
+      body.classList.toggle("dark");
+      const isDark = body.classList.contains("dark");
+      toggleBtn.textContent = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+    });
+
+    // ✨ Scroll Fade-in Animation
+    const sections = document.querySelectorAll("section");
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    sections.forEach(section => observer.observe(section));
+
+    // 📊 Scroll Progress Bar
+    const progressBar = document.getElementById("progressBar");
+    window.addEventListener("scroll", () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrollPercent = (scrollTop / scrollHeight) * 100;
+      progressBar.style.width = scrollPercent + "%";
+    });
+  </script>
+</body>
+</html>

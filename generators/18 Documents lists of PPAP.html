@@ -1,0 +1,2588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PPAP Documentation – Professional View</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    /* ====== GLOBAL STYLES ====== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #FFFFFF;
+      --bg-soft: #F9F8FF;
+      --bg-card: #020617;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.18);
+      --accent-2: #a855f7;
+      --text-main: #e5e7eb;
+      --text-soft: #9ca3af;
+      --border-subtle: rgba(148, 163, 184, 0.3);
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.95);
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --transition-fast: 0.25s ease-out;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #020617 0, #020617 35%, #020617 60%, #020617 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ====== LAYOUT ====== */
+    .layout {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      width: 100%;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.16), transparent 55%);
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      }
+    }
+
+    /* ====== SIDEBAR / NAV ====== */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
+      height: 100vh;
+      padding: 20px 18px;
+      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.96));
+      border-right: 1px solid rgba(148, 163, 184, 0.18);
+      backdrop-filter: blur(20px);
+      z-index: 20;
+    }
+
+    .sidebar-inner {
+      border-radius: var(--radius-xl);
+      padding: 16px 14px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      box-shadow: 0 24px 45px rgba(15, 23, 42, 0.95);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.9), #020617 63%);
+      height: calc(100vh - 40px);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 8px 8px 2px;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0, #e5e7eb, #0f172a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: 1px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+    }
+
+    .brand-text h1 {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #f9fafb;
+    }
+
+    .brand-text p {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .nav-title {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      margin-bottom: 4px;
+      padding: 0 6px;
+    }
+
+    .nav {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 2px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(148, 163, 184, 0.7) transparent;
+    }
+
+    .nav::-webkit-scrollbar {
+      width: 5px;
+    }
+    .nav::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.7);
+      border-radius: 999px;
+    }
+
+    .nav-section {
+      margin-bottom: 12px;
+    }
+
+    .nav-section + .nav-section {
+      padding-top: 6px;
+      border-top: 1px dashed rgba(148, 163, 184, 0.3);
+    }
+
+    .nav-section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+      padding: 0 6px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 8px;
+      margin-bottom: 2px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--text-soft);
+      transition: background var(--transition-fast), color var(--transition-fast), transform 0.15s ease-out;
+      cursor: pointer;
+    }
+
+    .nav-link span.bullet {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.45);
+      flex-shrink: 0;
+    }
+
+    .nav-link.active span.bullet {
+      background: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-soft);
+    }
+
+    .nav-link.active {
+      color: #f9fafb;
+      background: radial-gradient(circle at left, rgba(56, 189, 248, 0.16), transparent 60%);
+    }
+
+    .nav-link:hover {
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      transform: translateX(2px);
+    }
+
+    .nav-footer {
+      font-size: 11px;
+      color: var(--text-soft);
+      padding: 8px 8px 2px;
+      border-top: 1px solid rgba(15, 23, 42, 0.8);
+    }
+
+    /* ====== MAIN CONTENT ====== */
+    .content {
+      padding: 18px 18px 30px;
+      overflow-x: hidden;
+    }
+
+    .content-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* HERO / HEADER */
+    .hero {
+      border-radius: var(--radius-xl);
+      padding: 22px 22px 18px;
+      margin-bottom: 18px;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.14), rgba(15, 23, 42, 0.96));
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: -60%;
+      background:
+        radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.26), transparent 50%),
+        radial-gradient(circle at 90% 0, rgba(168, 85, 247, 0.24), transparent 55%);
+      opacity: 0.75;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .hero-main {
+      max-width: 640px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #bae6fd;
+      margin-bottom: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.6);
+      background: linear-gradient(to right, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.3));
+      width: fit-content;
+    }
+
+    .hero-title {
+      font-size: clamp(22px, 2.4vw, 30px);
+      line-height: 1.2;
+      font-weight: 650;
+      color: #f9fafb;
+      margin-bottom: 6px;
+    }
+
+    .hero-sub {
+      font-size: 13px;
+      color: var(--text-soft);
+      max-width: 560px;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-meta {
+      min-width: 210px;
+      border-radius: 18px;
+      padding: 12px 14px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.85), #020617);
+      backdrop-filter: blur(18px);
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .hero-meta-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      gap: 12px;
+    }
+
+    .hero-meta-key {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 10px;
+    }
+
+    .hero-meta-val {
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+
+    /* SECTIONS / CARDS */
+    .section {
+      margin-bottom: 18px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.96), #020617 80%);
+      border-radius: var(--radius-lg);
+      padding: 16px 16px 14px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.8);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.09), transparent 60%);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+      pointer-events: none;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #f9fafb;
+    }
+
+    .card-title span.icon {
+      font-size: 18px;
+    }
+
+    .card-subtitle {
+      font-size: 11px;
+      color: var(--text-soft);
+      max-width: 360px;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: var(--accent);
+      background: rgba(15, 23, 42, 0.9);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    /* TABLES */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.9);
+      scrollbar-width: thin;
+      scrollbar-color: rgba(148, 163, 184, 0.7) transparent;
+    }
+
+    .table-wrapper::-webkit-scrollbar {
+      height: 6px;
+    }
+    .table-wrapper::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.7);
+      border-radius: 999px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 480px;
+      font-size: 12px;
+    }
+
+    thead {
+      background: linear-gradient(to right, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.92));
+    }
+
+    th, td {
+      padding: 7px 10px;
+      border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+      border-bottom: 1px solid rgba(55, 65, 81, 1);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    tbody tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    tbody tr:nth-child(odd) {
+      background: rgba(15, 23, 42, 0.96);
+    }
+
+    tbody tr:hover {
+      background: rgba(30, 64, 175, 0.6);
+      transition: background 0.2s ease-out;
+    }
+
+    td {
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    td.wrap {
+      white-space: normal;
+    }
+
+    /* ANIMATIONS (scroll reveal) */
+    .reveal {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* SMALL TAGS / TEXT UTILS */
+    .small-note {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-top: 6px;
+    }
+
+    .tagline {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      margin-bottom: 4px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 3px;
+    }
+
+    .divider {
+      height: 1px;
+      background: radial-gradient(circle, rgba(148, 163, 184, 0.6), transparent 70%);
+      margin: 6px 0 10px;
+      opacity: 0.7;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+      font-size: 11px;
+    }
+
+    .pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-soft);
+    }
+
+    /* MOBILE */
+    @media (max-width: 600px) {
+      .hero-inner {
+        flex-direction: column;
+      }
+
+      .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      table {
+        font-size: 11px;
+      }
+
+      th, td {
+        padding: 6px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <!-- =============== SIDEBAR / NAV =============== -->
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+      <div class="brand">
+        <div class="brand-logo">P3</div>
+        <div class="brand-text">
+          <h1>PPAP DOCUMENT SET</h1>
+          <p>Interactive professional view</p>
+        </div>
+      </div>
+
+      <div class="nav">
+        <div class="nav-section">
+          <div class="nav-title">Overview</div>
+          <a href="#sec-intro" class="nav-link active">
+            <span class="bullet"></span>
+            <span>18 Documents of PPAP</span>
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-label">Master Index & Core Docs</div>
+          <a href="#sec-master-index" class="nav-link">
+            <span class="bullet"></span><span>1. Master Index</span>
+          </a>
+          <a href="#sec-design-record-1" class="nav-link">
+            <span class="bullet"></span><span>🧩 1. Design Record</span>
+          </a>
+          <a href="#sec-change-doc-1" class="nav-link">
+            <span class="bullet"></span><span>⚙️ 2. Engg Change Doc</span>
+          </a>
+          <a href="#sec-cust-engg-approval-1" class="nav-link">
+            <span class="bullet"></span><span>🧾 3. Cust. Engg Approval</span>
+          </a>
+          <a href="#sec-dfmea-1" class="nav-link">
+            <span class="bullet"></span><span>🧮 4. DFMEA (example)</span>
+          </a>
+          <a href="#sec-control-plan-1" class="nav-link">
+            <span class="bullet"></span><span>🧰 7. Control Plan</span>
+          </a>
+          <a href="#sec-msa-1" class="nav-link">
+            <span class="bullet"></span><span>📏 8. MSA</span>
+          </a>
+          <a href="#sec-dimensional-1" class="nav-link">
+            <span class="bullet"></span><span>📐 9. Dimensional Results</span>
+          </a>
+          <a href="#sec-material-1" class="nav-link">
+            <span class="bullet"></span><span>🧪 10. Material / Performance</span>
+          </a>
+          <a href="#sec-spc-1" class="nav-link">
+            <span class="bullet"></span><span>📊 11. SPC</span>
+          </a>
+          <a href="#sec-lab-doc-1" class="nav-link">
+            <span class="bullet"></span><span>🧫 12. Lab Documentation</span>
+          </a>
+          <a href="#sec-aar-1" class="nav-link">
+            <span class="bullet"></span><span>🖼️ 13. AAR</span>
+          </a>
+          <a href="#sec-sample-part-1" class="nav-link">
+            <span class="bullet"></span><span>🧱 14. Sample Production Part</span>
+          </a>
+          <a href="#sec-master-sample-1" class="nav-link">
+            <span class="bullet"></span><span>🧩 15. Master Sample</span>
+          </a>
+          <a href="#sec-checking-aids-1" class="nav-link">
+            <span class="bullet"></span><span>🔧 16. Checking Aids</span>
+          </a>
+          <a href="#sec-csr-1" class="nav-link">
+            <span class="bullet"></span><span>📋 17. CSR</span>
+          </a>
+          <a href="#sec-psw-1" class="nav-link">
+            <span class="bullet"></span><span>✅ 18. PSW</span>
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-label">Detailed PPAP Example Set</div>
+          <a href="#sec-design-record-2" class="nav-link">
+            <span class="bullet"></span><span>2️⃣ Design Record</span>
+          </a>
+          <a href="#sec-change-doc-2" class="nav-link">
+            <span class="bullet"></span><span>3️⃣ Engg Change Doc</span>
+          </a>
+          <a href="#sec-cust-engg-approval-2" class="nav-link">
+            <span class="bullet"></span><span>4️⃣ Cust. Engg Approval</span>
+          </a>
+          <a href="#sec-dfmea-2" class="nav-link">
+            <span class="bullet"></span><span>5️⃣ DFMEA</span>
+          </a>
+          <a href="#sec-process-flow-2" class="nav-link">
+            <span class="bullet"></span><span>6️⃣ Process Flow Diagram</span>
+          </a>
+          <a href="#sec-pfmea-2" class="nav-link">
+            <span class="bullet"></span><span>7️⃣ PFMEA</span>
+          </a>
+          <a href="#sec-control-plan-2" class="nav-link">
+            <span class="bullet"></span><span>8️⃣ Control Plan</span>
+          </a>
+          <a href="#sec-msa-2" class="nav-link">
+            <span class="bullet"></span><span>9️⃣ MSA</span>
+          </a>
+          <a href="#sec-dimensional-2" class="nav-link">
+            <span class="bullet"></span><span>🔟 Dimensional Results</span>
+          </a>
+          <a href="#sec-material-2" class="nav-link">
+            <span class="bullet"></span><span>1️⃣1️⃣ Material / Performance</span>
+          </a>
+          <a href="#sec-spc-2" class="nav-link">
+            <span class="bullet"></span><span>1️⃣2️⃣ SPC</span>
+          </a>
+          <a href="#sec-lab-doc-2" class="nav-link">
+            <span class="bullet"></span><span>1️⃣3️⃣ Lab Documentation</span>
+          </a>
+          <a href="#sec-aar-2" class="nav-link">
+            <span class="bullet"></span><span>1️⃣4️⃣ AAR</span>
+          </a>
+          <a href="#sec-sample-part-2" class="nav-link">
+            <span class="bullet"></span><span>1️⃣5️⃣ Sample Parts</span>
+          </a>
+          <a href="#sec-master-sample-2" class="nav-link">
+            <span class="bullet"></span><span>1️⃣6️⃣ Master Sample</span>
+          </a>
+          <a href="#sec-checking-aids-2" class="nav-link">
+            <span class="bullet"></span><span>1️⃣7️⃣ Checking Aids</span>
+          </a>
+          <a href="#sec-csr-2" class="nav-link">
+            <span class="bullet"></span><span>1️⃣8️⃣ CSR</span>
+          </a>
+          <a href="#sec-psw-2" class="nav-link">
+            <span class="bullet"></span><span>1️⃣9️⃣ PSW</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="nav-footer">
+        <div>PPAP content used as-it-is from your document.</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- =============== MAIN CONTENT =============== -->
+  <main class="content">
+    <div class="content-inner">
+
+      <!-- ====== HERO / INTRO ====== -->
+      <section id="sec-intro" class="section reveal">
+        <div class="hero card">
+          <div class="hero-inner">
+            <div class="hero-main">
+              <div class="eyebrow">
+                <span>PPAP DOCUMENTATION</span>
+              </div>
+              <h2 class="hero-title">18 Documents of PPAP – Complete Structured View</h2>
+              
+              <div class="hero-badges">
+                <div class="badge">✔ 18 PPAP Documents</div>
+                <div class="badge">✔ Master Index & Detailed Examples</div>
+                <div class="badge">✔ Scroll Reveal Animations</div>
+              </div>
+            </div>
+
+            <div class="hero-meta">
+              <div class="hero-meta-row">
+                <span class="hero-meta-key">Standard</span>
+                <span class="hero-meta-val">AIAG – PPAP</span>
+              </div>
+              <div class="hero-meta-row">
+                <span class="hero-meta-key">Documents</span>
+                <span class="hero-meta-val">18 + PSW</span>
+              </div>
+              <div class="hero-meta-row">
+                <span class="hero-meta-key">View Mode</span>
+                <span class="hero-meta-val">Interactive & Scrollable</span>
+              </div>
+              <div class="hero-meta-row">
+                <span class="hero-meta-key">Prepared</span>
+                <span class="hero-meta-val">From your DOCX content</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====== 18 DOCUMENTS OF PPAP (OVERVIEW) ====== -->
+      <section class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span class="icon">📚</span>
+                <span>18 Documents of PPAP</span>
+              </div>
+              <p class="card-subtitle">
+                These are typically the AIAG standard 18 elements, listed below as in your source content.
+              </p>
+            </div>
+            <div class="chip">Overview List</div>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Sr. No.</th>
+                <th>Document Name</th>
+                <th>Description</th>
+                <th>Detailed Description</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>1</td>
+                <td>Master Index</td>
+                <td>Drawing or specification defining the part.</td>
+                <td>Quick navigation list of all 18 PPAP documents</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Design Record</td>
+                <td>Records of approved engineering changes.</td>
+                <td>Drawing No., Rev. Level, Part No., Description</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Engineering Change Document</td>
+                <td>Evidence of customer approval for design.</td>
+                <td>Change request, reason, date, approval</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>Customer Engineering Approval</td>
+                <td>Analysis of potential design failures and effects.</td>
+                <td>Approval reference &amp; date</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>DFMEA</td>
+                <td>Detailed flow of manufacturing process steps.</td>
+                <td>Function, Failure Mode, Cause, Effect, RPN</td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>Process Flow Diagram</td>
+                <td>Risk analysis of process failures and their effects.</td>
+                <td>Step-wise process from receiving to dispatch</td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td>PFMEA</td>
+                <td>List of control methods for process characteristics.</td>
+                <td>Detailed process risk assessment</td>
+              </tr>
+              <tr>
+                <td>8</td>
+                <td>Control Plan</td>
+                <td>Study verifying accuracy and precision of measuring system.</td>
+                <td>Product &amp; process controls with reaction plan</td>
+              </tr>
+              <tr>
+                <td>9</td>
+                <td>MSA</td>
+                <td>Measured dimensions compared to design specs.</td>
+                <td>Gauge name, Type, Study result</td>
+              </tr>
+              <tr>
+                <td>10</td>
+                <td>Dimensional Results</td>
+                <td>Evidence of physical, chemical and performance testing.</td>
+                <td>10 sample results, tolerance, judgment</td>
+              </tr>
+              <tr>
+                <td>11</td>
+                <td>Material / Performance Test Results</td>
+                <td>Process capability study for critical parameters.</td>
+                <td>Lab report summary</td>
+              </tr>
+              <tr>
+                <td>12</td>
+                <td>Initial Process Studies (SPC)</td>
+                <td>Certificates of accredited testing laboratories.</td>
+                <td>Cp, Cpk charts summary</td>
+              </tr>
+              <tr>
+                <td>13</td>
+                <td>Qualified Laboratory Documentation</td>
+                <td>Visual and aesthetic approval record.</td>
+                <td>Lab name, NABL status</td>
+              </tr>
+              <tr>
+                <td>14</td>
+                <td>Appearance Approval Report (AAR)</td>
+                <td>Actual parts manufactured under production conditions.</td>
+                <td>Surface, Colour, Texture approval</td>
+              </tr>
+              <tr>
+                <td>15</td>
+                <td>Sample Production Parts</td>
+                <td>Reference sample signed by customer and supplier.</td>
+                <td>Sample lot, inspection, approval</td>
+              </tr>
+              <tr>
+                <td>16</td>
+                <td>Master Sample</td>
+                <td>Gauges, fixtures, templates used for inspection.</td>
+                <td>Stored sample info</td>
+              </tr>
+              <tr>
+                <td>17</td>
+                <td>Checking Aids</td>
+                <td>Additional documents required by the customer.</td>
+                <td>Gauge/fixture list</td>
+              </tr>
+              <tr>
+                <td>18</td>
+                <td>Customer Specific Requirements (CSR)</td>
+                <td>Final summary document submitted to customer.</td>
+                <td>Special requirements</td>
+              </tr>
+              <tr>
+                <td>19</td>
+                <td>Part Submission Warrant (PSW)</td>
+                <td colspan="2">Final sign-off summary</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="small-note">
+            Note: Content above is exactly reproduced from your file and only wrapped into a responsive, scrollable table.
+          </p>
+        </div>
+      </section>
+
+      <!-- ====== 1. MASTER INDEX TABLE ====== -->
+      <section id="sec-master-index" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span class="icon">1️⃣</span>
+                <span>Master Index</span>
+              </div>
+              <p class="card-subtitle">
+                Document-wise status and responsibility list exactly as provided in your document.
+              </p>
+            </div>
+            <div class="chip">Document No. 1</div>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Document No.</th>
+                <th>Document Name</th>
+                <th>Sheet Name</th>
+                <th>Submission Status</th>
+                <th>Prepared By</th>
+                <th>Checked By</th>
+                <th>Remarks</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>1</td>
+                <td>Design Records</td>
+                <td>Design_Record</td>
+                <td>✔ Submitted</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+                <td>Verified</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Authorized Engineering Change Documents</td>
+                <td>Engg_Change</td>
+                <td>✔ Submitted</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+                <td>No pending change</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Customer Engineering Approval</td>
+                <td>Cust_Engg_Approval</td>
+                <td>✖ Pending</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+                <td>Awaiting feedback</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>Design FMEA (DFMEA)</td>
+                <td>DFMEA</td>
+                <td>✔ Submitted</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+                <td>Reviewed</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>Process Flow Diagram</td>
+                <td>Process_Flow</td>
+                <td>✔ Submitted</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+                <td>Approved</td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>Process FMEA (PFMEA)</td>
+                <td>PFMEA</td>
+                <td>✔ Submitted</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+                <td>Reviewed</td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td>Control Plan</td>
+                <td>Control_Plan</td>
+                <td>✔ Submitted</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+                <td>Implemented</td>
+              </tr>
+              <tr>
+                <td>8</td>
+                <td>Measurement System Analysis (MSA)</td>
+                <td>MSA</td>
+                <td>✔ Submitted</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+                <td>To be updated</td>
+              </tr>
+              <tr>
+                <td>9</td>
+                <td>Dimensional Results</td>
+                <td>Dimensional_Results</td>
+                <td>✔ Submitted</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+                <td>All OK</td>
+              </tr>
+              <tr>
+                <td>10</td>
+                <td>Records of Material / Performance Tests</td>
+                <td>Test_Results</td>
+                <td>✔ Submitted</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+                <td>Compliant</td>
+              </tr>
+              <tr>
+                <td>11</td>
+                <td>Initial Process Studies (SPC)</td>
+                <td>SPC</td>
+                <td>✔ Submitted</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+                <td>Cpk &gt; 1.67</td>
+              </tr>
+              <tr>
+                <td>12</td>
+                <td>Qualified Laboratory Documentation</td>
+                <td>Lab_Doc</td>
+                <td>✔ Submitted</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+                <td>Verified</td>
+              </tr>
+              <tr>
+                <td>13</td>
+                <td>Appearance Approval Report (AAR)</td>
+                <td>AAR</td>
+                <td>✔ Submitted</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+                <td>Awaiting sample</td>
+              </tr>
+              <tr>
+                <td>14</td>
+                <td>Sample Production Parts</td>
+                <td>Samples</td>
+                <td>✔ Submitted</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+                <td>Approved</td>
+              </tr>
+              <tr>
+                <td>15</td>
+                <td>Master Sample</td>
+                <td>Master_Sample</td>
+                <td>✔ Submitted</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+                <td>Stored</td>
+              </tr>
+              <tr>
+                <td>16</td>
+                <td>Checking Aids</td>
+                <td>Checking_Aids</td>
+                <td>✔ Submitted</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+                <td>Calibrated</td>
+              </tr>
+              <tr>
+                <td>17</td>
+                <td>Customer-Specific Requirements</td>
+                <td>CSR</td>
+                <td>✔ Submitted</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+                <td>Waiting clarification</td>
+              </tr>
+              <tr>
+                <td>18</td>
+                <td>Part Submission Warrant (PSW)</td>
+                <td>PSW</td>
+                <td>✔ Submitted</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+                <td>Signed</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====== FIRST EXAMPLE SET (1–18) ====== -->
+
+      <!-- 🧩 1. DESIGN RECORD -->
+      <section id="sec-design-record-1" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span class="icon">🧩</span>
+                <span>1. Design Record</span>
+              </div>
+            </div>
+            <div class="chip">Example – Flush Valve</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Part No.</th>
+                <th>Part Name</th>
+                <th>Drawing No.</th>
+                <th>Rev Level</th>
+                <th>Date</th>
+                <th>Prepared By</th>
+                <th>Checked By</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>1001</td>
+                <td>Flush Valve Body</td>
+                <td>DR-001</td>
+                <td>A</td>
+                <td>1/11/2025</td>
+                <td>Rakesh Kumar</td>
+                <td>A. Sharma</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ⚙️ 2. AUTHORIZED ENGINEERING CHANGE DOC -->
+      <section id="sec-change-doc-1" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span class="icon">⚙️</span>
+                <span>2. Authorized Engineering Change Document</span>
+              </div>
+            </div>
+            <div class="chip">Engg Change</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>ECN No.</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Approved By</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>ECN-45</td>
+                <td>28/10/2025</td>
+                <td>Thread tolerance updated</td>
+                <td>A. Sharma</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 🧾 3. CUSTOMER ENGINEERING APPROVAL -->
+      <section id="sec-cust-engg-approval-1" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span class="icon">🧾</span>
+                <span>3. Customer Engineering Approval</span>
+              </div>
+            </div>
+            <div class="chip">Approval Record</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Customer Name</th>
+                <th>Part No.</th>
+                <th>Approval Date</th>
+                <th>Approved By</th>
+                <th>Remarks</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>ABC Corp</td>
+                <td>1001</td>
+                <td>2/11/2025</td>
+                <td>John Doe</td>
+                <td>Approved after test</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 🧮 4. DFMEA -->
+      <section id="sec-dfmea-1" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span class="icon">🧮</span>
+                <span>4. Design FMEA (DFMEA)</span>
+              </div>
+            </div>
+            <div class="chip">Single Line Example</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Function</th>
+                <th>Potential Failure Mode</th>
+                <th>Effect</th>
+                <th>Severity</th>
+                <th>Occurrence</th>
+                <th>Detection</th>
+                <th>RPN</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Seal Fit</td>
+                <td>Leakage</td>
+                <td>Water leakage</td>
+                <td>8</td>
+                <td>4</td>
+                <td>4</td>
+                <td>128</td>
+                <td>Improved groove design</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 🧰 7. CONTROL PLAN -->
+      <section id="sec-control-plan-1" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span class="icon">🧰</span>
+                <span>7. Control Plan</span>
+              </div>
+            </div>
+            <div class="chip">Process Control Example</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Process Step</th>
+                <th>Characteristic</th>
+                <th>Spec</th>
+                <th>Control Method</th>
+                <th>Frequency</th>
+                <th>Reaction Plan</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Assembly</td>
+                <td>Torque</td>
+                <td>12 ± 1 Nm</td>
+                <td>Torque wrench</td>
+                <td>Every part</td>
+                <td>Recheck &amp; segregate</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 📏 8. MSA -->
+      <section id="sec-msa-1" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">📏</span>
+              <span>8. Measurement System Analysis (MSA)</span>
+            </div>
+            <div class="chip">GR&amp;R Example</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Instrument</th>
+                <th>Type of Study</th>
+                <th>Result</th>
+                <th>Status</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Torque wrench</td>
+                <td>GR&amp;R</td>
+                <td>8%</td>
+                <td>Acceptable</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 📐 9. DIMENSIONAL RESULTS -->
+      <section id="sec-dimensional-1" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">📐</span>
+              <span>9. Dimensional Results</span>
+            </div>
+            <div class="chip">Single Dimension</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Dimension</th>
+                <th>Spec</th>
+                <th>Measured</th>
+                <th>Result</th>
+                <th>Remarks</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Diameter</td>
+                <td>25.00 ± 0.05</td>
+                <td>25.02</td>
+                <td>OK</td>
+                <td>Within tolerance</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 🧪 10. MATERIAL / PERFORMANCE TEST -->
+      <section id="sec-material-1" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🧪</span>
+              <span>10. Material / Performance Test</span>
+            </div>
+            <div class="chip">Salt Spray Example</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Test Name</th>
+                <th>Method</th>
+                <th>Result</th>
+                <th>Status</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Salt Spray</td>
+                <td>ASTM B117</td>
+                <td>Pass 96 hrs</td>
+                <td>OK</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 📊 11. SPC -->
+      <section id="sec-spc-1" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">📊</span>
+              <span>11. Initial Process Studies (SPC)</span>
+            </div>
+            <div class="chip">Capability Summary</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Mean</th>
+                <th>Cp</th>
+                <th>Cpk</th>
+                <th>Remarks</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Diameter</td>
+                <td>25.01</td>
+                <td>1.67</td>
+                <td>1.55</td>
+                <td>Stable process</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 🧫 12. LAB DOCUMENTATION -->
+      <section id="sec-lab-doc-1" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🧫</span>
+              <span>12. Qualified Laboratory Documentation</span>
+            </div>
+            <div class="chip">Lab Details</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Lab Name</th>
+                <th>Certificate No.</th>
+                <th>Valid Till</th>
+                <th>Scope</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Global Labs</td>
+                <td>GL-452</td>
+                <td>31/12/2025</td>
+                <td>Material testing</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 🖼️ 13. AAR -->
+      <section id="sec-aar-1" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🖼️</span>
+              <span>13. Appearance Approval Report (AAR)</span>
+            </div>
+            <div class="chip">Visual Approval</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Color</th>
+                <th>Texture</th>
+                <th>Visual Judgment</th>
+                <th>Customer Sign</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Chrome</td>
+                <td>Smooth</td>
+                <td>OK</td>
+                <td>John Doe</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 🧱 14. SAMPLE PRODUCTION PART -->
+      <section id="sec-sample-part-1" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🧱</span>
+              <span>14. Sample Production Part</span>
+            </div>
+            <div class="chip">Sample Record</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Sample ID</th>
+                <th>Date</th>
+                <th>Lot No.</th>
+                <th>Status</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>SP-01</td>
+                <td>1/11/2025</td>
+                <td>L-100</td>
+                <td>Approved</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 🧩 15. MASTER SAMPLE -->
+      <section id="sec-master-sample-1" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🧩</span>
+              <span>15. Master Sample</span>
+            </div>
+            <div class="chip">Reference Sample</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Sample ID</th>
+                <th>Location</th>
+                <th>Approved By</th>
+                <th>Date</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>MS-01</td>
+                <td>Inspection Room</td>
+                <td>John Doe</td>
+                <td>2/11/2025</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 🔧 16. CHECKING AIDS -->
+      <section id="sec-checking-aids-1" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🔧</span>
+              <span>16. Checking Aids</span>
+            </div>
+            <div class="chip">Gauge / Tool</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Tool Name</th>
+                <th>Tool ID</th>
+                <th>Calibration Date</th>
+                <th>Status</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Torque Gauge</td>
+                <td>TG-05</td>
+                <td>45667</td>
+                <td>OK</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 📋 17. CUSTOMER SPECIFIC REQUIREMENTS -->
+      <section id="sec-csr-1" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">📋</span>
+              <span>17. Customer-Specific Requirements</span>
+            </div>
+            <div class="chip">CSR Entry</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Requirement</th>
+                <th>Document Ref</th>
+                <th>Status</th>
+                <th>Remarks</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Special Packaging</td>
+                <td>REQ-88</td>
+                <td>Pending</td>
+                <td>Awaiting customer confirmation</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ✅ 18. PSW -->
+      <section id="sec-psw-1" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span class="icon">✅</span>
+                <span>18. Part Submission Warrant (PSW)</span>
+              </div>
+            </div>
+            <div class="chip">Final PPAP Status</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Part No.</th>
+                <th>Submission Level</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Remarks</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>1001</td>
+                <td>Level 3</td>
+                <td>ABC Corp</td>
+                <td>5/11/2025</td>
+                <td>Approved</td>
+                <td>Full PPAP accepted</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====== SECOND DETAILED PPAP SET (2️⃣ – 1️⃣9️⃣) ====== -->
+
+      <!-- 2️⃣ DESIGN RECORD -->
+      <section id="sec-design-record-2" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span class="icon">2️⃣</span>
+                <span>DESIGN RECORD</span>
+              </div>
+            </div>
+            <div class="chip">ABC Components Pvt. Ltd.</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="tagline">Header</div>
+          <div class="table-wrapper">
+            <table>
+              <tbody>
+              <tr><td>Company Name</td><td>ABC Components Pvt. Ltd.</td></tr>
+              <tr><td>Supplier Code</td><td>SUP-00123</td></tr>
+              <tr><td>Date</td><td>12-Nov-25</td></tr>
+              <tr><td>Part Name</td><td>Bracket Assembly</td></tr>
+              <tr><td>Part No.</td><td>BRK-2025</td></tr>
+              <tr><td>Revision</td><td>1</td></tr>
+              <tr><td>Prepared By</td><td>Quality Dept.</td></tr>
+              <tr><td>Approved By</td><td>Engineering</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="tagline" style="margin-top:10px;">Technical Details</div>
+          <div class="table-wrapper" style="margin-top:4px;">
+            <table>
+              <tbody>
+              <tr><td>Drawing No.</td><td>DRW-2025-01</td></tr>
+              <tr><td>Material</td><td>Mild Steel</td></tr>
+              <tr><td>Process</td><td>Machining &amp; Plating</td></tr>
+              <tr><td>Customer Specification</td><td>As per print</td></tr>
+              <tr><td>Status</td><td>Approved</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3️⃣ ENGINEERING CHANGE DOCUMENT -->
+      <section id="sec-change-doc-2" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span class="icon">3️⃣</span>
+                <span>ENGINEERING CHANGE DOCUMENT</span>
+              </div>
+            </div>
+            <div class="chip">Change Request ECR-001</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <tbody>
+              <tr><td>Company Name</td><td>ABC Components Pvt. Ltd.</td></tr>
+              <tr><td>Supplier Code</td><td>SUP-00123</td></tr>
+              <tr><td>Date</td><td>12-Nov-25</td></tr>
+              <tr><td>Change Request No.</td><td>ECR-001</td></tr>
+              <tr><td>Customer Ref.</td><td>CUST-REF-01</td></tr>
+              <tr><td>Change Description</td><td>Hole diameter changed from 8 mm to 10 mm</td></tr>
+              <tr><td>Reason for Change</td><td>To improve fitment accuracy</td></tr>
+              <tr><td>Change Approved By</td><td>Engineering Head</td></tr>
+              <tr><td>Effective From</td><td>Next production lot</td></tr>
+              <tr><td>Remarks</td><td>Customer approval pending</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4️⃣ CUSTOMER ENGINEERING APPROVAL -->
+      <section id="sec-cust-engg-approval-2" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">4️⃣</span>
+              <span>CUSTOMER ENGINEERING APPROVAL</span>
+            </div>
+            <div class="chip">XYZ Motors Ltd.</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <tbody>
+              <tr><td>Company Name</td><td>ABC Components Pvt. Ltd.</td></tr>
+              <tr><td>Supplier Code</td><td>SUP-00123</td></tr>
+              <tr><td>Date</td><td>12-Nov-25</td></tr>
+              <tr><td>Customer Name</td><td>XYZ Motors Ltd.</td></tr>
+              <tr><td>Part Name</td><td>Bracket Assembly</td></tr>
+              <tr><td>Approval Reference</td><td>ENG-APP-789</td></tr>
+              <tr><td>Date of Approval</td><td>10-Nov-25</td></tr>
+              <tr><td>Status</td><td>Approved</td></tr>
+              <tr><td>Remarks</td><td>For production use</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5️⃣ DFMEA -->
+      <section id="sec-dfmea-2" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">5️⃣</span>
+              <span>DFMEA</span>
+            </div>
+            <div class="chip">Bracket Assembly</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Function</th>
+                <th>Potential Failure Mode</th>
+                <th>Potential Effect</th>
+                <th>Severity</th>
+                <th>Potential Cause</th>
+                <th>Occurrence</th>
+                <th>Detection</th>
+                <th>RPN</th>
+                <th>Action Taken</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Support load</td>
+                <td>Crack under load</td>
+                <td>Failure of bracket</td>
+                <td>9</td>
+                <td>Improper welding</td>
+                <td>4</td>
+                <td>6</td>
+                <td>216</td>
+                <td>Improve weld process</td>
+              </tr>
+              <tr>
+                <td>Position alignment</td>
+                <td>Hole misalignment</td>
+                <td>Assembly issue</td>
+                <td>7</td>
+                <td>Jig offset</td>
+                <td>3</td>
+                <td>5</td>
+                <td>105</td>
+                <td>Correct fixture</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6️⃣ PROCESS FLOW DIAGRAM -->
+      <section id="sec-process-flow-2" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">6️⃣</span>
+              <span>PROCESS FLOW DIAGRAM</span>
+            </div>
+            <div class="chip">Bracket Process</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Step No</th>
+                <th>Process Description</th>
+                <th>Machine/Equipment</th>
+                <th>Responsible</th>
+                <th>Output</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr><td>1</td><td>Material Receiving</td><td>Forklift</td><td>Store</td><td>Raw material</td></tr>
+              <tr><td>2</td><td>Cutting</td><td>Cutting Machine</td><td>Operator</td><td>Cut blanks</td></tr>
+              <tr><td>3</td><td>Drilling</td><td>Drill Machine</td><td>Operator</td><td>Drilled part</td></tr>
+              <tr><td>4</td><td>Welding</td><td>MIG Welding</td><td>Welder</td><td>Welded assembly</td></tr>
+              <tr><td>5</td><td>Inspection</td><td>Vernier, Micrometer</td><td>QA</td><td>Accepted parts</td></tr>
+              <tr><td>6</td><td>Packing</td><td>Packing table</td><td>Packing Staff</td><td>Packed box</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7️⃣ PFMEA -->
+      <section id="sec-pfmea-2" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">7️⃣</span>
+              <span>PFMEA</span>
+            </div>
+            <div class="chip">Process FMEA</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Process Step</th>
+                <th>Potential Failure Mode</th>
+                <th>Effect</th>
+                <th>Severity</th>
+                <th>Cause</th>
+                <th>Occurrence</th>
+                <th>Detection</th>
+                <th>RPN</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Welding</td>
+                <td>Weak joint</td>
+                <td>Bracket failure</td>
+                <td>9</td>
+                <td>Low current</td>
+                <td>3</td>
+                <td>4</td>
+                <td>108</td>
+                <td>Adjust parameters</td>
+              </tr>
+              <tr>
+                <td>Drilling</td>
+                <td>Oversized hole</td>
+                <td>Assembly rejection</td>
+                <td>8</td>
+                <td>Worn tool</td>
+                <td>4</td>
+                <td>3</td>
+                <td>96</td>
+                <td>Replace tool</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8️⃣ CONTROL PLAN -->
+      <section id="sec-control-plan-2" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">8️⃣</span>
+              <span>CONTROL PLAN</span>
+            </div>
+            <div class="chip">Process Characteristics</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Process Step</th>
+                <th>Characteristic</th>
+                <th>Method</th>
+                <th>Frequency</th>
+                <th>Reaction Plan</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Drilling</td>
+                <td>Hole Ø 10±0.1 mm</td>
+                <td>Vernier</td>
+                <td>Every 2 hrs</td>
+                <td>Stop process, adjust tool</td>
+              </tr>
+              <tr>
+                <td>Welding</td>
+                <td>Weld strength</td>
+                <td>Destructive Test</td>
+                <td>Daily</td>
+                <td>Retrain operator</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9️⃣ MSA -->
+      <section id="sec-msa-2" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">9️⃣</span>
+              <span>MSA</span>
+            </div>
+            <div class="chip">Gauge Studies</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Gauge Name</th>
+                <th>Type</th>
+                <th>Study</th>
+                <th>%GRR</th>
+                <th>Result</th>
+                <th>Remarks</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Vernier Caliper</td>
+                <td>Variable</td>
+                <td>GRR</td>
+                <td>8%</td>
+                <td>Acceptable</td>
+                <td>OK</td>
+              </tr>
+              <tr>
+                <td>Thread Gauge</td>
+                <td>Attribute</td>
+                <td>Kappa</td>
+                <td>0.87</td>
+                <td>Acceptable</td>
+                <td>OK</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 🔟 DIMENSIONAL RESULTS -->
+      <section id="sec-dimensional-2" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">🔟</span>
+              <span>DIMENSIONAL RESULTS</span>
+            </div>
+            <div class="chip">Sample Data (5 pcs)</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Characteristic</th>
+                <th>Specification</th>
+                <th>Sample 1</th>
+                <th>Sample 2</th>
+                <th>Sample 3</th>
+                <th>Sample 4</th>
+                <th>Sample 5</th>
+                <th>Judgment</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Hole Ø</td>
+                <td>10 ±0.1 mm</td>
+                <td>9.98</td>
+                <td>10.02</td>
+                <td>10.01</td>
+                <td>9.99</td>
+                <td>10</td>
+                <td>OK</td>
+              </tr>
+              <tr>
+                <td>Length</td>
+                <td>50 ±0.2 mm</td>
+                <td>50.1</td>
+                <td>50</td>
+                <td>50.2</td>
+                <td>50.1</td>
+                <td>50</td>
+                <td>OK</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11️⃣ MATERIAL / PERFORMANCE TEST RESULTS -->
+      <section id="sec-material-2" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">1️⃣1️⃣</span>
+              <span>MATERIAL / PERFORMANCE TEST RESULTS</span>
+            </div>
+            <div class="chip">Lab Tests</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Test Name</th>
+                <th>Specification</th>
+                <th>Result</th>
+                <th>Unit</th>
+                <th>Test Method</th>
+                <th>Status</th>
+                <th>Remarks</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Hardness</td>
+                <td>180–220</td>
+                <td>200</td>
+                <td>HV</td>
+                <td>ASTM E18</td>
+                <td>OK</td>
+                <td>Within range</td>
+              </tr>
+              <tr>
+                <td>Plating Thickness</td>
+                <td>10–12</td>
+                <td>11.2</td>
+                <td>µm</td>
+                <td>XRF</td>
+                <td>OK</td>
+                <td>As per spec</td>
+              </tr>
+              <tr>
+                <td>Salt Spray</td>
+                <td>Min. 24</td>
+                <td>30</td>
+                <td>Hours</td>
+                <td>ASTM B117</td>
+                <td>OK</td>
+                <td>Pass</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 12️⃣ INITIAL PROCESS STUDIES (SPC) -->
+      <section id="sec-spc-2" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">1️⃣2️⃣</span>
+              <span>INITIAL PROCESS STUDIES (SPC)</span>
+            </div>
+            <div class="chip">Capability Indices</div>
+          </div>
+          <div class="divider"></div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Process Characteristic</th>
+                <th>Mean</th>
+                <th>Std. Dev.</th>
+                <th>Cp</th>
+                <th>Cpk</th>
+                <th>Result</th>
+                <th>Remarks</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Hole Diameter (10±0.1)</td>
+                <td>10.01</td>
+                <td>0.02</td>
+                <td>1.67</td>
+                <td>1.55</td>
+                <td>Acceptable</td>
+                <td>Stable process</td>
+              </tr>
+              <tr>
+                <td>Length (50±0.2)</td>
+                <td>50.05</td>
+                <td>0.05</td>
+                <td>1.33</td>
+                <td>1.22</td>
+                <td>Acceptable</td>
+                <td>Under control</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 13️⃣ QUALIFIED LABORATORY DOCUMENTATION -->
+      <section id="sec-lab-doc-2" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">1️⃣3️⃣</span>
+              <span>QUALIFIED LABORATORY DOCUMENTATION</span>
+            </div>
+            <div class="chip">Lab Accreditation</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Lab Name</th>
+                <th>Address</th>
+                <th>NABL/ISO Status</th>
+                <th>Certificate No.</th>
+                <th>Validity</th>
+                <th>Remarks</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Metrolab Testing Services</td>
+                <td>Pune, India</td>
+                <td>NABL Accredited</td>
+                <td>NABL/MT/2025/054</td>
+                <td>31-Dec-25</td>
+                <td>Approved</td>
+              </tr>
+              <tr>
+                <td>SurfaceTech Labs</td>
+                <td>Gurgaon, India</td>
+                <td>ISO 17025</td>
+                <td>ISO/25/2024/231</td>
+                <td>30-Nov-25</td>
+                <td>Approved</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 14️⃣ APPEARANCE APPROVAL REPORT (AAR) -->
+      <section id="sec-aar-2" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">1️⃣4️⃣</span>
+              <span>APPEARANCE APPROVAL REPORT (AAR)</span>
+            </div>
+            <div class="chip">Visual Parts</div>
+          </div>
+          <div class="divider"></div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Part Name</th>
+                <th>Surface Finish</th>
+                <th>Colour</th>
+                <th>Texture</th>
+                <th>Judgment</th>
+                <th>Customer Approval</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Bracket Assembly</td>
+                <td>Smooth</td>
+                <td>Silver</td>
+                <td>Uniform</td>
+                <td>OK</td>
+                <td>Approved</td>
+              </tr>
+              <tr>
+                <td>Cover Plate</td>
+                <td>Glossy</td>
+                <td>Chrome</td>
+                <td>Good</td>
+                <td>OK</td>
+                <td>Approved</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 15️⃣ SAMPLE PRODUCTION PARTS -->
+      <section id="sec-sample-part-2" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">1️⃣5️⃣</span>
+              <span>SAMPLE PRODUCTION PARTS</span>
+            </div>
+            <div class="chip">Lot-wise Inspection</div>
+          </div>
+          <div class="divider"></div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Lot No.</th>
+                <th>Qty Produced</th>
+                <th>Qty Inspected</th>
+                <th>Qty Accepted</th>
+                <th>Qty Rejected</th>
+                <th>Inspection Date</th>
+                <th>Inspector</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>1</td>
+                <td>200</td>
+                <td>200</td>
+                <td>198</td>
+                <td>2</td>
+                <td>10-Nov-25</td>
+                <td>R. Sharma</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>300</td>
+                <td>300</td>
+                <td>300</td>
+                <td>0</td>
+                <td>11-Nov-25</td>
+                <td>S. Patel</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 16️⃣ MASTER SAMPLE -->
+      <section id="sec-master-sample-2" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">1️⃣6️⃣</span>
+              <span>MASTER SAMPLE</span>
+            </div>
+            <div class="chip">Stored Reference Parts</div>
+          </div>
+          <div class="divider"></div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Part Name</th>
+                <th>Part No.</th>
+                <th>Stored At</th>
+                <th>Location Code</th>
+                <th>Date Stored</th>
+                <th>Verified By</th>
+                <th>Remarks</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Bracket Assembly</td>
+                <td>BRK-2025</td>
+                <td>QA Lab</td>
+                <td>MS-01</td>
+                <td>12-Nov-25</td>
+                <td>A. Singh</td>
+                <td>Reference sample</td>
+              </tr>
+              <tr>
+                <td>Valve Body</td>
+                <td>VB-305</td>
+                <td>QA Lab</td>
+                <td>MS-02</td>
+                <td>12-Nov-25</td>
+                <td>P. Mehta</td>
+                <td>Reference sample</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 17️⃣ CHECKING AIDS -->
+      <section id="sec-checking-aids-2" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">1️⃣7️⃣</span>
+              <span>CHECKING AIDS</span>
+            </div>
+            <div class="chip">Gauges &amp; Fixtures</div>
+          </div>
+          <div class="divider"></div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Gauge / Fixture Name</th>
+                <th>Gauge ID</th>
+                <th>Purpose</th>
+                <th>Calibrated On</th>
+                <th>Calibration Due</th>
+                <th>Status</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Weld Fixture</td>
+                <td>FIX-001</td>
+                <td>Hold part for welding</td>
+                <td>1-Oct-25</td>
+                <td>1-Oct-26</td>
+                <td>OK</td>
+              </tr>
+              <tr>
+                <td>Plug Gauge</td>
+                <td>PG-010</td>
+                <td>Check hole Ø10</td>
+                <td>5-Sep-25</td>
+                <td>5-Sep-26</td>
+                <td>OK</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 18️⃣ CUSTOMER SPECIFIC REQUIREMENTS -->
+      <section id="sec-csr-2" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="icon">1️⃣8️⃣</span>
+              <span>CUSTOMER SPECIFIC REQUIREMENTS (CSR)</span>
+            </div>
+            <div class="chip">OEM Requirements</div>
+          </div>
+          <div class="divider"></div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+              <tr>
+                <th>Requirement No.</th>
+                <th>Description</th>
+                <th>Customer Reference</th>
+                <th>Status</th>
+                <th>Remarks</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>CSR-001</td>
+                <td>Label format as per OEM</td>
+                <td>Spec 12/XYZ</td>
+                <td>Implemented</td>
+                <td>OK</td>
+              </tr>
+              <tr>
+                <td>CSR-002</td>
+                <td>Use OEM-approved plating vendor</td>
+                <td>CSR-DOC-09</td>
+                <td>Implemented</td>
+                <td>OK</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 19️⃣ PART SUBMISSION WARRANT (PSW) -->
+      <section id="sec-psw-2" class="section reveal">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <span class="icon">1️⃣9️⃣</span>
+                <span>PART SUBMISSION WARRANT (PSW)</span>
+              </div>
+            </div>
+            <div class="chip">Final PPAP Approval</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="table-wrapper">
+            <table>
+              <tbody>
+              <tr><td>Company Name</td><td>ABC Components Pvt. Ltd.</td></tr>
+              <tr><td>Supplier Code</td><td>SUP-00123</td></tr>
+              <tr><td>Part Name</td><td>Bracket Assembly</td></tr>
+              <tr><td>Part No.</td><td>BRK-2025</td></tr>
+              <tr><td>Submission Level</td><td>Level 3</td></tr>
+              <tr><td>Revision</td><td>1</td></tr>
+              <tr><td>Customer Name</td><td>XYZ Motors Ltd.</td></tr>
+              <tr><td>Date</td><td>12-Nov-25</td></tr>
+              <tr><td>Reason for Submission</td><td>Initial PPAP Submission</td></tr>
+              <tr><td>Dimensional Results</td><td>✔ Submitted</td></tr>
+              <tr><td>Material Test Results</td><td>✔ Submitted</td></tr>
+              <tr><td>Performance Results</td><td>✔ Submitted</td></tr>
+              <tr><td>DFMEA</td><td>✔ Submitted</td></tr>
+              <tr><td>Control Plan</td><td>✔ Submitted</td></tr>
+              <tr><td>PSW Status</td><td>✅ Approved</td></tr>
+              <tr><td>Customer Approval Sign</td><td>_____________________</td></tr>
+              <tr><td>Supplier Sign</td><td>_____________________</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ====== JS: Smooth Scroll + Scroll Reveal + Active Nav ====== -->
+<script>
+  // Smooth scroll for sidebar links
+  document.querySelectorAll('.nav-link').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href').slice(1);
+      const target = document.getElementById(targetId);
+      if (target) {
+        window.scrollTo({
+          top: target.getBoundingClientRect().top + window.pageYOffset - 16,
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+
+  // Scroll reveal animation using IntersectionObserver
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {
+    threshold: 0.12
+  });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Highlight active nav item on scroll
+  const sections = Array.from(document.querySelectorAll('section[id]'));
+  const navLinks = Array.from(document.querySelectorAll('.nav-link'));
+
+  function updateActiveNav() {
+    const scrollPos = window.scrollY + 120;
+    let currentId = null;
+
+    sections.forEach(sec => {
+      if (sec.offsetTop <= scrollPos) {
+        currentId = sec.id;
+      }
+    });
+
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      if (!href) return;
+      const id = href.slice(1);
+      if (id === currentId) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateActiveNav);
+  updateActiveNav();
+</script>
+</body>
+</html>

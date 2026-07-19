@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Individuals (I-MR) Chart Calculator</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #2c3e50; }
+        h2 { color: #34495e; border-bottom: 2px solid #f39c12; padding-bottom: 10px; }
+        .input-section { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        input, select { padding: 8px; margin: 3px; border: 1px solid #ddd; border-radius: 4px; width: 100px; }
+        button { background: #f39c12; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #e67e22; }
+        .results { background: #d4edda; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #bdc3c7; padding: 8px; text-align: center; font-size: 0.9em; }
+        th { background: #f39c12; color: white; }
+        .formula { font-family: monospace; background: #fdf2e9; padding: 15px; border-left: 5px solid #f39c12; margin: 10px 0; }
+        .charts-row { display: flex; gap: 20px; flex-wrap: wrap; }
+        .chart-container { flex: 1; min-width: 400px; }
+        #iChartCanvas, #mrChartCanvas { border: 1px solid #ddd; margin: 20px 0; background: white; }
+        .out-of-control { background: #ffebee !important; color: #c62828; }
+        .footer { text-align: center; padding: 20px; color: #7f8c8d; font-size: 0.9em; border-top: 1px solid #eee; margin-top: 40px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📈 Interactive Individuals (I-MR) Chart Calculator</h1>
+        <p>Single measurements per time period (technician performance, repair times, single dimensions). Auto-calculates 2.66 & 3.268 factors. [web:1][web:2]</p>
+
+        <div class="input-section">
+            <h2>I-MR Chart Calculator</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; margin-bottom: 20px;">
+                <div>
+                    <label>Number of Measurements:</label><br>
+                    <input type="number" id="numMeasurements" value="25" min="10" max="100" onchange="resetData()">
+                </div>
+                <button onclick="calculateIMR()">🔄 Calculate Limits</button>
+                <button onclick="addRandomData()">🎲 Sample Data</button>
+                <button onclick="clearData()">🗑️ Clear</button>
+            </div>
+            
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Individual (X)</th>
+                        <th>mR = |Xᵢ - Xᵢ₋₁|</th>
+                    </tr>
+                </thead>
+                <tbody id="dataBody">
+                    <tr><td>1</td><td><input type="number" step="0.01" value="10.2" onchange="updateIMR()"></td><td>-</td></tr>
+                    <tr><td>2</td><td><input type="number" step="0.01" value="10.1" onchange="updateIMR()"></td><td id="mr1">-</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="resultsSection" style="display: none;">
+            <div class="charts-row">
+                <div class="chart-container">
+                    <h3>Individuals (I) Chart</h3>
+                    <canvas id="iChartCanvas" width="600" height="400"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Moving Range (MR) Chart</h3>
+                    <canvas id="mrChartCanvas" width="600" height="400"></canvas>
+                </div>
+            </div>
+
+            <div class="results">
+                <h3>Control Limits</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                    <div class="formula">
+                        <strong>Individuals Chart:</strong><br>
+                        CL: <span id="iCL">-</span><br>
+                        UCL: <span id="iUCL">-</span><br>
+                        LCL: <span id="iLCL">-</span>
+                    </div>
+                    <div class="formula">
+                        <strong>Moving Range Chart:</strong><br>
+                        CL: <span id="mrCL">-</span><br>
+                        UCL: <span id="mrUCL">-</span><br>
+                        LCL: <span id="mrLCL">-</span>
+                    </div>
+                </div>
+                <div class="formula">
+                    <strong>Formulas:</strong><br>
+                    X̅ = ΣX/n | mR̅ = ΣmR/(n-1)<br>
+                    UCLₓ = X̅ + 2.66×mR̅ | UCLₘᵣ = 3.268×mR̅
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+
+    </div>
+
+    <script>
+        let individualData = [10.2, 10.1];
+
+        function resetData() {
+            const n = parseInt(document.getElementById('numMeasurements').value);
+            individualData = Array(n).fill(10);
+            renderTable();
+            updateIMR();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('dataBody');
+            tbody.innerHTML = '';
+            
+            individualData.forEach((val, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${i+1}</td>
+                    <td><input type="number" step="0.01" value="${val}" onchange="updateData(${i}, this.value)"></td>
+                    <td id="mr${i}">${i === 0 ? '-' : '-'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateData(index, value) {
+            individualData[index] = parseFloat(value) || 0;
+            updateIMR();
+        }
+
+        function updateIMR() {
+            for(let i = 1; i < individualData.length; i++) {
+                const mr = Math.abs(individualData[i] - individualData[i-1]);
+                document.getElementById(`mr${i-1}`).textContent = mr.toFixed(3);
+            }
+        }
+
+        function calculateIMR() {
+            const n = individualData.length;
+            if(n < 2) return alert('Need at least 2 measurements');
+            
+            // Calculate moving ranges
+            const mrValues = [];
+            for(let i = 1; i < n; i++) {
+                mrValues.push(Math.abs(individualData[i] - individualData[i-1]));
+            }
+            
+            const xbar = individualData.reduce((a, b) => a + b, 0) / n;
+            const mrbar = mrValues.reduce((a, b) => a + b, 0) / mrValues.length;
+            
+            const iUCL = xbar + 2.66 * mrbar;
+            const iLCL = Math.max(0, xbar - 2.66 * mrbar); // LCL >= 0 for some processes
+            const mrUCL = 3.268 * mrbar;
+            const mrLCL = 0;
+
+            // Update display
+            document.getElementById('iCL').textContent = xbar.toFixed(3);
+            document.getElementById('iUCL').textContent = iUCL.toFixed(3);
+            document.getElementById('iLCL').textContent = iLCL.toFixed(3);
+            document.getElementById('mrCL').textContent = mrbar.toFixed(3);
+            document.getElementById('mrUCL').textContent = mrUCL.toFixed(3);
+            document.getElementById('mrLCL').textContent = mrLCL.toFixed(3);
+
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            // Draw charts
+            drawChart('iChartCanvas', individualData, xbar, iUCL, iLCL, 'Individuals (I) Chart');
+            drawChart('mrChartCanvas', mrValues, mrbar, mrUCL, mrLCL, 'Moving Range (MR) Chart');
+        }
+
+        function drawChart(canvasId, data, center, ucl, lcl, title) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const padding = 60;
+            const chartWidth = canvas.width - 2 * padding;
+            const chartHeight = canvas.height - 2 * padding;
+            const maxVal = Math.max(...data, ucl) * 1.05;
+            const minVal = Math.min(...data, lcl) * 0.95;
+
+            // Grid
+            ctx.strokeStyle = '#eee';
+            ctx.lineWidth = 1;
+            for(let i = 0; i <= 10; i++) {
+                const y = padding + (chartHeight * i / 10);
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(canvas.width - padding, y);
+                ctx.stroke();
+            }
+
+            // Axes
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+
+            // Control limits
+            const drawLine = (val, color, label) => {
+                const y = padding + chartHeight * (1 - (val - minVal) / (maxVal - minVal));
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 3;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(canvas.width - padding, y);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.fillStyle = color;
+                ctx.font = 'bold 12px Arial';
+                ctx.fillText(label, canvas.width - 80, y - 5);
+            };
+            
+            drawLine(ucl, '#e74c3c', 'UCL');
+            drawLine(center, '#27ae60', 'CL');
+            if(lcl > 0) drawLine(lcl, '#e74c3c', 'LCL');
+
+            // Data points & lines
+            ctx.fillStyle = '#f39c12';
+            ctx.strokeStyle = '#e67e22';
+            ctx.lineWidth = 2;
+            data.forEach((val, i) => {
+                const x = padding + (i / (data.length - 1)) * chartWidth;
+                const y = padding + chartHeight * (1 - (val - minVal) / (maxVal - minVal));
+                
+                ctx.beginPath();
+                ctx.arc(x, y, 8, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.stroke();
+                
+                // Connect consecutive points
+                if(i > 0) {
+                    const prevX = padding + ((i-1) / (data.length - 1)) * chartWidth;
+                    const prevY = padding + chartHeight * (1 - (data[i-1] - minVal) / (maxVal - minVal));
+                    ctx.beginPath();
+                    ctx.moveTo(prevX, prevY);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                }
+            });
+
+            // Title
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = 'bold 18px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(title, canvas.width / 2, 30);
+            ctx.textAlign = 'left';
+        }
+
+        function addRandomData() {
+            const n = parseInt(document.getElementById('numMeasurements').value);
+            const mean = 10;
+            const std = 0.4;
+            
+            individualData = [];
+            for(let i = 0; i < n; i++) {
+                individualData.push(mean + (Math.random() - 0.5) * std * 4);
+            }
+            renderTable();
+            updateIMR();
+        }
+
+        function clearData() {
+            document.getElementById('resultsSection').style.display = 'none';
+            const n = parseInt(document.getElementById('numMeasurements').value);
+            individualData = Array(n).fill(10);
+            renderTable();
+        }
+
+        // Initialize
+        renderTable();
+    </script>
+</body>
+</html>

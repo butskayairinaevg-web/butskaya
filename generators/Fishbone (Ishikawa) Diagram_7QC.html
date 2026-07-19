@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fishbone Diagram — Notes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#050816;
+      --bg-soft:rgba(5,8,22,0.95);
+      --sidebar:#050816;
+      --card-border:rgba(255,255,255,0.08);
+      --accent:#20c997;
+      --accent-soft:#5dd3b0;
+      --text:#e6edf7;
+      --muted:#9faac4;
+      --muted-soft:#6d7690;
+    }
+    :root.light{
+      --bg:#f3f4f8;
+      --bg-soft:#ffffff;
+      --sidebar:#ffffff;
+      --card-border:rgba(15,23,42,0.15);
+      --accent:#0ea5e9;
+      --accent-soft:#0284c7;
+      --text:#0f172a;
+      --muted:#4b5563;
+      --muted-soft:#6b7280;
+    }
+
+    *{box-sizing:border-box}
+    html{
+      scroll-behavior:smooth;
+    }
+    html,body{
+      margin:0;
+      background:
+        radial-gradient(900px 600px at 15% 0%,rgba(32,201,151,0.18),transparent),
+        radial-gradient(900px 600px at 100% 100%,rgba(56,189,248,0.16),transparent),
+        linear-gradient(180deg,#040712 0%,#050814 100%);
+      -webkit-font-smoothing:antialiased;
+      font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Roboto,"Helvetica Neue",Arial,sans-serif;
+    }
+    :root.light body{
+      background:linear-gradient(180deg,#e5ecff 0%,#edf2ff 100%);
+    }
+
+    body{
+      display:flex;justify-content:center;
+      padding:24px 10px 40px;
+      color:var(--text);
+    }
+    .layout{
+      width:100%;max-width:1180px;
+      display:grid;grid-template-columns:230px minmax(0,1fr);gap:16px;
+    }
+
+    /* SIDEBAR */
+    .sidebar{
+      position:sticky;top:16px;
+      align-self:flex-start;
+      background:var(--sidebar);
+      border-radius:14px;
+      border:1px solid var(--card-border);
+      padding:12px 12px 14px;
+      box-shadow:0 16px 40px rgba(0,0,0,0.4);
+    }
+    .brand{
+      display:flex;align-items:center;gap:8px;
+      padding-bottom:8px;
+      border-bottom:1px solid rgba(148,163,184,0.4);
+      margin-bottom:6px;
+    }
+    .brand-icon{
+      width:26px;height:26px;border-radius:10px;
+      background:radial-gradient(circle at 30% 0%,var(--accent-soft),var(--accent));
+      display:flex;align-items:center;justify-content:center;
+      font-size:18px;box-shadow:0 10px 26px rgba(16,185,129,0.55);
+    }
+    .brand-title{font-size:14px;font-weight:600;}
+    .brand-sub{font-size:11px;color:var(--muted-soft);}
+
+    .sidebar-title{
+      margin:4px 0 4px;
+      font-size:11px;color:var(--muted-soft);
+      text-transform:uppercase;letter-spacing:.12em;
+    }
+    .nav{
+      display:flex;flex-direction:column;gap:4px;
+    }
+    .nav a{
+      display:flex;align-items:center;gap:6px;
+      padding:6px 8px;border-radius:9px;
+      color:var(--muted);text-decoration:none;
+      font-size:12px;font-weight:500;
+      transition:background .15s,color .15s;
+    }
+    .nav a span.dot{
+      width:6px;height:6px;border-radius:999px;
+      background:rgba(148,163,184,0.5);
+    }
+    .nav a:hover{
+      background:rgba(148,163,184,0.16);
+      color:var(--text);
+    }
+    .nav a.active{
+      background:rgba(32,201,151,0.18);
+      color:var(--accent-soft);
+    }
+    .nav a.active span.dot{background:var(--accent-soft);}
+
+    /* Theme toggle button */
+    .theme-toggle{
+      margin-top:10px;
+      display:flex;justify-content:flex-start;
+    }
+    .theme-btn{
+      position:relative;
+      width:70px;height:28px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      background:linear-gradient(120deg,rgba(15,23,42,0.95),rgba(15,23,42,0.85));
+      display:flex;align-items:center;
+      padding:0 6px;
+      cursor:pointer;
+      font-size:11px;
+      color:var(--muted-soft);
+      overflow:hidden;
+      transition:background .25s,border-color .25s,color .25s,box-shadow .25s;
+    }
+    :root.light .theme-btn{
+      background:linear-gradient(120deg,#e5f4ff,#f9fafb);
+      border-color:rgba(148,163,184,0.9);
+      color:#0f172a;
+      box-shadow:0 6px 18px rgba(15,23,42,0.18);
+    }
+    .theme-pill{
+      position:absolute;
+      width:30px;height:22px;
+      border-radius:999px;
+      background:radial-gradient(circle at 20% 0%,#facc15,#f97316);
+      box-shadow:0 8px 18px rgba(248,250,252,0.35);
+      left:4px;
+      transition:left .25s cubic-bezier(.2,.8,.2,1),background .25s,box-shadow .25s;
+    }
+    :root.light .theme-pill{
+      left:36px;
+      background:radial-gradient(circle at 20% 0%,#38bdf8,#0ea5e9);
+      box-shadow:0 8px 18px rgba(56,189,248,0.45);
+    }
+    .theme-labels{
+      position:relative;
+      width:100%;
+      display:flex;justify-content:space-between;
+      z-index:1;
+    }
+
+    /* MAIN */
+    .page{
+      border-radius:16px;
+      background:var(--bg-soft);
+      border:1px solid var(--card-border);
+      padding:18px 16px 22px;
+      box-shadow:0 18px 40px rgba(15,23,42,0.45);
+      color:var(--text);
+    }
+    header{
+      margin-bottom:16px;
+      padding-bottom:10px;
+      border-bottom:1px solid rgba(148,163,184,0.4);
+    }
+    h1{
+      margin:0 0 6px;
+      font-size:22px;
+      font-weight:600;
+    }
+    .subtitle{margin:0;font-size:13px;color:var(--muted);}
+
+    .diagram-wrap{
+      margin:14px 0 22px;
+      border-radius:14px;
+      background:#050816;
+      border:1px solid rgba(15,23,42,0.6);
+      padding:14px;
+      position:relative;
+      overflow:hidden;
+    }
+    :root.light .diagram-wrap{
+      background:#020617;
+      border-color:rgba(15,23,42,0.8);
+    }
+    svg{width:100%;height:auto;display:block;}
+    .spine{
+      stroke:rgba(148,163,184,0.55);
+      stroke-width:8;
+      stroke-linecap:round;
+    }
+    .bone{
+      stroke:rgba(148,163,184,0.35);
+      stroke-width:7;
+    }
+    .effect-rect{fill:var(--accent);rx:12;}
+    .effect-text{fill:#fff;font-weight:600;}
+
+    .bone,.spine{
+      stroke-dasharray:260;
+      stroke-dashoffset:260;
+      animation:draw 1.1s ease forwards;
+    }
+    @keyframes draw{to{stroke-dashoffset:0;}}
+
+    #stars{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      mix-blend-mode:screen;
+    }
+
+    h2{
+      margin:18px 0 8px;
+      font-size:18px;
+      font-weight:600;
+      color:var(--accent-soft);
+    }
+    h3{
+      margin:12px 0 6px;
+      font-size:16px;
+      font-weight:600;
+      color:var(--accent-soft);
+    }
+    p{margin:6px 0;font-size:14px;line-height:1.7;color:var(--text);}
+    ul{margin:4px 0 8px 22px;padding:0;}
+    li{margin-bottom:4px;font-size:14px;line-height:1.6;color:var(--muted);}
+    strong{color:var(--text);}
+    hr{
+      border:0;border-top:1px solid rgba(148,163,184,0.4);
+      margin:18px 0;
+    }
+    footer{
+      margin-top:18px;
+      font-size:12px;
+      color:var(--muted-soft);
+      text-align:right;
+    }
+
+    @media(max-width:880px){
+      .layout{grid-template-columns:1fr;}
+      .sidebar{position:static;order:1;margin-bottom:10px;}
+      .page{order:2;}
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">🐟</div>
+        <div>
+          <div class="brand-title">Fishbone Notes</div>
+          <div class="brand-sub">Quick jump menu</div>
+        </div>
+      </div>
+
+      <div class="sidebar-title">Mode</div>
+      <div class="theme-toggle">
+        <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle light / dark mode">
+          <div class="theme-pill"></div>
+          <div class="theme-labels">
+            <span>Dark</span>
+            <span>Light</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="sidebar-title">Sections</div>
+      <nav class="nav" id="toc">
+        <a href="#s1"><span class="dot"></span>Introduction</a>
+        <a href="#s2"><span class="dot"></span>Why Fishbone</a>
+        <a href="#s3"><span class="dot"></span>Names &amp; Origin</a>
+        <a href="#s4"><span class="dot"></span>Purpose &amp; Use</a>
+        <a href="#s5"><span class="dot"></span>6M Categories</a>
+        <a href="#s6"><span class="dot"></span>Service 4P / 8P</a>
+        <a href="#s7"><span class="dot"></span>Step‑by‑step Use</a>
+        <a href="#s8"><span class="dot"></span>Compact Steps</a>
+        <a href="#s9"><span class="dot"></span>Benefits</a>
+        <a href="#s10"><span class="dot"></span>Limitations</a>
+        <a href="#s11"><span class="dot"></span>Tips</a>
+      </nav>
+    </aside>
+
+    <div class="page">
+      <header>
+        <h1>Fishbone Diagram (Ishikawa / Cause &amp; Effect)</h1>
+        <p class="subtitle">Full content in one scroll, with sidebar links and light/dark mode.</p>
+      </header>
+
+      <div class="diagram-wrap">
+        <canvas id="stars"></canvas>
+        <svg viewBox="0 0 1600 800" preserveAspectRatio="xMidYMid meet" aria-label="Fishbone diagram">
+          <line x1="240" y1="400" x2="1180" y2="400" class="spine"></line>
+
+          <g>
+            <line x1="360" y1="400" x2="550" y2="260" class="bone"></line>
+            <text x="570" y="246" fill="#e2f7f0" font-size="15" font-weight="600">Man (People)</text>
+            <text x="570" y="266" fill="#a5b4cf" font-size="13">Skill • Training • Experience</text>
+          </g>
+
+          <g>
+            <line x1="520" y1="400" x2="710" y2="270" class="bone"></line>
+            <text x="730" y="258" fill="#e2f7f0" font-size="15" font-weight="600">Machine</text>
+            <text x="730" y="278" fill="#a5b4cf" font-size="13">Maintenance • Wear • Calibration</text>
+          </g>
+
+          <g>
+            <line x1="680" y1="400" x2="870" y2="250" class="bone"></line>
+            <text x="890" y="238" fill="#e2f7f0" font-size="15" font-weight="600">Method</text>
+            <text x="890" y="258" fill="#a5b4cf" font-size="13">Procedure • Work Instructions</text>
+          </g>
+
+          <g>
+            <line x1="835" y1="400" x2="1025" y2="280" class="bone"></line>
+            <text x="1045" y="270" fill="#e2f7f0" font-size="15" font-weight="600">Measurement</text>
+            <text x="1045" y="290" fill="#a5b4cf" font-size="13">Gauge • Calibration • Data</text>
+          </g>
+
+          <g>
+            <line x1="360" y1="400" x2="550" y2="540" class="bone"></line>
+            <text x="570" y="552" fill="#e2f7f0" font-size="15" font-weight="600">Material</text>
+            <text x="570" y="572" fill="#a5b4cf" font-size="13">Specification • Quality • Handling</text>
+          </g>
+
+          <g>
+            <line x1="520" y1="400" x2="710" y2="560" class="bone"></line>
+            <text x="730" y="572" fill="#e2f7f0" font-size="15" font-weight="600">Environment</text>
+            <text x="730" y="592" fill="#a5b4cf" font-size="13">Temp • Humidity • Cleanliness</text>
+          </g>
+
+          <g>
+            <line x1="680" y1="400" x2="870" y2="570" class="bone"></line>
+            <text x="890" y="582" fill="#e2f7f0" font-size="15" font-weight="600">Measurement (Other)</text>
+            <text x="890" y="602" fill="#a5b4cf" font-size="13">Sampling • Method • Accuracy</text>
+          </g>
+
+          <g transform="translate(1180,340)">
+            <rect width="320" height="120" class="effect-rect"></rect>
+            <text x="160" y="70" text-anchor="middle" class="effect-text" style="font-size:22px;">Effect / Problem</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- CONTENT SECTIONS -->
+      <section id="s1">
+        <h2>1. Introduction</h2>
+        <p>A Fishbone Diagram, also called the Ishikawa Diagram or Cause-and-Effect Diagram, is a visual problem-solving tool used to identify and analyze all possible causes of a specific problem. It is widely applied in Quality Control (QC), Quality Assurance (QA), Lean, Six Sigma, manufacturing, services, and Root Cause Analysis (RCA).</p>
+        <p>The diagram helps teams understand why a problem occurs by displaying causes in a structured “fishbone” layout radiating from a central spine.</p>
+      </section>
+
+      <section id="s2">
+        <h2>2. Why it is called a Fishbone Diagram</h2>
+        <ul>
+          <li><strong>Head</strong> → represents the effect or problem.</li>
+          <li><strong>Spine</strong> → the main line connecting causes to the effect.</li>
+          <li><strong>Main bones</strong> → categories of causes (Man, Machine, Method, etc.).</li>
+          <li><strong>Small bones</strong> → sub‑causes under each category.</li>
+        </ul>
+      </section>
+
+      <section id="s3">
+        <h2>3. Names and Origin</h2>
+        <ul>
+          <li><strong>Ishikawa Diagram</strong> → named after Professor Kaoru Ishikawa (Japan, mid‑20th century).</li>
+          <li><strong>Cause &amp; Effect Diagram</strong> → shows how causes combine to create an effect.</li>
+          <li><strong>Fishbone / Herringbone Diagram</strong> → its shape looks like a fish skeleton.</li>
+        </ul>
+      </section>
+
+      <section id="s4">
+        <h2>4. Purpose &amp; Use</h2>
+        <ul>
+          <li>Identify all possible causes of a problem, not just obvious ones.</li>
+          <li>Organize causes in a structured, visual format for discussion.</li>
+          <li>Show relationships between effect and multiple cause categories.</li>
+          <li>Support systematic root cause analysis and avoid symptom‑based quick fixes.</li>
+          <li>Strengthen RCA in Lean, Six Sigma, Kaizen and CAPA activities.</li>
+        </ul>
+        <p><strong>Most useful when:</strong></p>
+        <ul>
+          <li>Problems are complex or cross‑functional.</li>
+          <li>Multiple possible causes exist.</li>
+          <li>Issues are recurring and root cause is not clear.</li>
+          <li>Structured brainstorming and visual clarity are required.</li>
+        </ul>
+      </section>
+
+      <section id="s5">
+        <h2>5. Common Cause Categories (6M Method)</h2>
+        <p>The 6M model is common in manufacturing environments.</p>
+
+        <h3>1. Man (People)</h3>
+        <ul>
+          <li>Skill level and competency.</li>
+          <li>Training and awareness.</li>
+          <li>Communication gaps and misunderstanding.</li>
+          <li>Fatigue, stress, motivation.</li>
+          <li>Human error.</li>
+        </ul>
+
+        <h3>2. Machine (Equipment)</h3>
+        <ul>
+          <li>Wear and tear of machines or tools.</li>
+          <li>Lack of preventive maintenance.</li>
+          <li>Calibration issues.</li>
+          <li>Tooling problems and breakdowns.</li>
+          <li>Capability or capacity limits.</li>
+        </ul>
+
+        <h3>3. Method (Process)</h3>
+        <ul>
+          <li>Incorrect or unclear procedures.</li>
+          <li>Poor work instructions or SOPs.</li>
+          <li>Non‑standardized processes.</li>
+          <li>Wrong sequence of operations.</li>
+          <li>Inefficient techniques or rework loops.</li>
+        </ul>
+
+        <h3>4. Material (Raw Material)</h3>
+        <ul>
+          <li>Poor material quality.</li>
+          <li>Specification mismatch.</li>
+          <li>Impurity or contamination.</li>
+          <li>Availability or stock issues.</li>
+          <li>Handling and storage problems.</li>
+        </ul>
+
+        <h3>5. Measurement (Inspection)</h3>
+        <ul>
+          <li>Wrong measuring tool.</li>
+          <li>Calibration errors.</li>
+          <li>Incorrect measurement method.</li>
+          <li>Data entry or transcription errors.</li>
+          <li>Gauge variation and repeatability issues.</li>
+        </ul>
+
+        <h3>6. Mother Nature / Environment</h3>
+        <ul>
+          <li>Temperature and humidity.</li>
+          <li>Lighting and visibility.</li>
+          <li>Cleanliness of area.</li>
+          <li>Noise and vibration.</li>
+          <li>Other environmental conditions affecting the process.</li>
+        </ul>
+      </section>
+
+      <section id="s6">
+        <h2>6. Cause Categories for Service Industry</h2>
+        <p>Service and office processes often use people‑ and process‑focused categories instead of 6M.</p>
+
+        <h3>4P Model</h3>
+        <ul>
+          <li><strong>People</strong></li>
+          <li><strong>Process</strong></li>
+          <li><strong>Policies</strong></li>
+          <li><strong>Place</strong></li>
+        </ul>
+
+        <h3>8P Model</h3>
+        <ul>
+          <li>Product</li>
+          <li>Price</li>
+          <li>Promotion</li>
+          <li>Place</li>
+          <li>People</li>
+          <li>Process</li>
+          <li>Physical Evidence</li>
+          <li>Performance</li>
+        </ul>
+      </section>
+
+      <section id="s7">
+        <h2>7. How to Use a Fishbone Diagram (Step‑by‑Step)</h2>
+        <p><strong>Step 1: Define the Problem Clearly</strong></p>
+        <ul>
+          <li>Write a clear problem statement, for example “High customer complaints for late delivery”.</li>
+        </ul>
+
+        <p><strong>Step 2: Draw the Spine and Head</strong></p>
+        <ul>
+          <li>Draw a horizontal arrow (spine) and write the problem inside a box at the head on the right side.</li>
+        </ul>
+
+        <p><strong>Step 3: Add Major Cause Categories</strong></p>
+        <ul>
+          <li>Use 6M, 4P, 8P, or custom categories as main bones.</li>
+        </ul>
+
+        <p><strong>Step 4: Brainstorm Causes</strong></p>
+        <ul>
+          <li>Ask the team “What could cause this problem?”.</li>
+          <li>List causes under appropriate categories.</li>
+        </ul>
+
+        <p><strong>Step 5: Add Sub‑Causes Using 5 Whys</strong></p>
+        <ul>
+          <li>For each cause, keep asking “Why?” until deeper root causes appear.</li>
+        </ul>
+
+        <p><strong>Step 6: Analyze and Identify Key Causes</strong></p>
+        <ul>
+          <li>Look for causes that appear repeatedly or seem strongly linked to the effect.</li>
+        </ul>
+
+        <p><strong>Step 7: Implement Corrective Actions</strong></p>
+        <ul>
+          <li>Define corrective and preventive actions to address root causes permanently.</li>
+        </ul>
+
+        <p><strong>When to use an Ishikawa Diagram?</strong></p>
+        <ul>
+          <li>Problem‑solving for quality issues.</li>
+          <li>To analyze interactions among multiple factors.</li>
+          <li>To prepare CAPA and audit responses (ISO / IATF).</li>
+          <li>In combination with 5 Whys, Pareto charts, check sheets, etc.</li>
+        </ul>
+      </section>
+
+      <section id="s8">
+        <h2>8. Steps for making “Cause and Effect Diagram” (Compact)</h2>
+        <p><strong>Step‑1:</strong> Identify and define the problem/effect using the 5W2H approach.</p>
+        <p><strong>Step‑2:</strong> Write the problem in the problem box and draw the spine.</p>
+        <p><strong>Step‑3:</strong> Identify 4M/6M categories (primary causes) and draw main bones.</p>
+        <p><strong>Step‑4:</strong> Identify probable secondary causes using brainstorming and check sheets.</p>
+        <p><strong>Step‑5:</strong> Add tertiary causes and analyze the diagram using 5 Whys.</p>
+      </section>
+
+      <section id="s9">
+        <h2>9. Benefits of Fishbone Diagram</h2>
+        <ul>
+          <li>Simple and beginner‑friendly.</li>
+          <li>Encourages team brainstorming and participation.</li>
+          <li>Excellent for visualizing complex, multi‑cause problems.</li>
+          <li>Focuses attention on root causes instead of symptoms.</li>
+          <li>Applicable in all industries and functions.</li>
+          <li>Works well with 5 Whys, Pareto Chart and other RCA tools.</li>
+        </ul>
+      </section>
+
+      <section id="s10">
+        <h2>10. Limitations</h2>
+        <ul>
+          <li>Quality of analysis depends on team knowledge and data.</li>
+          <li>May miss hidden or systemic causes.</li>
+          <li>Does not automatically confirm the true root cause.</li>
+          <li>Diagram can become cluttered if too many causes are added.</li>
+        </ul>
+      </section>
+
+      <section id="s11">
+        <h2>11. Tips for Effective Use</h2>
+        <ul>
+          <li>Define the problem clearly and specifically.</li>
+          <li>Involve cross‑functional team members who know the process.</li>
+          <li>Use 5 Whys for deeper analysis of key branches.</li>
+          <li>Validate suspected causes with real data and observations.</li>
+          <li>Prioritize causes using Pareto analysis where possible.</li>
+          <li>Keep the layout clean and readable for reviews and audits.</li>
+        </ul>
+      </section>
+
+      <footer>
+
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // theme toggle
+    const root = document.documentElement;
+    const btn = document.getElementById('themeBtn');
+    btn.addEventListener('click',()=>{
+      const light = root.classList.toggle('light');
+      try{localStorage.setItem('fishbone-theme', light ? 'light' : 'dark');}catch(e){}
+    });
+    try{
+      const saved = localStorage.getItem('fishbone-theme');
+      if(saved === 'light'){root.classList.add('light');}
+    }catch(e){}
+
+    // stars animation
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    function resizeStars(){
+      const box = canvas.parentElement.getBoundingClientRect();
+      canvas.width = box.width;
+      canvas.height = box.height;
+    }
+    resizeStars();
+    window.addEventListener('resize',resizeStars);
+
+    const particles=[];
+    for(let i=0;i<40;i++){
+      particles.push({
+        x:Math.random()*canvas.width,
+        y:Math.random()*canvas.height,
+        vx:(Math.random()-0.5)*0.15,
+        vy:(Math.random()-0.5)*0.15,
+        r:0.8+Math.random()*1.4,
+        a:0.3+Math.random()*0.4
+      });
+    }
+    (function tick(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      for(const p of particles){
+        p.x+=p.vx;p.y+=p.vy;
+        if(p.x<0)p.x=canvas.width;
+        if(p.x>canvas.width)p.x=0;
+        if(p.y<0)p.y=canvas.height;
+        if(p.y>canvas.height)p.y=0;
+        ctx.beginPath();
+        ctx.fillStyle=`rgba(148,163,184,${p.a})`;
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fill();
+      }
+      requestAnimationFrame(tick);
+    })();
+
+    // active sidebar link on scroll
+    const links = Array.from(document.querySelectorAll('#toc a'));
+    const sections = links.map(a=>document.querySelector(a.getAttribute('href')));
+    window.addEventListener('scroll',()=>{
+      let idx=0;
+      for(let i=0;i<sections.length;i++){
+        const rect = sections[i].getBoundingClientRect();
+        if(rect.top <= 80) idx=i;
+      }
+      links.forEach((a,i)=>a.classList.toggle('active',i===idx));
+    });
+  </script>
+</body>
+</html>

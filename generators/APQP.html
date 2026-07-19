@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>APQP — Advanced Product Quality Planning | IATF Core Tools</title>
+<style>
+  :root {
+    --bg-light: linear-gradient(135deg,#f3e5f5,#ede7f6,#e8eaf6);
+    --bg-dark: linear-gradient(135deg,#0d0d16,#1b1b2f,#28284d);
+    --text-light: #222;
+    --text-dark: #f5f5f5;
+  }
+  body {
+    font-family:'Segoe UI',sans-serif;
+    margin:0;
+    background: var(--bg-light);
+    color: var(--text-light);
+    transition: all 0.8s ease;
+  }
+  body.dark-mode {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+  }
+  header {
+    position:fixed;top:0;left:0;width:250px;height:100%;overflow-y:auto;background:rgba(93,64,155,0.95);color:white;padding:20px;box-shadow:4px 0 15px rgba(0,0,0,0.2);
+  }
+  header h1 {
+    font-size:22px;text-align:center;background:linear-gradient(90deg,#ff8a65,#ffb300,#7e57c2,#26c6da);
+    -webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent;margin-bottom:20px;animation:shine 6s infinite linear;cursor:pointer;
+  }
+  @keyframes shine {0%{background-position:0 0;}100%{background-position:200% 0;}}
+  header ul {list-style:none;padding:0;margin:0;transition:max-height 0.5s ease;overflow:hidden;}
+  header.collapsed ul {max-height:0;}
+  header ul li {margin:10px 0;}
+  header ul li a {color:#fff;text-decoration:none;font-size:15px;transition:0.3s;padding:6px 10px;display:block;border-radius:6px;}
+  header ul li a:hover, header ul li a.active {background:#ffeb3b;color:#4a148c;font-weight:600;}
+  .content {margin-left:280px;padding:20px;transition:margin-left 0.5s ease;}
+  section {background:#fff;border-radius:15px;box-shadow:0 4px 12px rgba(103,58,183,0.3);margin:25px auto;max-width:1000px;padding:30px 40px;animation:fadein 1.2s ease;scroll-margin-top:60px;}
+  body.dark-mode section {background:#1e1e2f;box-shadow:0 0 25px rgba(138,43,226,0.6), 0 0 15px rgba(0,255,255,0.3);}
+  @keyframes fadein {from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
+  h2 {font-size:28px;background:linear-gradient(90deg,#7e57c2,#ef5350,#ffa726,#26a69a,#42a5f5);-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:shine 8s infinite linear;}
+  body.dark-mode h2 {text-shadow:0 0 10px #00e5ff,0 0 20px #7c4dff;}
+  h3 {color:#5e35b1;}
+  body.dark-mode h3 {color:#80cbc4;text-shadow:0 0 10px #26a69a;}
+  ul li {line-height:1.7;font-size:15px;}
+  table {width:100%;border-collapse:collapse;margin-top:15px;border:1px solid #ce93d8;}
+  th {background:#7e57c2;color:#fff;text-align:center;}
+  td,th {border:1px solid #d1c4e9;padding:8px 10px;}
+  tr:nth-child(even){background:#f3e5f5;}
+  .footer{text-align:center;padding:20px;font-size:14px;color:#6a1b9a;}
+  body.dark-mode .footer {color:#bb86fc;text-shadow:0 0 8px #8e24aa;}
+  #themeToggle {position:fixed;top:20px;right:20px;padding:10px 16px;border:none;border-radius:8px;background:#7e57c2;color:white;cursor:pointer;transition:0.4s;z-index:9999;}
+  #themeToggle:hover {background:#9575cd;box-shadow:0 0 10px #b39ddb;}
+  #toggleMenu {position:fixed;top:20px;left:260px;padding:10px 16px;border:none;border-radius:8px;background:#ff8a65;color:white;cursor:pointer;transition:0.4s;z-index:9999;}
+  #toggleMenu:hover {background:#ffb74d;box-shadow:0 0 10px #ffd54f;}
+  .progress-container {position:fixed;top:0;left:0;width:100%;height:6px;background:#e0e0e0;z-index:9998;}
+  .progress-bar {height:6px;background:linear-gradient(90deg,#8e24aa,#ff8a65,#42a5f5);width:0%;transition:width 0.2s;}
+  html {scroll-behavior:smooth;}
+</style>
+</head>
+<body>
+<div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+<header id="sidebar">
+  <h1 id="menuTitle">APQP GUIDE</h1>
+  <ul>
+    <li><a href="#what">What is APQP?</a></li>
+    <li><a href="#why">Why Important</a></li>
+    <li><a href="#objectives">Objectives</a></li>
+    <li><a href="#implement">Implementation</a></li>
+    <li><a href="#fundamentals">Fundamentals</a></li>
+    <li><a href="#phases">APQP Phases</a></li>
+    <li><a href="#elements">Key Elements</a></li>
+    <li><a href="#benefits">Benefits</a></li>
+    <li><a href="#summary">Summary</a></li>
+  </ul>
+</header>
+<button id="toggleMenu">Hide Menu</button>
+<button id="themeToggle">Dark Mode</button>
+<div class="content">
+<section id="what"><h2>What is APQP?</h2><p>APQP (Advanced Product Quality Planning) is an important tool in product development management and one of the five core tools of the IATF 16949:2016 standard. It provides a complete roadmap for designing and developing products and processes that meet customer needs and expectations, helping industries—especially automotive—ensure quality, performance, and customer satisfaction through effective planning.</p></section>
+<section id="why"><h2>Why is APQP Important?</h2><ul><li>Innovation</li><li>More complex Product</li><li>Reduce new product development time</li><li>Complicated supply chain activity</li><li>Increase in customer and quality requirements</li></ul><p>The APQP method helps achieve benefits such as avoiding late changes in product and process, ensuring first-time-right quality, reducing cost, and minimizing risks at an early stage.</p></section>
+<section id="objectives"><h2>Objectives of APQP</h2><ul><li>Ensure clear communication among all involved.</li><li>Complete all required steps on time.</li><li>Reduce or avoid quality problems.</li><li>Ensure good product and process performance.</li><li>Meet customer needs and expectations.</li></ul></section>
+<section id="implement"><h2>How to Implement APQP Process</h2><p>The APQP cycle follows PDCA (Plan–Do–Check–Act) and has 5 phases, 4 major activities, and over 20 supporting tools with feedback and corrective action mechanisms. Key tools: DFMEA, PFMEA, CTQ, Special Characteristics, Control Plan, SPC.</p></section>
+<section id="fundamentals"><h2>Fundamentals of APQP</h2><p>Management assigns a responsible person and forms a Cross-Functional Team (CFT) including Marketing, Engineering, Quality, Purchasing, Packaging, and Customer Representatives. Define project scope including customer voice, responsibilities, and quality/cost/delivery impacts. Start with a Product Quality Plan linking concept, experience, and milestones to meet expectations. <strong>Formula:</strong> Right Leader + Strong Team + Clear Scope + Quality Plan + Proper Timing = Successful APQP.</p></section>
+<section id="phases"><h2>APQP Phases, Inputs & Outputs</h2><h3>Phase 1 – Plan & Define Program</h3><p><strong>Objective:</strong> Understand customer’s needs and expectations.</p><h4>Inputs</h4><ul><li>Voice of Customer (VOC), market research, warranty & quality info, lessons learned, business plan, benchmark data, product reliability studies.</li><li>Customer inputs: identification, traceability, special characteristics, packaging requirements.</li></ul><h4>Outputs</h4><ul><li>Design, reliability & quality goals, preliminary BOM, process flow chart, special characteristics list, Product Quality Assurance Plan, management support.</li></ul><h3>Phase 2 – Product Design & Development</h3><p><strong>Objective:</strong> Develop design features into final form ensuring customer satisfaction.</p><ul><li>Inputs: All outputs from Phase 1.</li><li>Outputs: DFMEA, DFMA/DFA, prototype & testing, prototype control plan, engineering drawings/specs, material specs, tooling & gauge requirements, confirmed special characteristics, team feasibility approval.</li></ul><h3>Phase 3 – Process Design & Development</h3><p><strong>Objective:</strong> Establish a manufacturing system ensuring customer needs are met.</p><ul><li>Inputs: Outputs from Phase 2 (DFMEA, prototype, specs, tooling, gauges).</li><li>Outputs: PFD, PFMEA, Pre-launch Control Plan, work instructions, packaging standards, layout, MSA plan, capability plan, error proofing, feedback methods, data for reliability and maintainability, quality system review, gateway approval.</li></ul><h3>Phase 4 – Product & Process Validation</h3><p><strong>Objective:</strong> Validate manufacturing process through production trials and verify product meets requirements.</p><ul><li>Outputs: Production trial run, control plan, MSA results, capability studies (Cp & Cpk), PPAP, validation testing, packaging evaluation, management approval.</li></ul><h3>Phase 5 – Feedback, Assessment & Corrective Action</h3><p><strong>Objective:</strong> Evaluate effectiveness of all phases for continual improvement and customer satisfaction.</p><ul><li>Outputs: Reduced variations, improved satisfaction, better delivery, lessons learned, corrective actions, ongoing partnerships, problem-solving participation.</li></ul></section>
+<section id="elements"><h2>Key Elements of APQP</h2><ul><li>Cross-Functional Teamwork (CFT)</li><li>Customer-Focused Quality Planning</li><li>Risk Analysis (DFMEA and PFMEA)</li><li>Product and Process Validation</li><li>Control Plan Development</li><li>Production Part Approval Process (PPAP)</li></ul></section>
+<section id="benefits"><h2>Benefits of APQP</h2><ul><li>Increases customer satisfaction</li><li>Early identification of required changes</li><li>Reduces process variation</li><li>Ensures on-time delivery of quality products</li><li>Improves performance and delivery</li><li>Promotes reliable product design</li><li>Enhances supplier confidence</li><li>Controls process changes</li><li>Supports defect-free launches</li><li>Maximizes ROI</li><li>Minimizes waste and non-conformance cost</li></ul></section>
+<section id="summary"><h2>Summary of APQP</h2><h3>What We Do:</h3><ul><li>Design Quality, DFMEA/PFMEA, Manufacturing Planning, Process Flow, Control Plan, MSA, SPC, Validation, Supplier Qualification, PPAP, FAI, Tooling & Gauges, Testing.</li></ul><h3>How We Do It:</h3><ul><li>Through detailed planning, cross-functional teamwork, and risk-based approaches.</li></ul><h3>What We Get:</h3><ul><li>Defect-free launches, reduced warranty claims, zero production spills, improved satisfaction, reliable products, greater supplier control, reduced costs.</li></ul></section>
+<div class="footer">© 2025 APQP Interactive Training Page — Full Content Version</div>
+</div>
+<script>
+  const toggleBtn = document.getElementById('themeToggle');
+  const sidebar = document.getElementById('sidebar');
+  const toggleMenuBtn = document.getElementById('toggleMenu');
+  const links = document.querySelectorAll('header ul li a');
+
+  toggleBtn.addEventListener('click',()=>{
+    document.body.classList.toggle('dark-mode');
+    toggleBtn.textContent=document.body.classList.contains('dark-mode')?'Light Mode':'Dark Mode';
+  });
+
+  toggleMenuBtn.addEventListener('click',()=>{
+    sidebar.classList.toggle('collapsed');
+    toggleMenuBtn.textContent=sidebar.classList.contains('collapsed')?'Show Menu':'Hide Menu';
+  });
+
+  window.onscroll=function(){scrollProgress();highlightNav()};
+
+  function scrollProgress(){
+    const winScroll=document.body.scrollTop||document.documentElement.scrollTop;
+    const height=document.documentElement.scrollHeight-document.documentElement.clientHeight;
+    const scrolled=(winScroll/height)*100;
+    document.getElementById('progressBar').style.width=scrolled+'%';
+  }
+
+  function highlightNav(){
+    const sections=document.querySelectorAll('section');
+    let current='';
+    sections.forEach(sec=>{
+      const top=window.scrollY;
+      const offset=sec.offsetTop-120;
+      const height=sec.offsetHeight;
+      if(top>=offset && top<offset+height){current=sec.getAttribute('id');}
+    });
+    links.forEach(a=>{
+      a.classList.remove('active');
+      if(a.getAttribute('href')==='#'+current){a.classList.add('active');}
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,491 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>7 QC Tools — High‑Tech Glass UI</title>
+  <style>
+    :root{
+      --bg1:#0a0a0a; --bg2:#1a1a1a;
+      --glass: rgba(255,255,255,0.06);
+      --glass-2: rgba(255,255,255,0.04);
+      --accent1:#ffcc00; --accent2:#ff0066; --accent3:#00ffaa;
+      --glass-border: rgba(255,255,255,0.12);
+      --text: #e6f0ff;
+      --muted: #9aa7bf;
+      --glass-radius: 14px;
+    }
+
+    /* Reset */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: radial-gradient(800px 500px at 8% 20%, rgba(255,204,0,0.03), transparent),
+                  radial-gradient(700px 450px at 95% 80%, rgba(255,0,102,0.02), transparent),
+                  linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      display:flex; min-height:100vh; gap:28px; padding:32px;
+      background-position:0% 0%, 100% 100%, 50% 50%;
+    }
+
+    /* Floating blobs */
+    .blob{position:fixed;border-radius:50%;filter:blur(60px);opacity:.9;mix-blend-mode:screen;pointer-events:none}
+    .b1{width:420px;height:420px;left:2%;top:8%;background:linear-gradient(135deg,var(--accent1),transparent)}
+    .b2{width:360px;height:360px;right:4%;bottom:8%;background:linear-gradient(135deg,var(--accent2),transparent)}
+
+    /* Sidebar */
+    .sidebar{
+      width:320px; max-width:30%; min-width:260px; padding:22px; border-radius:18px; position:relative;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid var(--glass-border); backdrop-filter: blur(12px);
+      box-shadow: 0 8px 30px rgba(11,16,24,0.6);
+      display:flex; flex-direction:column; gap:18px; overflow:hidden;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:54px;height:54px;border-radius:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));
+      display:flex;align-items:center;justify-content:center; font-weight:700; color:#051018; font-size:18px;box-shadow:0 6px 18px rgba(123,0,255,0.12)}
+    .brand h2{font-size:18px;letter-spacing:1px}
+    .brand p{font-size:12px;color:var(--muted);margin-top:2px}
+
+    .search{display:flex;align-items:center;gap:8px;padding:8px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);border:1px solid rgba(255,255,255,0.03)}
+    .search input{flex:1;background:transparent;border:0;outline:none;color:var(--text);font-size:14px}
+
+    nav{display:flex;flex-direction:column;gap:8px;overflow:auto;padding-right:6px}
+    .nav-item{display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;color:var(--muted);cursor:pointer;transition:all .25s;}
+    .nav-item:hover{transform:translateX(6px);color:var(--text);}
+    .nav-item.active{background:linear-gradient(90deg, rgba(255,204,0,0.06), rgba(255,0,102,0.03));color:var(--text);box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);}    
+
+    .nav-item .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--accent1),var(--accent2));box-shadow:0 6px 18px rgba(0,0,0,0.2)}
+
+    .sidebar .meta{margin-top:auto;display:flex;flex-direction:column;gap:10px}
+    .meta .btn{padding:10px;border-radius:10px;text-align:center;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#051018;font-weight:600;cursor:pointer;border:0}
+    .meta small{color:var(--muted)}
+
+    /* Main content area */
+    .content{
+      flex:1; padding:28px; border-radius:18px; min-height:80vh; overflow:auto;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.06); backdrop-filter: blur(12px);
+      box-shadow: 0 12px 60px rgba(2,6,23,0.6);
+    }
+
+    .header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+    .header .title{font-size:26px;font-weight:700;letter-spacing:1px}
+    .header .controls{display:flex;gap:10px;align-items:center}
+    .chip{padding:8px 12px;border-radius:999px;background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);border:1px solid rgba(255,255,255,0.03);font-size:13px;color:var(--muted)}
+    .accent-btn{padding:10px 14px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#051018;font-weight:700;cursor:pointer}
+
+    /* Section card */
+    section{margin-bottom:28px; padding:26px; animation: fadeSlide 0.9s ease both;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03)}
+    section h3{font-size:26px;color:orange;margin-bottom:26px}
+    section p{font-size:18px;color:var(--muted);line-height:1.8}
+    .divider{height:1px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));margin:14px 0}
+
+    /* Fancy list styles */
+    .list{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+    .card{padding:14px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.02)}
+    .card h4{font-size:16px;margin-bottom:10px}
+    .muted{color:var(--muted);font-size:15px}
+
+    /* Code-like example box */
+    pre{background:linear-gradient(90deg, rgba(0,0,0,0.25), rgba(255,255,255,0.02));padding:12px;border-radius:8px;color:#d8f8ff;overflow:auto}
+
+    /* Responsive */
+    @media (max-width:980px){
+      body{flex-direction:column;padding:18px}
+      .sidebar{width:100%;max-width:none;min-width:unset;order:2}
+      .content{order:1}
+    }
+
+    /* Smooth entrance */
+    .fade-in{animation:fadeIn .7s ease both}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+    /* Small utilities */
+    .small{font-size:13px;color:var(--muted)}
+    .kbd{display:inline-block;padding:6px 8px;border-radius:6px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.03);font-weight:700}
+
+    /* animated active indicator */
+    .active-indicator{height:3px;background:linear-gradient(90deg,var(--accent1),var(--accent2));border-radius:4px;margin-top:10px;transition:width .3s}
+
+    @keyframes fadeSlide{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ✨ Added Wonderful Animations */
+    .nav-item{transition:all .35s ease;}
+    .nav-item:hover{transform:translateX(12px) scale(1.04); filter:drop-shadow(0 0 6px var(--accent1));}
+    section{animation:fadeSlide 0.9s ease both, floatUp 1.4s ease-in-out;} 
+    @keyframes floatUp{0%{transform:translateY(25px);opacity:0;} 100%{transform:translateY(0);opacity:1;}}
+    h3{animation:glowPulse 2.8s infinite ease-in-out;} 
+    @keyframes glowPulse{0%{text-shadow:0 0 0px orange;}50%{text-shadow:0 0 12px orange;}100%{text-shadow:0 0 0px orange;}}
+    .sidebar{animation:sideFade 1.2s ease both;} 
+    @keyframes sideFade{from{opacity:0;transform:translateX(-40px);}to{opacity:1;transform:translateX(0);}}
+    body{animation:bgShift 18s infinite alternate ease-in-out;} 
+    @keyframes bgShift{0%{background-position:0% 0%,100% 100%,50% 50%;}100%{background-position:100% 100%,0% 0%,50% 50%;}}
+
+    /* ✨ Next‑Level Animations Added */
+    /* 1. Neon Border Flow */
+    .card{position:relative;overflow:hidden;}
+    /* neon border removed */
+@keyframes borderSpin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+    /* card overlay removed */
+/* 2. Floating Icons on Headings */
+    section h3::after{content:" ✨";margin-left:6px;animation:floatIcon 2.2s infinite ease-in-out;display:inline-block;font-size:18px}
+    @keyframes floatIcon{0%{transform:translateY(0);}50%{transform:translateY(-6px);}100%{transform:translateY(0);}}
+
+    /* 3. Cursor Spotlight Effect */
+    body::after{content:"";position:fixed;top:var(--y,0);left:var(--x,0);width:220px;height:220px;background:radial-gradient(circle,rgba(255,255,255,0.06),transparent 70%);transform:translate(-50%,-50%);pointer-events:none;transition:0.05s ease-out;mix-blend-mode:soft-light;}
+
+    /* 4. Glass Cards Hover Wobble */
+    section:hover{ } 
+
+    /* 5. Sidebar Glow Scroll Animation */
+    .sidebar{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));box-shadow:0 0 25px rgba(255,165,0,0.12),inset 0 0 25px rgba(255,165,0,0.06);} 
+
+    /* 6. Animated Page Particles */
+    @keyframes drift{0%{transform:translateY(0);}100%{transform:translateY(-120vh);}}
+    .particle{position:fixed;width:6px;height:6px;border-radius:50%;background:rgba(255,165,0,0.5);top:100vh;animation:drift linear infinite;z-index:0}
+  </style>
+</head>
+<body>
+  <div class="blob b1" aria-hidden></div>
+  <div class="blob b2" aria-hidden></div>
+
+  <aside class="sidebar fade-in" aria-label="Navigation">
+    <div class="brand">
+      <div class="logo">7Q</div>
+      <div>
+        <h2>7 QC TOOLS</h2>
+        <p class="small">Premium Glass UI • Training Notes</p>
+      </div>
+    </div>
+
+    <div class="search" role="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M21 21l-4.35-4.35" stroke="white" stroke-opacity="0.7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <input id="search" placeholder="Search sections or keywords..." aria-label="Search sections" />
+    </div>
+
+    <nav id="nav" role="navigation" aria-label="Sections">
+      <div class="nav-item active" data-target="intro"><div class="dot" aria-hidden></div><div>Introduction & Uses</div></div>
+      <div class="nav-item" data-target="what"><div class="dot" aria-hidden></div><div>What are 7 QC Tools?</div></div>
+      <div class="nav-item" data-target="list"><div class="dot" aria-hidden></div><div>7 QC Tools List</div></div>
+      <div class="nav-item" data-target="details1"><div class="dot" aria-hidden></div><div>Cause-&gt;Effect (Fishbone)</div></div>
+      <div class="nav-item" data-target="details2"><div class="dot" aria-hidden></div><div>Check Sheet & Control Chart</div></div>
+      <div class="nav-item" data-target="details3"><div class="dot" aria-hidden></div><div>Histogram & Pareto</div></div>
+      <div class="nav-item" data-target="details4"><div class="dot" aria-hidden></div><div>Scatter & Flowchart</div></div>
+      <div class="nav-item" data-target="why"><div class="dot" aria-hidden></div><div>Why We Need 7 QC Tools</div></div>
+      <div class="nav-item" data-target="benefits"><div class="dot" aria-hidden></div><div>Benefits & Summary</div></div>
+      <div class="nav-item" data-target="new7"><div class="dot" aria-hidden></div><div>NEW 7 QC Tools (7 MP Tools)</div></div>
+      <div class="nav-item" data-target="new7details"><div class="dot" aria-hidden></div><div>New Tools — Details</div></div>
+    </nav>
+
+    <div class="meta">
+      <small class="small">Tip: Use the search box or click the menu to jump to any section.</small>
+    </div>
+  </aside>
+
+  <main class="content fade-in" id="main">
+    <div class="header">
+      <div>
+        <div class="title">7 QC Tools — Full Guide</div>
+        <div class="small">Interactive training page • Glass-morphism • High-tech animations</div>
+      </div>
+      <div class="controls">
+        <div class="chip">Updated: Current Notes</div>
+        <button class="accent-btn" id="topBtn" aria-label="Go to top">Top</button>
+      </div>
+    </div>
+
+    <!-- INTRO -->
+    <section id="intro">
+      <h3>INTRODUCTION</h3>
+      <p>
+        The <strong>7 QC Tools</strong>, also called the Seven Basic Quality Tools, are simple graphical and statistical techniques used to find, analyze, and solve problems at work.
+        These tools help teams understand issues in a process, improve product quality, and make better decisions. They are used across many industries because they are easy to learn and very effective for continuous improvement.
+      </p>
+
+      <div class="divider"></div>
+      <h4 class="small" style="color:orange;margin-top:24px;margin-bottom:12px;">Common problem-solving methods where 7 QC tools are used</h4>
+      <div class="list" style="margin-top:12px">
+        <!-- Added missing improvement methods -->
+        <div class="card">
+          <h4 style="color:orange;margin-top:24px;margin-bottom:12px;">Kaizen</h4>
+          <p class="muted">QC tools support small, continuous improvements by helping teams understand issues and track progress.</p>
+        </div>
+        <div class="card">
+          <h4 style="color:orange;margin-top:24px;margin-bottom:12px;">8D Problem-Solving</h4>
+          <p class="muted">Pareto charts, check sheets, and control charts are used to identify major problems and verify solutions in the 8D methodology.</p>
+        </div>
+        <div class="card">
+          <h4 style="color:orange;margin-top:24px;margin-bottom:12px;">Quality Improvement Projects</h4>
+          <p class="muted">QC tools help collect data, analyze issues, and monitor performance in structured quality improvement projects.</p>
+        </div>
+        <div class="card">
+          <h4 style="color:orange;margin-top:24px;margin-bottom:12px;">PDCA Cycle (Plan–Do–Check–Act)</h4>
+          <p class="muted">Used for continuous improvement. QC tools help in the Plan and Check phases to analyze data and measure results.</p>
+        </div>
+        <div class="card">
+          <h4 style="color:orange;margin-top:24px;margin-bottom:12px;">DMAIC — Six Sigma</h4>
+          <p class="muted">QC tools are used heavily in the Measure and Analyze phases to find the root cause and validate improvements.</p>
+        </div>
+        <div class="card">
+          <h4 style="color:orange;margin-top:24px;margin-bottom:12px;">Root Cause Analysis (RCA)</h4>
+          <p class="muted">Tools like Fishbone Diagram and Pareto Chart help identify the most likely causes of a problem.</p>
+        </div>
+        <div class="card">
+          <h4 style="color:orange;margin-top:24px;margin-bottom:12px;">Kaizen & 8D</h4>
+          <p class="muted">QC tools support Kaizen and 8D problem solving for small continuous improvements and structured corrective actions.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT -->
+    <section id="what">
+      <h3>WHAT ARE 7 QC TOOLS?</h3>
+      <p>
+        The 7 Quality Tools are simple graphical and statistical techniques that are extremely effective for solving quality problems and improving processes.
+        These tools are easy to understand and can be used without advanced analytical skills, making them practical for everyday use.
+      </p>
+      <p class="muted" style="margin-top:10px">Quality Control (QC) and Quality Assurance (QA) engineers commonly apply these tools on a daily, weekly, or monthly basis to analyze product and process issues, prevent defects, and reduce non-value-added activities such as rework, repair, and rejection.</p>
+    </section>
+
+    <!-- LIST -->
+    <section id="list">
+      <h3>7 QC Tools List</h3>
+      <ol style="margin-top:10px;color:var(--muted);line-height:1.7">
+        <li>Cause-and-Effect Diagram (Fishbone/Ishikawa Diagram)</li>
+        <li>Check Sheet</li>
+        <li>Control Chart</li>
+        <li>Histogram</li>
+        <li>Pareto Chart</li>
+        <li>Scatter Diagram</li>
+        <li>Flowchart (Process Map)</li>
+      </ol>
+    </section>
+
+    <!-- DETAILS 1 -->
+    <section id="details1">
+      <h3>1. Cause-and-Effect Diagram (Fishbone / Ishikawa Diagram)</h3>
+      <p>A structured diagram used to identify all possible causes of a problem. It looks like a fishbone, where the “head” is the problem and the “bones” represent categories like Man, Machine, Material, Method, Measurement, and Environment.</p>
+      <div class="divider"></div>
+      <h4 style="color:orange;margin-top:24px;margin-bottom:12px;">Why it helps</h4>
+      <p class="muted">This tool helps teams brainstorm and explore every possible reason behind a defect or performance issue.</p>
+    </section>
+
+    <!-- DETAILS 2 -->
+    <section id="details2">
+      <h3>2. Check Sheet</h3>
+      <p>A simple form used to collect real-time data in a systematic way. It helps track how often something happens—like defects, delays, or errors. Because it is easy to use and requires no calculations, it is ideal for daily shop-floor data collection and spotting patterns.</p>
+
+      <div class="divider"></div>
+      <h3>3. Control Chart</h3>
+      <p>A graphical tool used to monitor how a process changes over time. It has a center line (average) and two control limits (upper and lower), which show the expected variation. If points fall outside limits or show unusual patterns, it signals that the process may be out of control and requires correction.</p>
+    </section>
+
+    <!-- DETAILS 3 -->
+    <section id="details3">
+      <h3>4. Histogram</h3>
+      <p>A bar graph that shows how data is distributed across different ranges. It visually represents the frequency of values, helping understand variations, patterns, or abnormalities in the process. It is useful for identifying whether the process output is consistent or spread too widely.</p>
+
+      <div class="divider"></div>
+      <h3>5. Pareto Chart</h3>
+      <p>A special type of bar graph based on the 80/20 rule—80% of problems come from 20% of causes. It helps identify the most important issues to focus on first by arranging problems from biggest to smallest. This enables teams to prioritize efforts for maximum impact.</p>
+    </section>
+
+    <!-- DETAILS 4 -->
+    <section id="details4">
+      <h3>6. Scatter Diagram</h3>
+      <p>A graph that shows the relationship between two variables. If the points form a clear pattern (upward or downward), it indicates that one variable may be influencing the other. This is especially helpful for verifying cause-and-effect assumptions.</p>
+
+      <div class="divider"></div>
+      <h3>7. Flowchart (Process Map)</h3>
+      <p>A step-by-step diagram showing how a process works from start to finish. It uses symbols like rectangles, diamonds, and arrows to show activities and decisions. Flowcharts help identify bottlenecks, redundancies, and improvement opportunities in workflows.</p>
+    </section>
+
+    <!-- WHY -->
+    <section id="why">
+      <!-- Added missing introductory lines -->
+      <p class="muted">The 7 QC Tools help organizations identify, analyze, control, and eliminate process and product-related problems effectively.</p>
+      <h3>Why Do We Need 7 QC Tools?</h3>
+      <p>The 7 QC Tools are essential because they help organizations identify, analyse, control, and eliminate problems in products and processes. They are simple, powerful, and universally applicable.</p>
+
+      <div class="divider"></div>
+      <div class="list" style="margin-top:12px">
+        <div class="card">
+          <h4 style="color:orange;margin-top:24px;margin-bottom:12px;">Identify the Real Problem</h4>
+          <p class="muted">Most companies fail because they assume the problem instead of verifying it with data. 7 QC Tools convert opinions into facts: Check Sheet → Real data, Pareto → Which problem is biggest, Fishbone → Actual root cause.</p>
+        </div>
+        <div class="card">
+          <h4 style="color:orange;margin-top:24px;margin-bottom:12px;">Reduce Defects & Improve Quality</h4>
+          <p class="muted">These tools help monitor defect patterns, find the major contributors, and reduce recurring issues. Result: Fewer defects → Better product quality → Higher customer satisfaction.</p>
+        </div>
+        <div class="card">
+          <h4 style="color:orange;margin-top:24px;margin-bottom:12px;">Reduce Process Variation</h4>
+          <p class="muted">Control Charts detect abnormal variation, Scatter Diagrams show relationships, Histograms show spread of data. Outcome: Stable and predictable processes.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- BENEFITS -->
+    <section id="benefits">
+      <h3>Benefits of 7 QC Tools</h3>
+      <p>These tools provide powerful advantages in improving product quality, process stability, and problem-solving capability. They are simple, effective, visual, and widely used in all industries.</p>
+
+      <div class="divider"></div>
+      <ol style="color:var(--muted);line-height:1.7">
+        <li>Helps Identify the Root Cause of Problems</li>
+        <li>Improves Product Quality</li>
+        <li>Reduces Process Variation</li>
+        <li>Data-Based Decision Making (No Guesswork)</li>
+        <li>Helps in Continuous Improvement (Kaizen)</li>
+        <li>Saves Time and Cost</li>
+        <li>Improves Team Communication</li>
+        <li>Supports Global Quality Techniques</li>
+        <li>Enhances Process Understanding</li>
+        <li>Easy to Use, Low-Cost, and Universal</li>
+      </ol>
+
+      <div class="divider"></div>
+      <h4 class="small" style="color:orange;margin-top:24px;margin-bottom:12px;">Summary: Key Benefits</h4>
+      <pre>
+Reason                           | Benefit
+---------------------------------|---------------------------------
+Identify real problems           | Data-based decisions
+Reduce defects                   | Improve quality
+Reduce variation                 | Stable process
+Support 8D/PDCA/DMAIC            | Effective problem solving
+Save time & money                | Better efficiency
+Improve communication            | Better teamwork
+Enable continuous improvement    | Sustainable performance
+Easy & low-cost                  | Used across industries
+      </pre>
+    </section>
+
+    <!-- NEW 7 -->
+    <section id="new7">
+      <!-- Added missing description -->
+      <p class="muted">These tools focus more on ideas, relationships, decisions, and planning rather than basic statistical analysis.</p>
+      <h3>NEW 7 QC Tools (7 Management & Planning Tools)</h3>
+      <p>These are advanced, management-oriented tools used for strategic planning, problem solving, decision making, goal setting, and organizing complex information. They focus on ideas, relationships, decisions, and planning rather than basic data analysis.</p>
+      <div class="divider"></div>
+      <ol style="color:var(--muted);line-height:1.7;margin-top:10px">
+        <li>Affinity Diagram (KJ Method)</li>
+        <li>Tree Diagram</li>
+        <li>Relation Diagram (Interrelationship Diagram)</li>
+        <li>Matrix Diagram</li>
+        <li>Matrix Data Analysis</li>
+        <li>PDPC – Process Decision Program Chart</li>
+        <li>Arrow Diagram (PERT/CPM)</li>
+      </ol>
+    </section>
+
+    <section id="new7details">
+      <h3>Details: New 7 QC Tools</h3>
+      <div class="divider"></div>
+      <h4 style="color:orange;margin-top:24px;margin-bottom:12px;">Affinity Diagram (KJ Method)</h4>
+      <p class="muted">Purpose: Organize large amounts of ideas, opinions, or issues into related groups. Used when the situation is chaotic or the team has too many ideas. Benefit: Helps pinpoint the problem and cluster ideas logically.</p>
+
+      <div class="divider"></div>
+      <h4 style="color:orange;margin-top:24px;margin-bottom:12px;">Tree Diagram</h4>
+      <p class="muted">Purpose: Break down a broad goal into detailed sub-goals, tasks, or strategies. Benefit: Clear alignment and agreement within the team.</p>
+
+      <div class="divider"></div>
+      <h4 style="color:orange;margin-top:24px;margin-bottom:12px;">Relation Diagram</h4>
+      <p class="muted">Purpose: Identify cause-and-effect relationships among complex, interrelated issues. Benefit: Shows which issues are drivers (causes) and which are effects.</p>
+
+      <div class="divider"></div>
+      <h4 style="color:orange;margin-top:24px;margin-bottom:12px;">Matrix Diagram & Matrix Data Analysis</h4>
+      <p class="muted">Purpose: Show relationships between two or more categories of information and, where needed, apply numerical analysis for quantitative decision making.
+      Applications: Process analysis, market surveys, new product planning, design reviews.</p>
+
+      <div class="divider"></div>
+      <h4 style="color:orange;margin-top:24px;margin-bottom:12px;">PDPC — Process Decision Program Chart</h4>
+      <p class="muted">Purpose: Identify risks and countermeasures in a plan. Used for contingency planning and ensuring a plan succeeds by preparing for problems in advance.</p>
+
+      <div class="divider"></div>
+      <h4 style="color:orange;margin-top:24px;margin-bottom:12px;">Arrow Diagram (PERT/CPM)</h4>
+      <p class="muted">Purpose: Scheduling and sequencing tasks in a project. Shows dependencies, critical path and timeline to help optimise schedule control.</p>
+    </section>
+
+
+  </main>
+
+  <script>
+    // Navigation clicks
+    const navItems = document.querySelectorAll('.nav-item');
+    const sections = Array.from(document.querySelectorAll('main section'));
+    const main = document.getElementById('main');
+
+    function setActive(targetId){
+      navItems.forEach(n=>n.classList.toggle('active', n.dataset.target===targetId));
+      const el = document.getElementById(targetId);
+      if(el){ el.scrollIntoView({behavior:'smooth',block:'start'}); }
+    }
+
+    navItems.forEach(item=>{
+      item.addEventListener('click', ()=> setActive(item.dataset.target));
+    });
+
+    // Highlight nav while scrolling
+    const observer = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          const id = entry.target.id;
+          navItems.forEach(n=>n.classList.toggle('active', n.dataset.target===id));
+        }
+      })
+    }, {root: main, rootMargin: '-20% 0px -60% 0px', threshold: 0.2});
+    sections.forEach(s=>observer.observe(s));
+
+    // search
+    const search = document.getElementById('search');
+    if(search){
+      search.addEventListener('input', (e)=>{
+        const q = e.target.value.toLowerCase();
+        document.querySelectorAll('main section').forEach(sec=>{
+          const txt = sec.innerText.toLowerCase();
+          sec.style.display = txt.includes(q) ? 'block' : 'none';
+        });
+      });
+    }
+
+    // Top button
+    const topBtn = document.getElementById('topBtn');
+    if(topBtn){
+      topBtn.addEventListener('click', ()=>{
+        const el = document.getElementById('intro');
+        if(el) el.scrollIntoView({behavior:'smooth'});
+      });
+    }
+
+    // Keyboard nav: press numbers 1..9 to jump
+    window.addEventListener('keydown', (e)=>{
+      if(document.activeElement && document.activeElement.tagName==='INPUT') return;
+      const key = e.key;
+      const mapping = ['intro','what','list','details1','details2','details3','details4','why','benefits','new7','new7details'];
+      if(/^[0-9]$/.test(key)){
+        const i = Number(key); if(i>0 && i<=mapping.length){ setActive(mapping[i-1]); }
+      }
+    });
+  </script>
+
+  <script>
+  /* Cursor spotlight */
+  document.addEventListener('mousemove', e => {
+    document.body.style.setProperty('--x', e.clientX + 'px');
+    document.body.style.setProperty('--y', e.clientY + 'px');
+  });
+
+  /* Generate floating particles */
+  for(let i=0;i<30;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.left=Math.random()*100+'vw';
+    p.style.animationDuration=(6+Math.random()*8)+'s';
+    p.style.opacity=0.15+Math.random()*0.5;
+    document.body.appendChild(p);
+  }
+  </script>
+</body>
+</html>

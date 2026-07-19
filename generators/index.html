@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QDoc — Генератор документов по качеству</title>
+<style>
+:root {
+  --bg: #f5f7fa;
+  --card: #fff;
+  --accent: #0e4e7c;
+  --accent-light: #1a6da8;
+  --text: #1e293b;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --success: #16a34a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* Hero */
+.hero {
+  background: linear-gradient(135deg, #0e4e7c 0%, #1a6da8 50%, #2d8ccf 100%);
+  color: #fff;
+  padding: 60px 20px 50px;
+  text-align: center;
+}
+.hero h1 { font-size: 2.2rem; margin-bottom: 12px; }
+.hero p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+.hero .badge { display: inline-block; background: rgba(255,255,255,0.15); padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; margin-bottom: 16px; }
+
+/* Container */
+.container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+
+/* Section titles */
+.section-title { font-size: 1.4rem; color: var(--accent); margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+.section-title .count { background: var(--accent); color: #fff; font-size: 0.75rem; padding: 2px 10px; border-radius: 12px; }
+
+/* Grid */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 48px; }
+
+/* Card */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  transition: box-shadow 0.2s, transform 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+.card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
+.card .type {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.card h3 { font-size: 1.05rem; margin-bottom: 8px; color: var(--accent); }
+.card p { font-size: 0.9rem; color: var(--muted); margin-bottom: 16px; flex: 1; }
+.card .features { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.card .tag { font-size: 0.75rem; background: #eef2ff; color: var(--accent); padding: 3px 10px; border-radius: 6px; }
+.card .footer-tags { display: flex; gap: 6px; margin-top: 12px; }
+.card .badge-free { background: #dcfce7; color: #166534; font-size: 0.75rem; padding: 2px 10px; border-radius: 6px; }
+.card .badge-premium { background: #fef3c7; color: #92400e; font-size: 0.75rem; padding: 2px 10px; border-radius: 6px; }
+.card .badge-pay { background: #fce4ec; color: #9a2525; font-size: 0.75rem; padding: 2px 10px; border-radius: 6px; }
+.card .btn {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  transition: background 0.2s;
+}
+.card .btn:hover { background: var(--accent-light); }
+.card .btn-outline {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+.card .btn-outline:hover { background: var(--accent); color: #fff; }
+
+/* Pricing section */
+.pricing { background: #fff; border-radius: 16px; padding: 40px 20px; text-align: center; border: 1px solid var(--border); margin-bottom: 48px; }
+.pricing h2 { font-size: 1.5rem; margin-bottom: 12px; }
+.pricing p { color: var(--muted); max-width: 500px; margin: 0 auto 24px; }
+.pricing-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; max-width: 800px; margin: 0 auto; }
+.price-card { border: 1px solid var(--border); border-radius: 12px; padding: 24px 16px; }
+.price-card.featured { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+.price-card .price { font-size: 2rem; font-weight: 700; color: var(--accent); margin: 8px 0; }
+.price-card ul { list-style: none; margin: 16px 0; font-size: 0.9rem; }
+.price-card ul li { padding: 4px 0; color: var(--muted); }
+.price-card ul li::before { content: '✓ '; color: var(--success); font-weight: 700; }
+.price-card .btn { margin-top: 12px; }
+
+/* Footer */
+footer { text-align: center; padding: 30px; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); margin-top: 20px; }
+
+/* Responsive */
+@media (max-width: 700px) {
+  .hero h1 { font-size: 1.6rem; }
+  .grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero" style="padding-top: 50px;">
+  <div style="text-align: left; max-width: 1100px; margin: 0 auto 16px;">
+    <a href="../../../../Documents/лендинг_Ирина_Буцкая.html" style="color: rgba(255,255,255,0.7); font-size: 0.85rem; text-decoration: none;">← Назад к Ирине Буцкой</a>
+  </div>
+  <div class="badge">⚙️ IATF 16949 • Core Tools • 7 QC Tools</div>
+  <h1>Документы по качеству — заполните и получите PDF</h1>
+  <p>Введите данные один раз — получите готовый PDF с реквизитами вашей компании. Control Plan, FMEA, PPAP, PSW и другие.</p>
+</div>
+
+<div class="container">
+
+  <!-- Формы с генерацией PDF -->
+  <div class="section-title">📄 Формы с генерацией PDF <span class="count">4</span></div>
+  <div class="grid">
+    <div class="card">
+      <div class="type">Форма → PDF</div>
+      <h3>FMEA — Генератор (DFMEA / PFMEA)</h3>
+      <p>Введите отказы, причины, меры — RPN считается автоматически. Экспорт в PDF с данными вашей компании.</p>
+      <div class="features">
+        <span class="tag">расчёт RPN</span>
+        <span class="tag">шкалы S/O/D</span>
+        <span class="tag">редактор таблицы</span>
+        <span class="tag">экспорт PDF</span>
+      </div>
+      <div class="footer-tags"><span class="badge-free">Бесплатно</span></div>
+      <a href="fmea-generator.html" class="btn" target="_blank">Открыть FMEA →</a>
+    </div>
+    <div class="card">
+      <div class="type">Форма → PDF</div>
+      <h3>Control Plan</h3>
+      <p>Редактируемая таблица: операции, характеристики, методы контроля. Экспорт в PDF или Excel с подписями.</p>
+      <div class="features">
+        <span class="tag">редактор таблицы</span>
+        <span class="tag">экспорт PDF</span>
+        <span class="tag">экспорт Excel</span>
+        <span class="tag">утверждения</span>
+      </div>
+      <div class="footer-tags"><span class="badge-free">Бесплатно</span></div>
+      <a href="controlplan.html" class="btn" target="_blank">Открыть Control Plan →</a>
+    </div>
+
+    <div class="card">
+      <div class="type">Форма → PDF</div>
+      <h3>PSW — Part Submission Warrant</h3>
+      <p>Форма PPAP: данные поставщика, детали, уровень submission. Готовый PSW в PDF.</p>
+      <div class="features">
+        <span class="tag">18 полей</span>
+        <span class="tag">флажки</span>
+        <span class="tag">экспорт PDF</span>
+      </div>
+      <div class="footer-tags"><span class="badge-free">Бесплатно</span></div>
+      <a href="psw.html" class="btn" target="_blank">Заполнить PSW →</a>
+    </div>
+
+    <div class="card">
+      <div class="type">Форма → PDF</div>
+      <h3>Реквизиты компании</h3>
+      <p>Базовая форма с данными компании. Можно использовать как шапку для всех документов.</p>
+      <div class="features">
+        <span class="tag">реквизиты</span>
+        <span class="tag">печать</span>
+      </div>
+      <div class="footer-tags"><span class="badge-free">Бесплатно</span></div>
+      <a href="companyinfo.html" class="btn" target="_blank">Открыть →</a>
+    </div>
+  </div>
+
+  <!-- Справочные материалы -->
+  <div class="section-title">📚 Справочные материалы <span class="count">10</span></div>
+  <div class="grid">
+    <div class="card">
+      <h3>APQP — Планирование качества продукции</h3>
+      <p>5 фаз APQP, входы/выходы, чек-листы. Полное руководство по планированию качества.</p>
+      <div class="features"><span class="tag">5 фаз</span><span class="tag">PDCA</span><span class="tag">CFT</span></div>
+      <div class="footer-tags"><span class="badge-premium">Премиум</span></div>
+      <a href="APQP.html" class="btn btn-outline" target="_blank">Читать →</a>
+    </div>
+
+    <div class="card">
+      <h3>PPAP — 18 документов</h3>
+      <p>Полный список 18 обязательных документов PPAP с описанием. Чек-лист для аудита.</p>
+      <div class="features"><span class="tag">18 документов</span><span class="tag">уровни</span></div>
+      <div class="footer-tags"><span class="badge-premium">Премиум</span></div>
+      <a href="18%20Documents%20lists%20of%20PPAP.html" class="btn btn-outline" target="_blank">Читать →</a>
+    </div>
+
+    <div class="card">
+      <h3>FMEA по AIAG & VDA</h3>
+      <p>DFMEA и PFMEA. Структура, шкалы S/O/D, действия. Новый стандарт AIAG & VDA.</p>
+      <div class="features"><span class="tag">DFMEA</span><span class="tag">PFMEA</span><span class="tag">RPN</span></div>
+      <div class="footer-tags"><span class="badge-premium">Премиум</span></div>
+      <a href="FMEA_Premium_English.html" class="btn btn-outline" target="_blank">Читать →</a>
+    </div>
+
+    <div class="card">
+      <h3>SPC — Статистическое управление</h3>
+      <p>Контрольные карты (X-bar-R, p, np, c, u), Cp/Cpk с интерактивными калькуляторами.</p>
+      <div class="features"><span class="tag">Cp/Cpk</span><span class="tag">карты</span><span class="tag">калькулятор</span></div>
+      <div class="footer-tags"><span class="badge-premium">Премиум</span></div>
+      <a href="SPC_1.html" class="btn btn-outline" target="_blank">Читать →</a>
+    </div>
+
+    <div class="card">
+      <h3>MSA — Анализ измерительных систем</h3>
+      <p>Gage R&R, смещение, линейность, стабильность. Полный разбор методов.</p>
+      <div class="features"><span class="tag">Gage R&R</span><span class="tag">смещение</span><span class="tag">линейность</span></div>
+      <div class="footer-tags"><span class="badge-premium">Премиум</span></div>
+      <a href="MSA_1.html" class="btn btn-outline" target="_blank">Читать →</a>
+    </div>
+
+    <div class="card">
+      <h3>7 QC Tools — 7 инструментов</h3>
+      <p>Парето, Исикава, гистограмма, контрольные карты, диаграмма рассеяния, чек-лист.</p>
+      <div class="features"><span class="tag">7 инструментов</span></div>
+      <div class="footer-tags"><span class="badge-premium">Премиум</span></div>
+      <a href="7QC%20Tools.....html" class="btn btn-outline" target="_blank">Читать →</a>
+    </div>
+
+    <div class="card">
+      <h3>Kaizen — непрерывное улучшение</h3>
+      <p>PDCA, стандартизация, гемба, 5S. Практическая методология улучшений.</p>
+      <div class="features"><span class="tag">PDCA</span><span class="tag">5S</span><span class="tag">гемба</span></div>
+      <div class="footer-tags"><span class="badge-pay">300 ₽</span></div>
+      <a href="kaizen.html" class="btn btn-outline" target="_blank">Читать →</a>
+    </div>
+
+    <div class="card">
+      <h3>5S — организация пространства</h3>
+      <p>Сортировка, соблюдение порядка, содержание, стандартизация, совершенствование.</p>
+      <div class="features"><span class="tag">5S</span></div>
+      <div class="footer-tags"><span class="badge-premium">Премиум</span></div>
+      <a href="5s_NotePad_JS.html" class="btn btn-outline" target="_blank">Читать →</a>
+    </div>
+
+    <div class="card">
+      <h3>QA vs QC — определения</h3>
+      <p>Чёткое разграничение Quality Assurance и Quality Control. Примеры и задачи.</p>
+      <div class="features"><span class="tag">QA</span><span class="tag">QC</span></div>
+      <div class="footer-tags"><span class="badge-free">Бесплатно</span></div>
+      <a href="QA%20vs%20QC%20Defination.html" class="btn btn-outline" target="_blank">Читать →</a>
+    </div>
+
+    <div class="card">
+      <h3>Process Flow Chart</h3>
+      <p>Построение диаграммы потока процессов в производстве. Условные обозначения.</p>
+      <div class="features"><span class="tag">PFD</span><span class="tag">символы</span></div>
+      <div class="footer-tags"><span class="badge-premium">Премиум</span></div>
+      <a href="Process%20Flow%20Chart%20Diagramme.html" class="btn btn-outline" target="_blank">Читать →</a>
+    </div>
+  </div>
+
+  <!-- Тарифы -->
+  <div class="pricing" id="pricing">
+    <h2>Выберите тариф</h2>
+    <p>Документы в формате PDF с вашими данными. Никаких шаблонов — каждый создаётся под вас.</p>
+    <div class="pricing-cards">
+      <div class="price-card">
+        <h3>Бесплатно</h3>
+        <div class="price">$0</div>
+        <ul>
+          <li>PSW — Part Submission Warrant</li>
+          <li>Реквизиты компании</li>
+          <li>QA vs QC — справочник</li>
+        </ul>
+        <a href="psw.html" class="btn btn-outline" target="_blank">Начать →</a>
+      </div>
+      <div class="price-card featured">
+        <h3>10 PDF</h3>
+        <div class="price">1 000 ₽</div>
+        <ul>
+          <li>Control Plan, FMEA, PPAP — любые</li>
+          <li>10 документов на выбор</li>
+          <li>Экономия 2 500 ₽</li>
+        </ul>
+        <a href="https://yoomoney.ru/to/4100119578034128?label=index_ten&sum=1000" target="_blank" class="btn">Купить →</a>
+      </div>
+      <div class="price-card featured">
+        <h3>Безлимит на месяц</h3>
+        <div class="price">2 000 ₽ / мес</div>
+        <ul>
+          <li>Сколько угодно PDF</li>
+          <li>Все типы документов</li>
+          <li>Для регулярной работы</li>
+        </ul>
+        <a href="https://yoomoney.ru/to/4100119578034128?label=index_month&sum=2000" target="_blank" class="btn">Оформить →</a>
+      </div>
+      <div class="price-card">
+        <h3>Pay-per-PDF</h3>
+        <div class="price">350 ₽</div>
+        <ul>
+          <li>Любой документ поштучно</li>
+          <li>PDF с вашими данными</li>
+          <li>Без подписки</li>
+        </ul>
+        <a href="https://yoomoney.ru/to/4100119578034128?label=index_payperpdf&sum=350" target="_blank" class="btn btn-outline">Выбрать →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>QDoc — генератор документов по качеству. Данные не сохраняются на сервере.</p>
+  <p style="margin-top:6px;">На основе материалов IATF 16949, AIAG & VDA Core Tools</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📘 Quality, QA & QC – Complete Guide</title>
+  <style>
+    /* ---------- Theme Colors ---------- */
+    :root {
+      --bg: #f9f9f9;
+      --text: #222;
+      --card: #fff;
+      --accent: #0078d7;
+      --border: #ddd;
+      --scroll-bg: #ccc;
+      --scroll-fill: #0078d7;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --text: #e0e0e0;
+      --card: #1f1f1f;
+      --accent: #4dabf7;
+      --border: #333;
+      --scroll-bg: #333;
+      --scroll-fill: #4dabf7;
+    }
+
+    /* ---------- Global Styles ---------- */
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      transition: background 0.3s, color 0.3s;
+      overflow-x: hidden;
+    }
+
+    /* ---------- Scroll Progress Bar ---------- */
+    .progress-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: var(--scroll-bg);
+      z-index: 1000;
+    }
+    .progress-bar {
+      height: 6px;
+      width: 0%;
+      background: var(--scroll-fill);
+      transition: width 0.2s ease-out;
+    }
+
+    /* ---------- Header ---------- */
+    header {
+      background: var(--accent);
+      color: #fff;
+      text-align: center;
+      padding: 2rem 1rem 1.8rem;
+      position: relative;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      letter-spacing: 1px;
+    }
+
+    /* ---------- Toggle Button ---------- */
+    .toggle-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #fff;
+      color: var(--accent);
+      border: none;
+      border-radius: 25px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .toggle-btn:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* ---------- Sections ---------- */
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
+    }
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    h2 {
+      color: var(--accent);
+      border-left: 5px solid var(--accent);
+      padding-left: 0.6rem;
+      margin-top: 0;
+    }
+    ul {
+      list-style: none;
+      padding-left: 1rem;
+    }
+    ul li::before {
+      content: "• ";
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    table, th, td {
+      border: 1px solid var(--border);
+    }
+    th, td {
+      padding: 0.8rem;
+      text-align: left;
+    }
+    th {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .example {
+      background: var(--accent);
+      color: #fff;
+      padding: 1rem;
+      border-radius: 10px;
+      font-style: italic;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      padding: 1rem;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.4rem; }
+      th, td { font-size: 0.9rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Scroll Progress -->
+  <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+
+  <header>
+    <h1>📘 Quality, Quality Assurance (QA) & Quality Control (QC)</h1>
+    <button class="toggle-btn" id="themeToggle">🌙 Dark Mode</button>
+  </header>
+
+  <main>
+    <section>
+      <h2>✅ What is Quality?</h2>
+      <p>👉 <b>Quality</b> means creating a product or service with the right features and characteristics that satisfy the customer’s needs, by doing the right thing, in the right way, at the right time – so the customer gets exactly what they expect, without defects or waste.</p>
+      <h3>Key Points:</h3>
+      <ul>
+        <li>Right thing = Meets customer needs</li>
+        <li>Right way = Follows proper standards & processes</li>
+        <li>Right time = Delivered when required</li>
+        <li>Reliable, defect-free, no waste</li>
+      </ul>
+      <h3>Examples:</h3>
+      <div class="example">
+        <p>• <b>Quality Pen:</b> Writes smoothly, lasts long, comfortable to hold, available when needed.<br>
+        • <b>Non-Quality Pen:</b> Ink leaks, stops working quickly, uncomfortable to use, not available when required.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>📘 Quality Assurance (QA) – Final Definition</h2>
+      <p>👉 <b>Quality Assurance (QA)</b> is a systematic part of quality management that establishes processes, guidelines, and practices to ensure products or services meet specified requirements and quality standards, while giving confidence to both customers and management that the requirements will be consistently fulfilled.</p>
+    </section>
+
+    <section>
+      <h2>🔑 Key Points of QA</h2>
+      <ul>
+        <li>Systematic process → Not random, always planned and structured.</li>
+        <li>Part of quality management → Works with Quality Control (QC).</li>
+        <li>Focus on processes → Ensures steps are correct to prevent defects.</li>
+        <li>Confidence → Provides trust internally (management) and externally (customers, regulators).</li>
+        <li>Industry-wide use → Applied in manufacturing, IT, healthcare, food, finance, etc.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>📝 Examples of QA</h2>
+      <h4>Manufacturing:</h4>
+      <ul>
+        <li>Incoming raw material inspection.</li>
+        <li>Assembly line process audits.</li>
+        <li>Final product functional testing before shipping.</li>
+      </ul>
+      <h4>Software/IT:</h4>
+      <ul>
+        <li>Code review against company standards.</li>
+        <li>Testing applications before release.</li>
+        <li>Checking user experience and performance.</li>
+      </ul>
+      <p>👉 In short: <b>QA = Preventing defects by managing processes</b> (while QC = Finding defects in final product).</p>
+    </section>
+
+    <section>
+      <h2>📘 Quality Control (QC)</h2>
+      <p><b>Quality Control (QC)</b> is a systematic process within quality management that ensures products or services consistently meet predefined standards, specifications, and customer expectations. It involves monitoring, inspecting, testing, and using statistical analysis throughout the production process to detect and address defects, deviations, or variations.</p>
+      <p>QC requires establishing product quality benchmarks, training personnel, and fostering a culture where management and employees strive for perfection, with the ultimate goal of delivering reliable, consistent, and high-quality outcomes.</p>
+    </section>
+
+    <section>
+      <h2>📘 Quality Assurance (QA) – Simplified</h2>
+      <p>QA is a system that makes sure products and services are made correctly from the beginning by following set rules and processes. It is proactive (done before problems happen), not just checking after. QA helps companies prevent defects, improve processes, and ensure customers always get good quality.</p>
+      <p>👉 Short and easy: <b>QA = Preventing problems before they happen by making processes better.</b></p>
+    </section>
+
+    <section>
+      <h2>✅ Difference Between Quality Assurance (QA) and Quality Control (QC)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Point</th>
+            <th>Quality Assurance (QA)</th>
+            <th>Quality Control (QC)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Meaning</td>
+            <td>QA is about preventing defects by improving processes.</td>
+            <td>QC is about finding defects in the final product or service.</td>
+          </tr>
+          <tr>
+            <td>Approach</td>
+            <td>Proactive – done before production or during processes.</td>
+            <td>Reactive – done after production, by testing/inspecting.</td>
+          </tr>
+          <tr>
+            <td>Focus</td>
+            <td>Focuses on processes (how work is done).</td>
+            <td>Focuses on products (what is delivered).</td>
+          </tr>
+          <tr>
+            <td>Goal</td>
+            <td>To make sure the process is correct, so defects don’t happen.</td>
+            <td>To check if the finished product meets quality standards.</td>
+          </tr>
+          <tr>
+            <td>Method</td>
+            <td>Establishing standards, procedures, training, and audits.</td>
+            <td>Inspections, testing, measurements, and defect detection.</td>
+          </tr>
+          <tr>
+            <td>Responsibility</td>
+            <td>Everyone in the organization is responsible.</td>
+            <td>Usually the quality inspection/testing team is responsible.</td>
+          </tr>
+          <tr>
+            <td>Example</td>
+            <td>Writing clear work instructions, setting quality standards, training workers.</td>
+            <td>Checking a batch of valves, measuring dimensions, or testing the strength of materials.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>👉 In Short:</p>
+      <ul>
+        <li>QA = Do things right the first time. <b>Preventing defects</b> (before production, process-focused)</li>
+        <li>QC = Check things at the end. <b>Finding defects</b> (after production, product-focused)</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Quality Learning</p>
+  </footer>
+
+  <script>
+    // 🌙 Theme Toggle
+    const toggleBtn = document.getElementById("themeToggle");
+    const body = document.body;
+    if (localStorage.getItem("theme") === "dark") {
+      body.classList.add("dark");
+      toggleBtn.textContent = "☀️ Light Mode";
+    }
+    toggleBtn.addEventListener("click", () => {
+      body.classList.toggle("dark");
+      const isDark = body.classList.contains("dark");
+      toggleBtn.textContent = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+    });
+
+    // ✨ Fade-in on Scroll
+    const sections = document.querySelectorAll("section");
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    sections.forEach(section => observer.observe(section));
+
+    // 📊 Scroll Progress Bar
+    const progressBar = document.getElementById("progressBar");
+    window.addEventListener("scroll", () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrollPercent = (scrollTop / scrollHeight) * 100;
+      progressBar.style.width = scrollPercent + "%";
+    });
+  </script>
+</body>
+</html>

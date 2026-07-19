@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FMEA Generator — Fill & Export to PDF</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root {
+  --burgundy: #811844;
+  --gold: #f6b75d;
+  --bg: #f7f2f7;
+  --text: #222;
+  --muted: #555;
+  --card-bg: rgba(255,255,255,0.7);
+  --border: rgba(129,24,68,0.15);
+  --success: #2e7d32;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: radial-gradient(circle at top left, #ffe5f5 0%, #f7f2f7 40%, #fff 100%);
+  color: var(--text);
+  line-height: 1.6;
+  padding: 20px;
+}
+.container { max-width: 1400px; margin: 0 auto; }
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 24px 20px;
+  background: linear-gradient(135deg, var(--burgundy), #a52a52, var(--gold));
+  border-radius: 16px;
+  color: #fff;
+  margin-bottom: 24px;
+}
+.header h1 { font-size: 1.6rem; margin-bottom: 4px; }
+.header p { font-size: 0.9rem; opacity: 0.9; }
+
+/* Company info bar */
+.company-bar {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  backdrop-filter: blur(8px);
+}
+.company-bar label { font-size: 0.8rem; color: var(--muted); display: block; }
+.company-bar input {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  width: 180px;
+  background: #fff;
+}
+
+/* Project info section */
+.project-info {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(8px);
+}
+.project-info h3 { color: var(--burgundy); margin-bottom: 12px; font-size: 1rem; }
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.project-grid label { font-size: 0.8rem; color: var(--muted); display: block; margin-bottom: 2px; }
+.project-grid input, .project-grid select, .project-grid textarea {
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  width: 100%;
+  background: #fff;
+}
+.project-grid textarea { resize: vertical; min-height: 40px; }
+
+/* FMEA Table */
+.table-wrap { overflow-x: auto; margin-bottom: 16px; }
+.fmea-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+.fmea-table th {
+  background: linear-gradient(135deg, rgba(129,24,68,0.12), rgba(246,183,93,0.25));
+  color: var(--burgundy);
+  font-weight: 600;
+  padding: 8px 6px;
+  border: 1px solid var(--border);
+  text-align: center;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+.fmea-table td {
+  border: 1px solid var(--border);
+  padding: 4px;
+  vertical-align: middle;
+}
+.fmea-table td input, .fmea-table td select {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 0.82rem;
+  padding: 4px;
+  outline: none;
+  font-family: inherit;
+}
+.fmea-table td input:focus, .fmea-table td select:focus {
+  background: #fffbe6;
+  box-shadow: inset 0 0 0 1px var(--gold);
+  border-radius: 4px;
+}
+.fmea-table td .rpn-value {
+  font-weight: 700;
+  color: var(--burgundy);
+  text-align: center;
+  display: block;
+}
+.fmea-table td .sev-high { color: #c62828; font-weight: 700; }
+.fmea-table td .sev-med { color: #e65100; font-weight: 600; }
+.fmea-table td .sev-low { color: #2e7d32; }
+
+/* Row actions */
+.row-actions { display: flex; gap: 4px; justify-content: center; }
+.btn-row { padding: 4px 8px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
+.btn-row.add { background: var(--success); color: #fff; }
+.btn-row.del { background: #c62828; color: #fff; }
+
+/* Status bar */
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: var(--card-bg);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.status-bar .stats { display: flex; gap: 20px; font-size: 0.85rem; }
+.status-bar .stats strong { color: var(--burgundy); }
+.status-bar .btn {
+  background: var(--burgundy);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.status-bar .btn:hover { background: #a52a52; }
+.status-bar .btn-secondary {
+  background: transparent;
+  border: 1px solid var(--burgundy);
+  color: var(--burgundy);
+}
+.status-bar .btn-secondary:hover { background: var(--burgundy); color: #fff; }
+
+/* Severity / Occurrence / Detection guides */
+.guide-toggle {
+  text-align: right;
+  margin-bottom: 8px;
+}
+.guide-toggle a {
+  font-size: 0.8rem;
+  color: var(--burgundy);
+  cursor: pointer;
+  text-decoration: underline dotted;
+}
+.guide-panel {
+  display: none;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+  backdrop-filter: blur(8px);
+}
+.guide-panel.open { display: block; }
+.guide-panel table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+.guide-panel th { background: var(--burgundy); color: #fff; padding: 6px; text-align: center; }
+.guide-panel td { border: 1px solid var(--border); padding: 5px; }
+
+/* Print / PDF */
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; padding: 0; }
+  .container { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+<div class="container" id="export-wrapper">
+
+  <!-- Back link -->
+  <div class="no-print" style="margin-bottom: 12px;">
+    <a href="../../../../Documents/лендинг_Ирина_Буцкая.html" style="color: #811844; font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; opacity: 0.7; transition: opacity 0.2s;">← Назад к Ирине Буцкой</a>
+  </div>
+
+  <div class="header no-print">
+    <h1>FMEA — Генератор</h1>
+    <p>Заполните таблицу — получите готовый PDF с расчётом RPN</p>
+  </div>
+
+  <!-- Company Bar -->
+  <div class="company-bar no-print">
+    <div><label>Компания</label><input id="companyName" placeholder="Ваша компания"></div>
+    <div><label>Проект / Изделие</label><input id="projectName" placeholder="Наименование"></div>
+    <div><label>Редакция</label><input id="fmeaRev" placeholder="Версия 1.0"></div>
+    <div><label>Дата</label><input id="fmeaDate" type="date"></div>
+    <div><label>Составил</label><input id="preparedBy" placeholder="Ваше имя"></div>
+  </div>
+
+  <!-- Project Details -->
+  <div class="project-info no-print">
+    <h3>Данные проекта</h3>
+    <div class="project-grid">
+      <div><label>Процесс / Система</label><input id="processName" placeholder="Напр. Сварка корпуса"></div>
+      <div><label>Тип FMEA</label>
+        <select id="fmeaType">
+          <option value="DFMEA">DFMEA (конструкции)</option>
+          <option value="PFMEA" selected>PFMEA (процесса)</option>
+        </select>
+      </div>
+      <div><label>Рабочая группа</label><input id="coreTeam" placeholder="Иванов, Петрова"></div>
+      <div><label>Заказчик</label><input id="customerName" placeholder="Наименование заказчика"></div>
+    </div>
+  </div>
+
+  <!-- Severity / Detection Guide Toggle -->
+  <div class="guide-toggle no-print">
+    <a onclick="toggleGuide()">📖 Показать шкалы оценок (S / O / D)</a>
+  </div>
+  <div class="guide-panel" id="guidePanel">
+    <table>
+      <thead><tr><th>Оценка</th><th>Значимость (S)</th><th>Возникновение (O)</th><th>Обнаружение (D)</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Нет — эффект отсутствует</td><td>Крайне редко — ≤1/1 000 000</td><td>Очень высокое — гарантированное обнаружение</td></tr>
+        <tr><td>2-3</td><td>Незначительное — лёгкое неудобство</td><td>Низкая — 1/20 000</td><td>Высокое — эффективное обнаружение</td></tr>
+        <tr><td>4-6</td><td>Умеренное — недовольство клиента</td><td>Умеренная — 1/1 000</td><td>Умеренное — возможно обнаружение</td></tr>
+        <tr><td>7-8</td><td>Высокое — серьёзное недовольство</td><td>Высокая — 1/100</td><td>Низкое — плохое обнаружение</td></tr>
+        <tr><td>9-10</td><td>Очень высокое — безопасность / закон</td><td>Очень высокая — ≥1/10</td><td>Очень низкое — обнаружение невозможно</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="status-bar no-print">
+    <div class="stats">
+      <span>Строк: <strong id="rowCount">5</strong></span>
+      <span>Средний RPN: <strong id="avgRpn">0</strong></span>
+      <span>Высокий риск (RPN ≥ 100): <strong id="highRpn">0</strong></span>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button class="btn" onclick="addRow()">+ Добавить строку</button>
+      <button class="btn btn-secondary" onclick="exportPDF()">⬇ Скачать PDF</button>
+      <button class="btn btn-secondary" onclick="clearTable()">Очистить всё</button>
+    </div>
+  </div>
+
+  <!-- FMEA Table -->
+  <div class="table-wrap">
+    <table class="fmea-table" id="fmeaTable">
+      <thead>
+        <tr>
+          <th style="width:28px;">#</th>
+          <th style="min-width:140px;">Функция процесса</th>
+          <th style="min-width:140px;">Потенциальный отказ</th>
+          <th style="min-width:120px;">Последствие отказа</th>
+          <th style="width:40px;">S</th>
+          <th style="min-width:130px;">Причина / Механизм</th>
+          <th style="width:40px;">O</th>
+          <th style="min-width:130px;">Существующие меры</th>
+          <th style="width:40px;">D</th>
+          <th style="width:50px;">RPN</th>
+          <th style="min-width:120px;">Рекомендуемые действия</th>
+          <th class="no-print" style="width:60px;"></th>
+        </tr>
+      </thead>
+      <tbody id="fmeaBody">
+        <!-- rows inserted by JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Print footer -->
+  <div style="text-align:center; margin-top:20px; font-size:0.75rem; color:var(--muted);">
+    Сгенерировано с помощью QDoc — FMEA Генератор
+  </div>
+</div>
+
+<style>
+/* Paywall modal */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal-box { background: #fff; border-radius: 16px; padding: 32px; max-width: 460px; width: 90%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.modal-box h2 { font-size: 1.3rem; color: #811844; margin-bottom: 8px; font-family: 'Segoe UI', sans-serif; }
+.modal-box p { font-size: 0.9rem; color: #555; margin-bottom: 20px; line-height: 1.5; }
+
+/* Tariff cards */
+.modal-plans { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.modal-plan { border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s; text-align: left; }
+.modal-plan:hover { border-color: #C9A84C; }
+.modal-plan.selected { border-color: #C9A84C; background: #fefcf5; }
+.modal-plan .plan-name { font-weight: 700; font-size: 1.05rem; color: #1a1a1a; }
+.modal-plan .plan-price { font-weight: 700; font-size: 1.4rem; color: #811844; }
+.modal-plan .plan-price small { font-size: 0.8rem; font-weight: 400; color: #888; }
+.modal-plan .plan-desc { font-size: 0.82rem; color: #666; margin-top: 2px; }
+.modal-plan .plan-badge { display: inline-block; background: #C9A84C; color: #1a1a1a; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; margin-left: 8px; vertical-align: middle; }
+
+.modal-box .modal-btn { display: block; width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-bottom: 10px; transition: background 0.2s; }
+.modal-box .modal-btn.primary { background: #C9A84C; color: #1a1a1a; }
+.modal-box .modal-btn.primary:hover { background: #b8973a; }
+.modal-box .modal-btn.green { background: #16a34a; color: #fff; }
+.modal-box .modal-btn.green:hover { background: #15803d; }
+.modal-box .modal-btn.secondary { background: transparent; color: #888; border: 1px solid #ddd; }
+.modal-box .modal-btn.secondary:hover { background: #f5f5f5; }
+.modal-box .modal-note { font-size: 0.78rem; color: #aaa; margin-top: 12px; }
+.modal-box .modal-pay-link { display: block; margin-top: 4px; font-size: 0.78rem; color: #0e4e7c; }
+</style>
+
+<!-- Paywall Modal -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal-box">
+    <h2>🔒 Выберите тариф</h2>
+    <p>Скачивайте PDF с вашими данными без ограничений</p>
+
+    <div class="modal-plans">
+      <div class="modal-plan" data-plan="once" onclick="selectPlan(this)">
+        <div>
+          <span class="plan-price">350 ₽</span>
+          <span class="plan-name"> — один документ</span>
+        </div>
+        <div class="plan-desc">Оплатили — скачали. Проще некуда.</div>
+      </div>
+      <div class="modal-plan" data-plan="ten" onclick="selectPlan(this)">
+        <div>
+          <span class="plan-price">1 000 ₽</span>
+          <span class="plan-name">10 PDF</span>
+          <span class="plan-badge">🔥 выгодно</span>
+        </div>
+        <div class="plan-desc">10 любых документов. Экономия 2 500 ₽ против поштучных.</div>
+      </div>
+      <div class="modal-plan" data-plan="month" onclick="selectPlan(this)">
+        <div>
+          <span class="plan-price">2 000 ₽ <small>/ мес</small></span>
+          <span class="plan-name">Безлимит на месяц</span>
+        </div>
+        <div class="plan-desc">Сколько угодно PDF. Для регулярной работы с документацией.</div>
+      </div>
+    </div>
+
+    <button class="modal-btn green" id="payBtn" onclick="paySelected()">Оплатить 350 ₽ →</button>
+    <button class="modal-btn secondary" onclick="closePayModal()">Закрыть</button>
+    <div class="modal-note">После оплаты напишите @Irina_Butskaya — пришлю PDF в течение часа</div>
+  </div>
+</div>
+
+<script>
+let _selectedPlan = 'once';
+
+function selectPlan(el) {
+  document.querySelectorAll('.modal-plan').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  _selectedPlan = el.dataset.plan;
+  const labels = { once: 'Оплатить 350 ₽ →', ten: 'Оплатить 1 000 ₽ →', month: 'Оформить на 2 000 ₽ →' };
+  document.getElementById('payBtn').textContent = labels[_selectedPlan];
+}
+
+function paySelected() {
+  const links = {
+    once: 'https://yoomoney.ru/to/4100119578034128?label=fmea_once&sum=350',
+    ten: 'https://yoomoney.ru/to/4100119578034128?label=fmea_ten&sum=1000',
+    month: 'https://yoomoney.ru/to/4100119578034128?label=fmea_month&sum=2000'
+  };
+  window.open(links[_selectedPlan], '_blank');
+}
+
+function showPayModal(docName) {
+  _selectedPlan = 'once';
+  document.querySelectorAll('.modal-plan').forEach(p => p.classList.remove('selected'));
+  document.getElementById('payBtn').textContent = 'Оплатить 350 ₽ →';
+  document.getElementById('payModal').classList.add('open');
+}
+function closePayModal() {
+  document.getElementById('payModal').classList.remove('open');
+}
+// Close on overlay click
+document.getElementById('payModal').addEventListener('click', function(e) {
+  if (e.target === this) closePayModal();
+});
+
+// Default data rows
+const DEFAULT_ROWS = [
+  { fn: 'Material loading', fm: 'Wrong material loaded', effect: 'Product failure', s: 8, cause: 'Operator error', o: 4, control: 'Visual check', d: 5, action: 'Implement barcode scanner' },
+  { fn: 'Cutting operation', fm: 'Incorrect dimension', effect: 'Assembly fit issue', s: 7, cause: 'Tool wear', o: 5, control: 'Periodic measurement', d: 4, action: 'Add automatic tool offset' },
+  { fn: 'Welding', fm: 'Incomplete weld', effect: 'Structural weakness', s: 9, cause: 'Insufficient current', o: 3, control: 'Visual inspection', d: 6, action: 'Install weld monitoring system' },
+  { fn: 'Inspection', fm: 'False acceptance', effect: 'Defect escapes to customer', s: 8, cause: 'Gauge not calibrated', o: 2, control: 'Calibration schedule', d: 3, action: 'Add automated inspection' },
+  { fn: 'Packaging', fm: 'Incorrect label', effect: 'Shipping error', s: 5, cause: 'Wrong label template', o: 4, control: 'Label verification', d: 4, action: 'Print labels from scanning system' },
+];
+
+function calcRpn(s, o, d) { return Math.min(1000, (parseInt(s)||1) * (parseInt(o)||1) * (parseInt(d)||1)); }
+
+function renderRows() {
+  const tbody = document.getElementById('fmeaBody');
+  tbody.innerHTML = '';
+  let totalRpn = 0;
+  let highCount = 0;
+  let visibleRows = document.querySelectorAll('.fmea-row');
+
+  for (let i = 0; i < window._fmeaData.length; i++) {
+    const r = window._fmeaData[i];
+    const rpn = calcRpn(r.s, r.o, r.d);
+    totalRpn += rpn;
+    if (rpn >= 100) highCount++;
+
+    const sClass = r.s >= 8 ? 'sev-high' : r.s >= 5 ? 'sev-med' : 'sev-low';
+
+    const tr = document.createElement('tr');
+    tr.className = 'fmea-row';
+    tr.innerHTML = `
+      <td style="text-align:center;font-size:0.75rem;color:var(--muted);">${i+1}</td>
+      <td><input value="${esc(r.fn)}" onchange="updateField(${i},'fn',this.value)"></td>
+      <td><input value="${esc(r.fm)}" onchange="updateField(${i},'fm',this.value)"></td>
+      <td><input value="${esc(r.effect)}" onchange="updateField(${i},'effect',this.value)"></td>
+      <td><input type="number" min="1" max="10" value="${r.s}" class="${sClass}" onchange="updateField(${i},'s',this.value)" style="width:36px;text-align:center;font-weight:700;"></td>
+      <td><input value="${esc(r.cause)}" onchange="updateField(${i},'cause',this.value)"></td>
+      <td><input type="number" min="1" max="10" value="${r.o}" onchange="updateField(${i},'o',this.value)" style="width:36px;text-align:center;font-weight:700;"></td>
+      <td><input value="${esc(r.control)}" onchange="updateField(${i},'control',this.value)"></td>
+      <td><input type="number" min="1" max="10" value="${r.d}" onchange="updateField(${i},'d',this.value)" style="width:36px;text-align:center;font-weight:700;"></td>
+      <td style="text-align:center;"><span class="rpn-value ${rpn >= 100 ? 'sev-high' : rpn >= 50 ? 'sev-med' : 'sev-low'}">${rpn}</span></td>
+      <td><input value="${esc(r.action)}" onchange="updateField(${i},'action',this.value)"></td>
+      <td class="no-print" style="text-align:center;">
+        <div class="row-actions">
+          <button class="btn-row add" onclick="addRowAfter(${i})" title="Insert row after">+</button>
+          <button class="btn-row del" onclick="deleteRow(${i})" title="Delete row">×</button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  }
+
+  document.getElementById('rowCount').textContent = window._fmeaData.length;
+  document.getElementById('avgRpn').textContent = window._fmeaData.length ? Math.round(totalRpn / window._fmeaData.length) : 0;
+  document.getElementById('highRpn').textContent = highCount;
+}
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function updateField(idx, field, val) {
+  if (idx >= 0 && idx < window._fmeaData.length) {
+    window._fmeaData[idx][field] = val;
+    renderRows();
+  }
+}
+
+function addRow() {
+  window._fmeaData.push({ fn: '', fm: '', effect: '', s: 5, cause: '', o: 4, control: '', d: 4, action: '' });
+  renderRows();
+}
+
+function addRowAfter(idx) {
+  const newRow = { fn: '', fm: '', effect: '', s: 5, cause: '', o: 4, control: '', d: 4, action: '' };
+  window._fmeaData.splice(idx + 1, 0, newRow);
+  renderRows();
+}
+
+function deleteRow(idx) {
+  if (window._fmeaData.length <= 1) return;
+  window._fmeaData.splice(idx, 1);
+  renderRows();
+}
+
+function clearTable() {
+  if (!confirm('Очистить все строки и начать заново?')) return;
+  window._fmeaData = [{ fn: 'Новая функция', fm: '', effect: '', s: 5, cause: '', o: 4, control: '', d: 4, action: '' }];
+  renderRows();
+}
+
+function toggleGuide() {
+  const panel = document.getElementById('guidePanel');
+  panel.classList.toggle('open');
+}
+
+function exportPDF() {
+  // Paywall — показать модалку оплаты
+  showPayModal('FMEA Report');
+  return;
+
+  const element = document.getElementById('export-wrapper');
+  const company = document.getElementById('companyName').value || 'Company';
+  const project = document.getElementById('projectName').value || 'FMEA Report';
+  const rev = document.getElementById('fmeaRev').value || '';
+
+  const opt = {
+    margin: [10, 8, 10, 8],
+    filename: `FMEA_${project.replace(/[^a-zA-Z0-9]/g,'_')}_${rev || 'v1'}.pdf`,
+    image: { type: 'jpeg', quality: 0.95 },
+    html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+    jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
+  };
+  html2pdf().set(opt).from(element).save();
+}
+
+// Init
+window._fmeaData = JSON.parse(JSON.stringify(DEFAULT_ROWS));
+document.getElementById('fmeaDate').valueAsDate = new Date();
+renderRows();
+</script>
+
+</body>
+</html>
