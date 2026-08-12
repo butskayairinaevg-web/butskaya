@@ -3,43 +3,43 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
   <url>
-    <loc>https://butskayairinaevg-web.github.io/butskaya/landing/</loc>
-    <lastmod>2026-07-19</lastmod>
+    <loc>https://butskaya.ru/</loc>
+    <lastmod>2026-07-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
-    <loc>https://butskayairinaevg-web.github.io/butskaya/shop/</loc>
-    <lastmod>2026-07-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://butskayairinaevg-web.github.io/butskaya/generators/</loc>
-    <lastmod>2026-07-19</lastmod>
+    <loc>https://butskaya.ru/generators/</loc>
+    <lastmod>2026-07-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://butskayairinaevg-web.github.io/butskaya/generators/fmea-generator.html</loc>
-    <lastmod>2026-07-19</lastmod>
+    <loc>https://butskaya.ru/shop/</loc>
+    <lastmod>2026-08-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://butskaya.ru/generators/fmea-generator.html</loc>
+    <lastmod>2026-07-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://butskayairinaevg-web.github.io/butskaya/generators/controlplan.html</loc>
-    <lastmod>2026-07-19</lastmod>
+    <loc>https://butskaya.ru/generators/controlplan.html</loc>
+    <lastmod>2026-07-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://butskayairinaevg-web.github.io/butskaya/generators/psw.html</loc>
-    <lastmod>2026-07-19</lastmod>
+    <loc>https://butskaya.ru/generators/psw.html</loc>
+    <lastmod>2026-07-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

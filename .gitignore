@@ -3,3 +3,8 @@ node_modules/
 .DS_Store
 *.log
 .env
+
+# Внутренние/устаревшие документы — НЕ для публикации
+docs/tilda-structure.md
+docs/block.html
+generators/handoff_2026-06-21.txt
