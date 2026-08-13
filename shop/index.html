@@ -166,6 +166,11 @@
       background: transparent; border: 1px solid #0e4e7c; color: #0e4e7c;
     }
     .doc-card .btn-outline:hover { background: #eef2ff; }
+    .doc-card .btn-pay {
+      background: #9a2525; color: #fff;
+    }
+    .doc-card .btn-pay:hover { background: #b83232; }
+    .doc-card .actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
 
     /* Pricing section */
     .pricing-grid {
@@ -332,8 +337,11 @@
     </div>
 
     <!-- ===== ПРЕМИУМ (ГЕНЕРАТОРЫ) ===== -->
-    <h2 id="premium">⭐ Премиум-материалы</h2>
-    <p class="text-muted" style="margin-bottom:1.25rem;">Инструменты, доступные по подписке. Любой премиум-документ можно купить отдельно. PDF сразу после оплаты.</p>
+    <h2 id="premium">⭐ Премиум-материалы — доступ ко всем PDF</h2>
+    <p class="text-muted" style="margin-bottom:0.75rem;">Заполните любой генератор и скачайте PDF с вашими данными. Один доступ — ко всем документам.</p>
+    <p style="margin-bottom:1.25rem;">
+      <a class="btn-buy" style="display:inline-block; max-width:420px; font-size:1rem; padding:1rem 1.6rem; text-decoration:none; text-align:center;" href="https://yoomoney.ru/to/4100119578034128?label=qdoc_access&sum=3500" target="_blank" rel="noopener">💎 Купить доступ ко всем PDF — 3 500 ₽</a>
+    </p>
     <div class="docs-grid">
       <!-- ===== ПРЕМИУМ-ГЕНЕРАТОРЫ (оплачиваемые) ===== -->
       <div class="doc-card" data-type="premium">
@@ -341,21 +349,27 @@
         <h3 style="color:#9a2525;">FMEA Generator</h3>
         <p>Анализ видов и последствий отказов с автоматическим расчётом RPN. Редактор таблицы, экспорт PDF.</p>
         <div class="tags"><span class="tag">FMEA</span><span class="tag">RPN</span><span class="tag">редактор таблицы</span></div>
-        <a href="../generators/fmea-generator.html" target="_blank" class="btn btn-primary">Открыть FMEA →</a>
+        <div class="actions">
+          <a href="../generators/fmea-generator.html" target="_blank" class="btn btn-primary">Открыть FMEA →</a>
+        </div>
       </div>
       <div class="doc-card" data-type="premium">
         <div class="type-label type-pay">💎 PDF</div>
         <h3 style="color:#9a2525;">Control Plan</h3>
         <p>План контроля процессов: номера процессов, параметры, методы контроля, частота, реакция на отклонение. Экспорт в Excel.</p>
         <div class="tags"><span class="tag">Control Plan</span><span class="tag">экспорт Excel</span></div>
-        <a href="../generators/controlplan.html" target="_blank" class="btn btn-primary">Открыть Control Plan →</a>
+        <div class="actions">
+          <a href="../generators/controlplan.html" target="_blank" class="btn btn-primary">Открыть Control Plan →</a>
+        </div>
       </div>
       <div class="doc-card" data-type="premium">
         <div class="type-label type-pay">💎 PDF</div>
         <h3 style="color:#9a2525;">PSW — Part Submission Warrant</h3>
         <p>Форма одобрения первой продукции. Размеры, материалы, тесты — готовые поля для данных и отметок.</p>
         <div class="tags"><span class="tag">PSW</span><span class="tag">PPAP</span><span class="tag">одобрение</span></div>
-        <a href="../generators/psw.html" target="_blank" class="btn btn-primary">Открыть PSW →</a>
+        <div class="actions">
+          <a href="../generators/psw.html" target="_blank" class="btn btn-primary">Открыть PSW →</a>
+        </div>
       </div>
 
       <div class="doc-card" data-type="premium">
@@ -363,14 +377,18 @@
         <h3 style="color:#9a2525;">PFMEA — Процессный FMEA</h3>
         <p>Анализ видов и последствий отказов процессов с автоматическим расчётом RPN. Редактор таблицы, экспорт PDF.</p>
         <div class="tags"><span class="tag">PFMEA</span><span class="tag">RPN</span><span class="tag">редактор таблицы</span></div>
-        <a href="../generators/PFMEA.HTML" target="_blank" class="btn btn-primary">Открыть PFMEA →</a>
+        <div class="actions">
+          <a href="../generators/PFMEA.HTML" target="_blank" class="btn btn-primary">Открыть PFMEA →</a>
+        </div>
       </div>
       <div class="doc-card" data-type="premium">
         <div class="type-label type-pay">💎 PDF</div>
         <h3 style="color:#9a2525;">Cp / Cpk — Индекс воспроизводимости</h3>
         <p>Интерактивный калькулятор Cp/Cpk с графиком распределения, расчётом PPM и оценкой процесса.</p>
         <div class="tags"><span class="tag">Cp</span><span class="tag">Cpk</span><span class="tag">калькулятор</span></div>
-        <a href="../generators/Capability%20(Cp_Cpk)_7QC.html" target="_blank" class="btn btn-primary">Открыть калькулятор →</a>
+        <div class="actions">
+          <a href="../generators/Capability%20(Cp_Cpk)_7QC.html" target="_blank" class="btn btn-primary">Открыть калькулятор →</a>
+        </div>
       </div>
       <div class="doc-card" data-type="premium">
         <div class="type-label type-pay" style="background:#f39c12; color:#fff;">🚧 Разработка</div>
@@ -390,28 +408,36 @@
         <h3>APQP — Планирование качества</h3>
         <p>Advanced Product Quality Planning: этапы, выходы, контрольные точки. Полный разбор методологии.</p>
         <div class="tags"><span class="tag">APQP</span><span class="tag">планирование</span></div>
-        <a href="../generators/APQP.html" target="_blank" class="btn btn-outline">Читать →</a>
+        <div class="actions">
+          <a href="../generators/APQP.html" target="_blank" class="btn btn-outline">Читать →</a>
+        </div>
       </div>
       <div class="doc-card" data-type="premium">
         <div class="type-label type-premium">⭐ Премиум</div>
         <h3>PPAP — Одобрение производства</h3>
         <p>Production Part Approval Process: 18 требований, уровни PPAP, документация. Полный гайд.</p>
         <div class="tags"><span class="tag">PPAP</span><span class="tag">одобрение</span></div>
-        <a href="../generators/PPAP.html" target="_blank" class="btn btn-outline">Читать →</a>
+        <div class="actions">
+          <a href="../generators/PPAP.html" target="_blank" class="btn btn-outline">Читать →</a>
+        </div>
       </div>
       <div class="doc-card" data-type="premium">
         <div class="type-label type-premium">⭐ Премиум</div>
         <h3>FMEA Premium (English)</h3>
         <p>Полный разбор FMEA на английском: AIAG & VDA подход, изменения, примеры заполнения.</p>
         <div class="tags"><span class="tag">FMEA</span><span class="tag">English</span><span class="tag">VDA</span></div>
-        <a href="../generators/FMEA_Premium_English.html" target="_blank" class="btn btn-outline">Читать →</a>
+        <div class="actions">
+          <a href="../generators/FMEA_Premium_English.html" target="_blank" class="btn btn-outline">Читать →</a>
+        </div>
       </div>
       <div class="doc-card" data-type="premium">
         <div class="type-label type-premium">⭐ Премиум</div>
         <h3>SPC — Статистическое управление</h3>
         <p>Контрольные карты: X-bar-R, p, np, c, u. Cp/Cpk с интерактивными калькуляторами и интерпретацией.</p>
         <div class="tags"><span class="tag">SPC</span><span class="tag">Cp/Cpk</span><span class="tag">карты</span></div>
-        <a href="../generators/SPC_1.html" target="_blank" class="btn btn-outline">Читать →</a>
+        <div class="actions">
+          <a href="../generators/SPC_1.html" target="_blank" class="btn btn-outline">Читать →</a>
+        </div>
       </div>
 
       <div class="doc-card" data-type="premium">
@@ -419,42 +445,54 @@
         <h3>MSA — Анализ измерительных систем</h3>
         <p>Gage R&R, смещение, линейность, стабильность. Полный разбор методов MSA.</p>
         <div class="tags"><span class="tag">MSA</span><span class="tag">Gage R&R</span></div>
-        <a href="../generators/MSA_1.html" target="_blank" class="btn btn-outline">Читать →</a>
+        <div class="actions">
+          <a href="../generators/MSA_1.html" target="_blank" class="btn btn-outline">Читать →</a>
+        </div>
       </div>
       <div class="doc-card" data-type="premium">
         <div class="type-label type-premium">⭐ Премиум</div>
         <h3>Gage R&R — Калькулятор</h3>
         <p>Интерактивный расчёт повторяемости и воспроизводимости измерительной системы. Анализ ANOVA.</p>
         <div class="tags"><span class="tag">Gage R&R</span><span class="tag">ANOVA</span></div>
-        <a href="../generators/MSA2_Gage%20R&R.html" target="_blank" class="btn btn-outline">Читать →</a>
+        <div class="actions">
+          <a href="../generators/MSA2_Gage%20R&R.html" target="_blank" class="btn btn-outline">Читать →</a>
+        </div>
       </div>
       <div class="doc-card" data-type="premium">
         <div class="type-label type-premium">⭐ Премиум</div>
         <h3>7 QC Tools — 7 инструментов</h3>
         <p>Парето, Исикава, гистограмма, контрольные карты, диаграмма рассеяния, чек-лист.</p>
         <div class="tags"><span class="tag">7 инструментов</span></div>
-        <a href="../generators/7QC%20Tools.....html" target="_blank" class="btn btn-outline">Читать →</a>
+        <div class="actions">
+          <a href="../generators/7QC%20Tools.....html" target="_blank" class="btn btn-outline">Читать →</a>
+        </div>
       </div>
       <div class="doc-card" data-type="premium">
         <div class="type-label type-premium">⭐ Премиум</div>
         <h3>5S — Система организации</h3>
         <p>Сортировка, соблюдение порядка, содержание, стандартизация, совершенствование. Полная методология.</p>
         <div class="tags"><span class="tag">5S</span><span class="tag">гемба</span></div>
-        <a href="../generators/5s_NotePad_JS.html" target="_blank" class="btn btn-outline">Читать →</a>
+        <div class="actions">
+          <a href="../generators/5s_NotePad_JS.html" target="_blank" class="btn btn-outline">Читать →</a>
+        </div>
       </div>
       <div class="doc-card" data-type="premium">
         <div class="type-label type-premium">⭐ Премиум</div>
         <h3>Process Flow Chart</h3>
         <p>Диаграмма потока процессов в производстве: условные обозначения, построение, анализ.</p>
         <div class="tags"><span class="tag">PFD</span><span class="tag">схема</span></div>
-        <a href="../generators/Process%20Flow%20Chart%20Diagramme.html" target="_blank" class="btn btn-outline">Читать →</a>
+        <div class="actions">
+          <a href="../generators/Process%20Flow%20Chart%20Diagramme.html" target="_blank" class="btn btn-outline">Читать →</a>
+        </div>
       </div>
       <div class="doc-card" data-type="premium">
         <div class="type-label type-premium">⭐ Премиум</div>
         <h3>Fishbone (Исикава)</h3>
         <p>Диаграмма причинно-следственных связей. Метод 5 Why, категории 6M, примеры построения.</p>
         <div class="tags"><span class="tag">Исикава</span><span class="tag">5 Why</span><span class="tag">6M</span></div>
-        <a href="../generators/Fishbone%20(Ishikawa)%20Diagram_7QC.html" target="_blank" class="btn btn-outline">Читать →</a>
+        <div class="actions">
+          <a href="../generators/Fishbone%20(Ishikawa)%20Diagram_7QC.html" target="_blank" class="btn btn-outline">Читать →</a>
+        </div>
       </div>
     </div>
 
@@ -506,60 +544,13 @@
     </div>
     </section>
 
-<!-- ===== PRICING ===== -->
-<section class="section" style="background:#fff;">
-  <div class="container">
-    <h2 style="text-align:center;">Выберите доступ</h2>
-    <div class="pricing-grid">
-      <div class="price-card">
-        <h3>📄 Поштучно</h3>
-        <div class="price">250 ₽ <span>за документ</span></div>
-        <p class="desc">Любой премиум-документ отдельно.</p>
-        <ul>
-          <li>Один документ PDF</li>
-          <li>Без подписки</li>
-          <li class="muted">— Все премиум-материалы</li>
-          <li class="muted">— Обновления</li>
-        </ul>
-        <a class="btn-buy" href="https://yoomoney.ru/quickpay/confirm.xml?receiver=4100119578034128&amp;quickpay-form=shop&amp;targets=%D0%9F%D1%80%D0%B5%D0%BC%D0%B8%D1%83%D0%BC-%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%20QDoc%20(250%20%E2%82%BD)&amp;sum=250&amp;paymentType=AC" target="_blank" rel="noopener">Выбрать → 250 ₽</a>
-      </div>
-      <div class="price-card featured">
-        <h3>💎 Премиум</h3>
-        <div class="price">3 500 ₽ <span>50 генераций</span></div>
-        <p class="desc">50 заполнений любых форм — FMEA, Control Plan, PSW, Company Info, Material Test Report. На все документы.</p>
-        <ul>
-          <li>50 генераций любых документов</li>
-          <li>FMEA, Control Plan, PSW, и другие</li>
-          <li>Премиум-материалы в подарок</li>
-          <li>Доступ в Telegram-чат</li>
-          <li>14 дней на возврат</li>
-        </ul>
-        <button class="btn-buy" style="opacity:0.6; cursor:default;" disabled>Скоро — сначала проверим спрос по 250 ₽</button>
-      </div>
-      <div class="price-card">
-        <h3>🆓 Бесплатно</h3>
-        <div class="price">$0</div>
-        <p class="desc">Генераторы PDF: FMEA, Control Plan, PSW, Company Info, Material Test Report.</p>
-        <ul>
-          <li>5 генераторов PDF</li>
-          <li>Статьи и разборы</li>
-          <li>Без регистрации</li>
-          <li class="muted">— Премиум-материалы</li>
-          <li class="muted">— Telegram-чат</li>
-        </ul>
-        <a href="../landing/index.html" class="btn-buy" style="background:#64748b;">На лендинг →</a>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ===== FAQ ===== -->
 <section class="section">
   <div class="container">
     <h2 style="text-align:center;">Часто задаваемые вопросы</h2>
     <div class="faq-list">
       <div class="faq-item">
-        <div class="faq-q">Какие документы входят в премиум-доступ?</div>
+        <div class="faq-q">Какие документы можно купить?</div>
         <div class="faq-a">APQP, PPAP, PFMEA, SPC (полный набор карт и Cp/Cpk), MSA / Gage R&R, 7 QC Tools, 5S, Process Flow Chart, Fishbone (Исикава), Kaizen и другие. Полный список — в разделе «Премиум» выше.</div>
       </div>
       <div class="faq-item">
@@ -567,12 +558,12 @@
         <div class="faq-a">Бесплатные генераторы (FMEA, Control Plan, PSW и др.) — это интерактивные формы на сайте. Вы заполняете — получаете PDF. Премиум — это готовые PDF-документы для скачивания, разборы методологий и справочные материалы.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Сколько стоит премиум-доступ?</div>
-        <div class="faq-a">3 500 ₽ единоразово. Все обновления и новые материалы — бесплатно. Никаких подписок.</div>
+        <div class="faq-q">Сколько стоит доступ?</div>
+        <div class="faq-a">3 500 ₽ единоразово за доступ ко всем PDF. Без подписок и скрытых платежей.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Можно ли купить один документ?</div>
-        <div class="faq-a">Да, по 250 ₽ за документ. Например, Kaizen — 250 ₽. После оплаты приходит PDF на почту.</div>
+        <div class="faq-q">Можно ли купить только один документ?</div>
+        <div class="faq-a">Нет. Доступ открывается ко всем документам сразу — один раз за 3 500 ₽. После оплаты присылаем код доступа.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">Документы соответствуют ISO 9001 / IATF 16949?</div>
@@ -580,7 +571,7 @@
       </div>
       <div class="faq-item">
         <div class="faq-q">Как я получу доступ после оплаты?</div>
-        <div class="faq-a">Ссылка на скачивание архива и письмо на почту. Для премиум-доступа — дополнительно доступ в Telegram-чат.</div>
+        <div class="faq-a">После оплаты мы пришлём код доступа. Введите его в любом генераторе — откроется скачивание PDF с вашими данными.</div>
       </div>
     </div>
   </div>

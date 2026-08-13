@@ -344,69 +344,79 @@ body {
 <!-- Paywall Modal -->
 <div class="modal-overlay" id="payModal">
   <div class="modal-box">
-    <h2>🔒 Выберите тариф</h2>
-    <p>Скачивайте PDF с вашими данными без ограничений</p>
+    <h2>🔒 Для скачивания PDF</h2>
+    <p>Скачайте заполненный документ с вашими данными</p>
 
-    <div class="modal-plans">
-      <div class="modal-plan" data-plan="once" onclick="selectPlan(this)">
-        <div>
-          <span class="plan-price">350 ₽</span>
-          <span class="plan-name"> — один документ</span>
-        </div>
-        <div class="plan-desc">Оплатили — скачали. Проще некуда.</div>
-      </div>
-      <div class="modal-plan" data-plan="ten" onclick="selectPlan(this)">
-        <div>
-          <span class="plan-price">1 000 ₽</span>
-          <span class="plan-name">10 PDF</span>
-          <span class="plan-badge">🔥 выгодно</span>
-        </div>
-        <div class="plan-desc">10 любых документов. Экономия 2 500 ₽ против поштучных.</div>
-      </div>
-      <div class="modal-plan" data-plan="month" onclick="selectPlan(this)">
-        <div>
-          <span class="plan-price">2 000 ₽ <small>/ мес</small></span>
-          <span class="plan-name">Безлимит на месяц</span>
-        </div>
-        <div class="plan-desc">Сколько угодно PDF. Для регулярной работы с документацией.</div>
-      </div>
+    <div style="text-align:center;margin:12px 0;">
+      <div style="font-size:2rem;font-weight:700;color:var(--burgundy);">3 500 ₽</div>
+      <div style="font-size:0.85rem;color:var(--muted);">доступ ко всем PDF, единоразово</div>
     </div>
 
-    <button class="modal-btn green" id="payBtn" onclick="paySelected()">Оплатить 350 ₽ →</button>
+    <button class="modal-btn green" id="payBtn" onclick="paySelected()">Купить доступ ко всем PDF — 3 500 ₽ →</button>
     <button class="modal-btn secondary" onclick="closePayModal()">Закрыть</button>
-    <div class="modal-note">После оплаты напишите @Irina_Butskaya — пришлю PDF в течение часа</div>
+    <div class="modal-note">После оплаты напишите @Irina_Butskaya — вам пришлют код
+      <a class="modal-pay-link" href="https://t.me/Irina_Butskaya" target="_blank" rel="noopener">@Irina_Butskaya</a>
+    </div>
+
+    <hr style="border:none;border-top:1px solid #eee;margin:14px 0;">
+    <div style="font-size:0.85rem;color:var(--muted);margin-bottom:6px;">Уже оплатили и получили код? Разблокируйте скачивание:</div>
+    <input type="text" id="unlockCode" placeholder="Введите код"
+      style="width:100%;padding:10px;border:1px solid var(--border);border-radius:6px;font-size:0.9rem;box-sizing:border-box;">
+    <button class="modal-btn green" onclick="unlockPDF()" style="margin-top:8px;">Разблокировать PDF →</button>
+    <div id="unlockMsg" style="font-size:0.8rem;margin-top:6px;min-height:1em;"></div>
   </div>
 </div>
 
 <script>
-let _selectedPlan = 'once';
-
-function selectPlan(el) {
-  document.querySelectorAll('.modal-plan').forEach(p => p.classList.remove('selected'));
-  el.classList.add('selected');
-  _selectedPlan = el.dataset.plan;
-  const labels = { once: 'Оплатить 350 ₽ →', ten: 'Оплатить 1 000 ₽ →', month: 'Оформить на 2 000 ₽ →' };
-  document.getElementById('payBtn').textContent = labels[_selectedPlan];
-}
+// Единый код доступа ко всем PDF (сообщается покупателю после оплаты 3 500 ₽)
+const DOC_UNLOCK_CODE = 'QDOC3500';
 
 function paySelected() {
-  const links = {
-    once: 'https://yoomoney.ru/to/4100119578034128?label=fmea_once&sum=350',
-    ten: 'https://yoomoney.ru/to/4100119578034128?label=fmea_ten&sum=1000',
-    month: 'https://yoomoney.ru/to/4100119578034128?label=fmea_month&sum=2000'
-  };
-  window.open(links[_selectedPlan], '_blank');
+  window.open('https://yoomoney.ru/to/4100119578034128?label=qdoc_access&sum=3500', '_blank');
 }
 
 function showPayModal(docName) {
-  _selectedPlan = 'once';
-  document.querySelectorAll('.modal-plan').forEach(p => p.classList.remove('selected'));
-  document.getElementById('payBtn').textContent = 'Оплатить 350 ₽ →';
+  const code = document.getElementById('unlockCode');
+  const msg = document.getElementById('unlockMsg');
+  if (code) code.value = '';
+  if (msg) msg.textContent = '';
   document.getElementById('payModal').classList.add('open');
 }
 function closePayModal() {
   document.getElementById('payModal').classList.remove('open');
 }
+
+function unlockPDF() {
+  const code = document.getElementById('unlockCode').value.trim().toUpperCase();
+  const msg = document.getElementById('unlockMsg');
+  if (code !== DOC_UNLOCK_CODE) {
+    msg.style.color = '#c62828';
+    msg.textContent = 'Неверный код. Проверьте и попробуйте ещё раз.';
+    return;
+  }
+  // Код верный — закрываем модалку и генерируем PDF
+  closePayModal();
+  msg.textContent = '';
+  runExport();
+}
+
+function runExport() {
+  const element = document.getElementById('export-wrapper');
+  if (!element) return;
+  const company = document.getElementById('companyName').value || 'Company';
+  const project = document.getElementById('projectName').value || 'FMEA Report';
+  const rev = document.getElementById('fmeaRev').value || '';
+
+  const opt = {
+    margin: [10, 8, 10, 8],
+    filename: `FMEA_${project.replace(/[^a-zA-Z0-9]/g,'_')}_${rev || 'v1'}.pdf`,
+    image: { type: 'jpeg', quality: 0.95 },
+    html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+    jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
+  };
+  html2pdf().set(opt).from(element).save();
+}
+
 // Close on overlay click
 document.getElementById('payModal').addEventListener('click', function(e) {
   if (e.target === this) closePayModal();
@@ -505,23 +515,9 @@ function toggleGuide() {
 }
 
 function exportPDF() {
-  // Paywall — показать модалку оплаты
+  // Вход в систему: показать модалку оплаты / разблокировки
   showPayModal('FMEA Report');
   return;
-
-  const element = document.getElementById('export-wrapper');
-  const company = document.getElementById('companyName').value || 'Company';
-  const project = document.getElementById('projectName').value || 'FMEA Report';
-  const rev = document.getElementById('fmeaRev').value || '';
-
-  const opt = {
-    margin: [10, 8, 10, 8],
-    filename: `FMEA_${project.replace(/[^a-zA-Z0-9]/g,'_')}_${rev || 'v1'}.pdf`,
-    image: { type: 'jpeg', quality: 0.95 },
-    html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-    jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
-  };
-  html2pdf().set(opt).from(element).save();
 }
 
 // Init

@@ -19,7 +19,7 @@ butskaya-landing/
 
 ## Магазин QDoc
 
-Каталог документов по качеству (FMEA, Control Plan, PSW, SPC, MSA, APQP, PPAP, 7 QC Tools). Премиум-документ — 250 ₽ через Ю-мани. Премиум-доступ — 3 500 ₽.
+Каталог документов по качеству (FMEA, Control Plan, PSW, SPC, MSA, APQP, PPAP, 7 QC Tools). Доступ ко всем PDF — 3 500 ₽ через Ю-мани.
 
 ## Публикация
 
